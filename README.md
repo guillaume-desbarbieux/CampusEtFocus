@@ -8,3 +8,5 @@ Dans Campus & Focus, vous incarnez un·e apprenant·e du Campus Numérique et tr
 Votre Motivation est votre vie, et votre Niveau de compétences votre force d’attaque.
 Collectez du matériel et des logiciels pour améliorer vos performances, évitez les malus techniques et profitez des bonus pour progresser.
 
+##
+<img alt="Logo Campus & Focus, la quête du développeur" src="https://github.com/guillaume-desbarbieux/CampusEtFocus/blob/main/ressources/images/logo.png">
