@@ -1,5 +1,6 @@
 package fr.campusetfocus.menu;
 import fr.campusetfocus.game.Game;
+import fr.campusetfocus.character.Character;
 
 import java.util.Scanner;
 
@@ -10,58 +11,38 @@ public class Menu {
         this.scanner = new Scanner(System.in);
     }
 
-    public void welcome() {
-        boolean exit = false;
+    public void display(String message){
+        System.out.println(message);
+    }
 
-        while (!exit) {
-            System.out.println("=== Menu principal ===");
-            System.out.println("1. Nouvelle partie");
-            System.out.println("2. Quitter");
-            System.out.print("Choix: ");
-            String choice = scanner.nextLine();
+    public int getChoice(String message, String[] choices){
+        while (true){
+            this.display(message);
+            for (int i = 1; i <= choices.length; i++){
+                this.display(i + ". " + choices[i-1]);
+            }
+            this.display("-> Choix ?");
 
-            switch (choice) {
-                case "1":
-                    Game game = new Game();
-                    game.start();
-                    break;
-                case "2":
-                    exit = true;
-                    System.out.println("A bientôt !");
-                    break;
-                default:
-                    System.out.println("Choix invalide !");
+            int choice = Integer.parseInt(scanner.nextLine());
+            if (choice > 0 && choice <= choices.length){
+            return choice;
+            } else {
+                this.display("Choix invalide");
             }
 
         }
+
     }
 
-    public void newCharacter() {
-
-    System.out.println("=== Création de votre personnage ===");
-        String type = "";
-        while (type == "") {
-            System.out.println("Choisissez le type de votre personnage :");
-            System.out.println("1. Guerrier");
-            System.out.println("2. Magicien");
-            System.out.print("Choix: ");
-            String choice = this.scanner.nextLine();
-
-            switch (choice) {
-                case "1":
-                    type = "Warrior";
-                    break;
-                case "2":
-                    type = "Magus";
-                    break;
-                default:
-                    System.out.println("Choix invalide !");
-            System.out.println("Entrez le nom de votre personnage :");
-            String name = scanner.nextLine();
-
-            }
-
-        }
+    public String getString(String message){
+        this.display(message);
+        return scanner.nextLine();
     }
+
+    public int getInt(String message){
+        this.display(message);
+        return Integer.parseInt(scanner.nextLine());
+    }
+
 }
 
