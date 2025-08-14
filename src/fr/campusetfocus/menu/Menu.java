@@ -10,7 +10,7 @@ public class Menu {
         this.scanner = new Scanner(System.in);
     }
 
-    public void display() {
+    public void welcome() {
         boolean exit = false;
 
         while (!exit) {
@@ -35,4 +35,33 @@ public class Menu {
 
         }
     }
+
+    public void newCharacter() {
+
+    System.out.println("=== Création de votre personnage ===");
+        String type = "";
+        while (type == "") {
+            System.out.println("Choisissez le type de votre personnage :");
+            System.out.println("1. Guerrier");
+            System.out.println("2. Magicien");
+            System.out.print("Choix: ");
+            String choice = this.scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    type = "Warrior";
+                    break;
+                case "2":
+                    type = "Magus";
+                    break;
+                default:
+                    System.out.println("Choix invalide !");
+            System.out.println("Entrez le nom de votre personnage :");
+            String name = scanner.nextLine();
+
+            }
+
+        }
+    }
 }
+

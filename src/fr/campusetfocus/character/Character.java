@@ -11,13 +11,11 @@ public class Character {
     private OffensiveEquipment[] offensiveEquipments;
     private DefensiveEquipment[] defensiveEquipments;
 
-    public Character(String name, String type, int life, int attack, OffensiveEquipment[] offensiveEquipments, DefensiveEquipment[] defensiveEquipments) {
+    public Character(String name, String type) {
         this.name = name;
         this.type = type;
-        this.life = life;
-        this.attack = attack;
-        this.offensiveEquipments = offensiveEquipments;
-        this.defensiveEquipments = defensiveEquipments;
+        setLife();
+        setAttack();
     }
 
     @Override
@@ -40,14 +38,32 @@ public class Character {
     public int getLife() {
         return life;
     }
-    public void setLife(int life) {
-        this.life = life;
+    public void setLife() {
+        switch (this.type) {
+            case "Warrior":
+            this.life = 10;
+            break;
+            case "Magus":
+            this.life = 6;
+            break;
+            default:
+            this.life = 8;
+        }
     }
     public int getAttack(){
         return attack;
     }
-    public void setAttack(int attack) {
-        this.attack = attack;
+    public void setAttack() {
+        switch (this.type) {
+            case "Warrior":
+                this.attack = 5;
+                break;
+            case "Magus":
+                this.attack = 8;
+                break;
+            default:
+                this.attack = 6;
+        }
     }
     public OffensiveEquipment[] getOffensiveEquipments() {
         return offensiveEquipments;

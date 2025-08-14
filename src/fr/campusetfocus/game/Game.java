@@ -7,7 +7,6 @@ public class Game {
 
     public Game() {
         this.board = new Board();
-        this.player = new Character();
         this.dice = new Dice();
     }
 
@@ -29,6 +28,9 @@ public class Game {
 
     public Dice getDice() {
         return dice;
+    }
+
+    public void start() {
     }
 
 
