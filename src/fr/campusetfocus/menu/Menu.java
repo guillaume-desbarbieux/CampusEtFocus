@@ -1,7 +1,4 @@
 package fr.campusetfocus.menu;
-import fr.campusetfocus.game.Game;
-import fr.campusetfocus.character.Character;
-
 import java.util.Scanner;
 
 public class Menu {
@@ -16,22 +13,32 @@ public class Menu {
     }
 
     public int getChoice(String message, String[] choices){
+        if (choices.length == 0){
+            this.display("Erreur inconnue");
+            return 0;
+        }
+
         while (true){
+
             this.display(message);
             for (int i = 1; i <= choices.length; i++){
                 this.display(i + ". " + choices[i-1]);
             }
             this.display("-> Choix ?");
 
-            int choice = Integer.parseInt(scanner.nextLine());
+            int choice = 0;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                this.display("Erreur : veuillez entrer un nombre entier valide !");
+            }
+
             if (choice > 0 && choice <= choices.length){
             return choice;
             } else {
-                this.display("Choix invalide");
+                this.display("Erreur : veuillez faire un choix valide");
             }
-
         }
-
     }
 
     public String getString(String message){

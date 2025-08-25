@@ -2,9 +2,17 @@ package fr.campusetfocus.game;
 
 public class Cell  {
     private int number;
-    private String type;
+    private CellType type;
 
-    public Cell(int number, String type) {
+    public enum CellType {
+        START,
+        END,
+        EMPTY,
+        SURPRISE,
+        ENEMY
+    }
+
+    public Cell(int number, CellType type) {
         this.number = number;
         this.type = type;
     }
@@ -16,11 +24,16 @@ public class Cell  {
         this.number = number;
     }
 
-    public String getType() {
+    public CellType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CellType type) {
         this.type = type;
+    }
+
+    @Override
+    public  String toString() {
+        return "Cell {number=" + this.number + ", type=" + this.type + "}";
     }
 }

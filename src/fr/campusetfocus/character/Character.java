@@ -5,15 +5,22 @@ import fr.campusetfocus.equipment.OffensiveEquipment;
 
 public class Character {
     private String name;
-    private String type;
+    private CharacterType type;
     private int life;
     private int attack;
     private OffensiveEquipment[] offensiveEquipments;
     private DefensiveEquipment[] defensiveEquipments;
+    private int position;
 
-    public Character(String name, String type) {
+    public enum CharacterType {
+        WARRIOR,
+        MAGUS
+    }
+
+    public Character(String name, CharacterType type) {
         this.name = name;
         this.type = type;
+        this.position = 0;
         setLife();
         setAttack();
     }
@@ -29,10 +36,10 @@ public class Character {
     public void setName(String name) {
         this.name = name;
     }
-    public String getType() {
+    public CharacterType getType() {
         return type;
     }
-    public void setType(String type) {
+    public void setType(CharacterType type) {
         this.type = type;
     }
     public int getLife() {
@@ -40,10 +47,10 @@ public class Character {
     }
     public void setLife() {
         switch (this.type) {
-            case "Warrior":
+            case WARRIOR:
             this.life = 10;
             break;
-            case "Magus":
+            case MAGUS:
             this.life = 6;
             break;
             default:
@@ -55,10 +62,10 @@ public class Character {
     }
     public void setAttack() {
         switch (this.type) {
-            case "Warrior":
+            case WARRIOR:
                 this.attack = 5;
                 break;
-            case "Magus":
+            case MAGUS:
                 this.attack = 8;
                 break;
             default:
@@ -76,6 +83,13 @@ public class Character {
     }
     public void setDefensiveEquipments(DefensiveEquipment[] defensiveEquipments) {
         this.defensiveEquipments = defensiveEquipments;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+    public void setPosition(int position) {
+        this.position = position;
     }
 
 }
