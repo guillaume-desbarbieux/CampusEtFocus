@@ -1,44 +1,85 @@
 package fr.campusetfocus.equipment;
+import java.util.Random;
 
 public class DefensiveEquipment {
     private String name;
-    private String type;
+    private DefensiveEquipmentType type;
     private String description;
     private int bonusDefense;
 
-    public DefensiveEquipment(String name, String type, String description, int bonusDefense) {
-        this.name = name;
+    public enum DefensiveEquipmentType {
+        SHIELD,
+        HELMET
+    }
+
+    public DefensiveEquipment(DefensiveEquipmentType type) {
         this.type = type;
-        this.description = description;
-        this.bonusDefense = bonusDefense;
+        setName();
+        setDescription();
+        setBonusDefense();
+
     }
     @Override
     public String toString() {
-        return "Offensive Equipment {name='"+name+"', type='"+type+"', bonusDefense="+ bonusDefense +"}\n{Description='"+description+"'}";
+        return "Defensive Equipment {name='"+name+"', type='"+type+"', bonusDefense="+bonusDefense+"}\n{Description='"+description+"'}";
     }
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setName() {
+        switch (this.type) {
+            case SHIELD:
+                this.name = "Bouclier";
+                break;
+            case HELMET:
+                this.name = "Casque";
+                break;
+            default:
+                throw new UnsupportedOperationException("Erreur de génération du nom");
+        }
     }
-    public String getType() {
+
+    public DefensiveEquipmentType getType() {
         return type;
     }
-    public void setType(String type) {
+    public void setType(DefensiveEquipmentType type) {
         this.type = type;
     }
     public String getDescription() {
         return description;
     }
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription() {
+        switch (this.type) {
+            case SHIELD:
+                this.description = "Bouclier aux boucles bloquantes";
+                break;
+            case HELMET:
+                this.description = "Casque qui casse";
+                break;
+            default:
+                throw new UnsupportedOperationException("Erreur de génération de description");
+        }
     }
     public int getBonusDefense() {
         return bonusDefense;
     }
-    public void setBonusDefense(int bonusDefense) {
-        this.bonusDefense = bonusDefense;
+    public void setBonusDefense() {
+        switch (this.type) {
+            case SHIELD:
+                this.bonusDefense = 3;
+                break;
+            case HELMET:
+                this.bonusDefense = 1;
+                break;
+            default:
+                throw new UnsupportedOperationException("Erreur de génération du bonus défense");
+        }
+    }
+
+    static public DefensiveEquipmentType random() {
+        int rand = new Random().nextInt(DefensiveEquipmentType.values().length);
+        return DefensiveEquipmentType.values()[rand];
+
     }
 }
 
