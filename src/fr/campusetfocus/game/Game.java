@@ -1,6 +1,10 @@
 package fr.campusetfocus.game;
+import fr.campusetfocus.equipment.DefensiveEquipment;
+import fr.campusetfocus.equipment.OffensiveEquipment;
 import fr.campusetfocus.menu.Menu;
 import fr.campusetfocus.character.Character;
+import fr.campusetfocus.menu.potion.Potion;
+import fr.campusetfocus.surprise.Surprise;
 
 public class Game {
     private Board board;
@@ -141,55 +145,182 @@ public class Game {
     }
 
     public void start() {
-        Character player1 = this.player;
-        if (player1 == null) {
+        if (player == null) {
             this.menu.display("Vous devez créer un personnage !");
             this.managePlayer();
         } else {
-            player1.setPosition(1);
+            player.setPosition(1);
             this.menu.display("C'est parti !");
-            this.menu.display("Vous êtes sur la case n°" + player1.getPosition() + " d'un plateau de " + this.board.getSize() + " cases.");
+            this.menu.display("Vous êtes sur la case n°" + player.getPosition() + " d'un plateau de " + this.board.getSize() + " cases.");
 
             while (true) {
-                playTurn(player1);
-                int choice = menu.getChoice("Que voulez-vous faire ?", new String[]{"Continuer","Quitter"});
-                if (choice == 2) {
-                    this.quit();
-                }
+                playTurn();
             }
         }
     }
 
-    public void playTurn(Character player) {
+    public void playTurn() {
         int roll = dice.roll();
-        int boardSize = this.board.getSize();
         menu.display("Vous avez lancé le dé : " + roll);
         int oldPosition = player.getPosition();
 
-        if (oldPosition + roll > boardSize) {
-            roll = boardSize -  oldPosition;
+        if (oldPosition + roll > board.getSize()) {
+            roll = board.getSize() - oldPosition;
         }
+
         player.setPosition(oldPosition + roll);
-        Cell currentCell = this.board.getCell(player.getPosition());
-
         menu.display("Vous avancez de " + roll + " cases.");
-        menu.display("Nouvelle position : case n° " +  player.getPosition() + "/" + boardSize);
-        menu.display(currentCell.toString());
+        this.playCell();
+    }
 
+    public void playCell() {
+        menu.display("Nouvelle position : case n° " +  player.getPosition() + "/" + board.getSize());
+
+        Cell currentCell = this.board.getCell(player.getPosition());
         switch (currentCell.getType()) {
-            case ENEMY -> this.fightEnemy(currentCell);
-            case SURPRISE -> this.openSurprise(currentCell);
+            case ENEMY -> this.cellEnemy();
+            case SURPRISE -> this.cellSurprise();
+            case EMPTY -> this.cellEmpty();
             case END ->  this.end();
         }
     }
 
-    public void fightEnemy(Cell currentCell) {
-        this.menu.display("Combattons ensemble !");
+    public void cellEnemy() {
+        int choice = this.menu.getChoice("Un ennemi apparaît !", new String[] {"Afficher le Menu", "Combattre", "Fuir"});
+        switch (choice) {
+            case 1:
+                this.playingMenu();
+                break;
+            case 2:
+                this.fight();
+                break;
+            case 3:
+                this.flee();
+                break;
+            default:
+                this.menu.display("Erreur inconnue");
+                this.cellEnemy();
+        }
     }
 
-    public void openSurprise(Cell currentCell) {
-        this.menu.display("Ouvrons la surprise !");
+    public void cellSurprise() {
+        int choice = this.menu.getChoice("Une surprise apparaît !", new String[] {"Afficher le Menu", "Ouvrir la surprise", "Renoncer à la surprise"});
+        switch (choice) {
+            case 1:
+                this.playingMenu();
+                break;
+            case 2:
+                this.openSurprise();
+                break;
+            case 3:
+                this.leaveSurprise();
+                break;
+            default:
+                this.menu.display("Erreur inconnue");
+                this.cellEnemy();
+        }
     }
+
+    public void cellEmpty() {
+        this.menu.display("La case est vide, vous êtes tranquille.");
+        this.endTurn();
+    }
+
+    public void endTurn() {
+        int choice = menu.getChoice("Que voulez-vous faire ?", new String[]{"Afficher le Menu", "Continuer"});
+        if (choice == 1) {
+            this.playingMenu();
+            this.endTurn();
+        }
+    }
+
+    public void playingMenu() {
+        int choice = this.menu.getChoice("=== === Menu Pause === ===", new String[] {"Inventaire", "Statistiques du personnage", "Retour au jeu", "Quitter le jeu"});
+        switch (choice) {
+            case 1:
+                this.inventory();
+                this.playingMenu();
+                break;
+            case 2:
+                this.menu.display(player.toString());
+                this.playingMenu();
+                break;
+            case 3:
+                this.menu.display("Retour au jeu !");
+                break;
+            case 4:
+                this.quit();
+                break;
+            default:
+                this.menu.display("Erreur inconnue");
+                this.playingMenu();
+        }
+    }
+
+    public void inventory() {
+        menu.display("Option non disponible pour le moment. En attendant, faites marcher votre mémoire !");
+    }
+
+    public void fight() {
+        menu.display("L'ennemi est terrassé en moins de deux, votre puissance est impressionnante !");
+        Cell currentCell = this.board.getCell(player.getPosition());
+        currentCell.setType(Cell.CellType.EMPTY);
+        this.playCell();
+    }
+
+    public void flee() {
+        int back = 5;
+        int oldPosition = player.getPosition();
+        if (oldPosition - back < 1) {
+            back = oldPosition - 1;
+        }
+        menu.display("Vous battez en retraite et reculez de " + back + " cases.");
+        player.setPosition(oldPosition - back);
+        this.playCell();
+    }
+
+    public void leaveSurprise() {
+        menu.display("Prudence est mère de sûreté, vous choisissez d'ignorer cette surprise.");
+        this.endTurn();
+    }
+
+    public void openSurprise() {
+        Cell currentCell = this.board.getCell(player.getPosition());
+        Surprise surprise = currentCell.getSurprise();
+        menu.display(surprise.toString());
+        switch (surprise.getType()) {
+            case POTION -> this.usePotion(surprise.getPotion());
+            case DEFENSIVE -> this.getDefensive(surprise.getDefensiveEquipment());
+            case OFFENSIVE -> this.getOffensive(surprise.getOffensiveEquipment());
+        }
+    }
+
+    public void usePotion(Potion potion) {
+        menu.display(potion.toString());
+        player.changeLife(potion.getBonusLife());
+        this.emptyCell();
+        this.playCell();
+    }
+
+    public void getDefensive(DefensiveEquipment defensiveEquipment) {
+        menu.display(defensiveEquipment.toString());
+        player.addDefensiveEquipment(defensiveEquipment);
+        this.emptyCell();
+        this.playCell();
+    }
+
+    public void getOffensive(OffensiveEquipment offensiveEquipment) {
+        menu.display(offensiveEquipment.toString());
+        player.addOffensiveEquipment(offensiveEquipment);
+        this.emptyCell();
+        this.playCell();
+    }
+
+    public void emptyCell() {
+        Cell currentCell = this.board.getCell(player.getPosition());
+        currentCell.setType(Cell.CellType.EMPTY);
+    }
+
 
     public void end() {
         this.menu.display("Bravo ! Vous avez gagné.");

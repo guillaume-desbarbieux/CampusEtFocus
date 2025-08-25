@@ -44,6 +44,10 @@ public class Surprise {
         return position;
     }
 
+    public SurpriseType getType() {
+        return type;
+    }
+
     public void setOffensiveEquipment(OffensiveEquipment offensiveEquipment) {
         this.offensiveEquipment = offensiveEquipment;
     }

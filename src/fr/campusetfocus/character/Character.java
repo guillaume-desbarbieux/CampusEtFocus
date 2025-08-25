@@ -3,13 +3,16 @@ package fr.campusetfocus.character;
 import fr.campusetfocus.equipment.DefensiveEquipment;
 import fr.campusetfocus.equipment.OffensiveEquipment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Character {
     private String name;
     private CharacterType type;
     private int life;
     private int attack;
-    private OffensiveEquipment[] offensiveEquipments;
-    private DefensiveEquipment[] defensiveEquipments;
+    private List<OffensiveEquipment> offensiveEquipments = new ArrayList<>();
+    private List<DefensiveEquipment> defensiveEquipments =  new ArrayList<>();
     private int position;
 
     public enum CharacterType {
@@ -72,16 +75,16 @@ public class Character {
                 this.attack = 6;
         }
     }
-    public OffensiveEquipment[] getOffensiveEquipments() {
+    public List<OffensiveEquipment> getOffensiveEquipments() {
         return offensiveEquipments;
     }
-    public void setOffensiveEquipments(OffensiveEquipment[] offensiveEquipments) {
+    public void setOffensiveEquipments(List<OffensiveEquipment> offensiveEquipments) {
         this.offensiveEquipments = offensiveEquipments;
     }
-    public DefensiveEquipment[] getDefensiveEquipments() {
+    public List<DefensiveEquipment> getDefensiveEquipments() {
         return defensiveEquipments;
     }
-    public void setDefensiveEquipments(DefensiveEquipment[] defensiveEquipments) {
+    public void setDefensiveEquipments(List<DefensiveEquipment> defensiveEquipments) {
         this.defensiveEquipments = defensiveEquipments;
     }
 
@@ -92,4 +95,32 @@ public class Character {
         this.position = position;
     }
 
+    public void changeLife (int bonus) {
+        this.life += bonus;
+        if (life < 0) {
+            life = 0;
+        }
+    }
+
+    public void changeAttack (int  bonus) {
+        this.attack +=  bonus;
+        if (attack < 1) {
+            attack = 1;
+        }
+    }
+
+    public void addOffensiveEquipment (OffensiveEquipment offensiveEquipment) {
+        this.offensiveEquipments.add(offensiveEquipment);
+    }
+
+    public void addDefensiveEquipment (DefensiveEquipment defensiveEquipment) {
+        this.defensiveEquipments.add(defensiveEquipment);
+    }
+
+    public void removeOffensiveEquipment (OffensiveEquipment offensiveEquipment) {
+        this.offensiveEquipments.remove(offensiveEquipment);
+    }
+    public void removeDefensiveEquipment (DefensiveEquipment defensiveEquipment) {
+        this.defensiveEquipments.remove(defensiveEquipment);
+    }
 }
