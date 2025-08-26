@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"fr.campusetfocus"},{"l":"fr.campusetfocus.character"},{"l":"fr.campusetfocus.equipment"},{"l":"fr.campusetfocus.game"},{"l":"fr.campusetfocus.menu"},{"l":"fr.campusetfocus.menu.potion"},{"l":"fr.campusetfocus.surprise"}];updateSearchResults();
