@@ -6,10 +6,21 @@ public class Menu {
 
     private Menu() {}
 
+    /**
+     * Affiche le message dans la console.
+     * @param message le message à afficher
+     */
     public static void display(String message){
         System.out.println(message);
     }
 
+    /**
+     * Affiche un message à l'utilisateur et lui demande de faire un choix dans une liste.
+     * Les choix sont numérotés à partir de 1 et affichés avec le numéro correspondant.
+     * @param message Le message de 'consigne' pour l'utilisateur.
+     * @param choices La liste des choix proposés à l'utilisateur
+     * @return Un entier correspondant au numéro choisi par l'utilisateur (1 pour le premier choix de la liste, 2 pour le 2nd...)
+     */
     public static int getChoice(String message, String[] choices){
         if (choices.length == 0){
             display("Erreur inconnue");
@@ -39,11 +50,21 @@ public class Menu {
         }
     }
 
+    /**
+     * Affiche un message à l'utilisateur et récupère un string
+     * @param message le message 'consigne" affiché à l'utilisateur
+     * @return Le string rentré par l'utilisateur dans l'interface
+     */
     public static String getString(String message){
         display(message);
         return scanner.nextLine();
     }
 
+    /**
+     * Affiche un message à l'utilisateur et récupère un int
+     * @param message le message 'consigne" affiché à l'utilisateur
+     * @return L'entier rentré par l'utilisateur dans l'interface
+     */
     public static int getInt(String message){
         display(message);
         return Integer.parseInt(scanner.nextLine());

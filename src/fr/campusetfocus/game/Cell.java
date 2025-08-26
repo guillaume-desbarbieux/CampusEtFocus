@@ -1,6 +1,7 @@
 package fr.campusetfocus.game;
+import fr.campusetfocus.being.Enemy;
+import fr.campusetfocus.being.enemy.EnemyFactory;
 import fr.campusetfocus.surprise.Surprise;
-import fr.campusetfocus.character.Enemy;
 
 public class Cell  {
     private int position;
@@ -19,7 +20,7 @@ public class Cell  {
         this.position = position;
         this.type = type;
         switch (type) {
-            case ENEMY -> setEnemy(new Enemy(Enemy.random(), position));
+            case ENEMY -> setEnemy(EnemyFactory.createRandomEnemy(position));
             case SURPRISE -> setSurprise(new Surprise(Surprise.random(), position));
         }
     }

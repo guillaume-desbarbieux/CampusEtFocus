@@ -1,4 +1,4 @@
-package fr.campusetfocus.menu.potion;
+package fr.campusetfocus.potion;
 
 import java.util.Random;
 
