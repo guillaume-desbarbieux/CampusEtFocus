@@ -87,9 +87,7 @@ public class Game {
 
     public void createPlayer() {
 
-        this.menu.display("""
-                === === Création de votre personnage === ===
-                """);
+        this.menu.display("=== === Création de votre personnage === ===");
 
         int choice = this.menu.getChoice("Choisissez le type de votre personnage :", new String[]{"Guerrier", "Magicien"});
         Character.CharacterType type = Character.CharacterType.WARRIOR;

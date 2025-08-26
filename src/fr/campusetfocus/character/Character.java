@@ -1,8 +1,6 @@
 package fr.campusetfocus.character;
-
 import fr.campusetfocus.equipment.DefensiveEquipment;
 import fr.campusetfocus.equipment.OffensiveEquipment;
-
 import java.util.ArrayList;
 import java.util.List;
 
