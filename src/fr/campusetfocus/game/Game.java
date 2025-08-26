@@ -15,7 +15,6 @@ public class Game {
     public Game() {
         this.board = new Board();
         this.dice = new Dice();
-        this.menu = new Menu();
     }
 
     @Override
