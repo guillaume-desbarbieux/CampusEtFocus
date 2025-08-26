@@ -1,6 +1,6 @@
-package fr.campusetfocus.equipment.defensive;
+package fr.campusetfocus.object.defensive;
 
-import fr.campusetfocus.equipment.DefensiveEquipment;
+import fr.campusetfocus.object.DefensiveEquipment;
 
 public class Helmet extends DefensiveEquipment {
     public Helmet() {

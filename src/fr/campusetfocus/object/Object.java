@@ -1,10 +1,10 @@
-package fr.campusetfocus.equipment;
+package fr.campusetfocus.object;
 
-public abstract class Equipment {
+public abstract class Object {
     protected String name;
     protected String description;
 
-    public Equipment(String name, String description) {
+    public Object(String name, String description) {
         this.name = name;
         this.description = description;
     }

@@ -1,6 +1,6 @@
-package fr.campusetfocus.equipment;
+package fr.campusetfocus.object;
 
-public abstract class DefensiveEquipment extends Equipment {
+public abstract class DefensiveEquipment extends Object {
     protected int defenseBonus;
 
     public DefensiveEquipment(String name, String description, int defenseBonus){

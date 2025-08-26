@@ -1,9 +1,9 @@
 package fr.campusetfocus.surprise;
-import fr.campusetfocus.equipment.DefensiveEquipment;
-import fr.campusetfocus.equipment.OffensiveEquipment;
-import fr.campusetfocus.equipment.defensive.DefensiveFactory;
-import fr.campusetfocus.equipment.offensive.OffensiveFactory;
-import fr.campusetfocus.potion.Potion;
+import fr.campusetfocus.object.DefensiveEquipment;
+import fr.campusetfocus.object.OffensiveEquipment;
+import fr.campusetfocus.object.defensive.DefensiveFactory;
+import fr.campusetfocus.object.offensive.OffensiveFactory;
+import fr.campusetfocus.object.Potion;
 import java.util.Random;
 
 public class Surprise {

@@ -1,5 +1,5 @@
-package fr.campusetfocus.equipment.offensive;
-import fr.campusetfocus.equipment.OffensiveEquipment;
+package fr.campusetfocus.object.offensive;
+import fr.campusetfocus.object.OffensiveEquipment;
 
 public class Sword extends OffensiveEquipment {
     public Sword() {

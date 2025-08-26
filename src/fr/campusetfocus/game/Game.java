@@ -1,11 +1,11 @@
 package fr.campusetfocus.game;
 import fr.campusetfocus.being.character.Magus;
 import fr.campusetfocus.being.character.Warrior;
-import fr.campusetfocus.equipment.DefensiveEquipment;
-import fr.campusetfocus.equipment.OffensiveEquipment;
+import fr.campusetfocus.object.DefensiveEquipment;
+import fr.campusetfocus.object.OffensiveEquipment;
 import fr.campusetfocus.menu.Menu;
 import fr.campusetfocus.being.Character;
-import fr.campusetfocus.potion.Potion;
+import fr.campusetfocus.object.Potion;
 import fr.campusetfocus.surprise.Surprise;
 
 
