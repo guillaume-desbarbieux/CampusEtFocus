@@ -1,8 +1,6 @@
 package fr.campusetfocus.equipment.offensive;
 
 import fr.campusetfocus.equipment.OffensiveEquipment;
-import fr.campusetfocus.equipment.defensive.Helmet;
-import fr.campusetfocus.equipment.defensive.Shield;
 
 import java.util.List;
 import java.util.Random;

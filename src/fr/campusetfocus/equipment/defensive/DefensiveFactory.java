@@ -4,7 +4,6 @@ import fr.campusetfocus.equipment.DefensiveEquipment;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class DefensiveFactory {
