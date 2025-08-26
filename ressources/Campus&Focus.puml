@@ -1,0 +1,211 @@
+@startuml
+
+class Main {
+}
+
+class OffensiveEquipment {
+    - name : String
+    - type : OffensiveEquipmentType
+    - description : String
+    - bonusAttack : int
+--
+    + toString() : String
+    + getName() : String
+    + setName() : void
+    + getType() : OffensiveEquipmentType
+    + setType(type : OffensiveEquipmentType) : void
+    + getDescription() : String
+    + setDescription() : void
+    + getBonusAttack() : int
+    + setBonusAttack() : void
+    + random() : OffensiveEquipmentType
+}
+
+class DefensiveEquipment {
+    - name : String
+    - type : DefensiveEquipmentType
+    - description : String
+    - bonusDefense : int
+--
+    + toString() : String
+    + getName() : String
+    + setName() : void
+    + getType() : DefensiveEquipmentType
+    + setType(type : DefensiveEquipmentType) : void
+    + getDescription() : String
+    + setDescription() : void
+    + getBonusDefense() : int
+    + setBonusDefense() : void
+    + random() : DefensiveEquipmentType
+}
+
+class Character {
+    - name : String
+    - type : CharacterType
+    - life : int
+    - attack : int
+    - position : int
+--
+    + toString() : String
+    + getName() : String
+    + setName(name : String) : void
+    + getType() : CharacterType
+    + setType(type : CharacterType) : void
+    + getLife() : int
+    + setLife() : void
+    + getAttack() : int
+    + setAttack() : void
+    + getOffensiveEquipments() : List<OffensiveEquipment>
+    + setOffensiveEquipments(offensiveEquipments : List<OffensiveEquipment>) : void
+    + getDefensiveEquipments() : List<DefensiveEquipment>
+    + setDefensiveEquipments(defensiveEquipments : List<DefensiveEquipment>) : void
+    + getPosition() : int
+    + setPosition(position : int) : void
+    + changeLife(bonus : int) : void
+    + changeAttack(bonus : int ) : void
+    + addOffensiveEquipment(offensiveEquipment : OffensiveEquipment) : void
+    + addDefensiveEquipment(defensiveEquipment : DefensiveEquipment) : void
+    + removeOffensiveEquipment(offensiveEquipment : OffensiveEquipment) : void
+    + removeDefensiveEquipment(defensiveEquipment : DefensiveEquipment) : void
+}
+
+class Enemy {
+    - life : int
+    - attack : int
+    - position : int
+--
+    + toString() : String
+    + getType() : EnemyType
+    + setType(type : EnemyType) : void
+    + getLife() : int
+    + setLife() : void
+    + getAttack() : int
+    + setAttack() : void
+    + getPosition() : int
+    + setPosition(position : int) : void
+    + random() : EnemyType
+}
+
+class Surprise {
+    - position : int
+    - type : SurpriseType
+    - offensiveEquipment : OffensiveEquipment
+    - defensiveEquipment : DefensiveEquipment
+    - potion : Potion
+--
+    + setPosition(position : int) : void
+    + getPosition() : int
+    + getType() : SurpriseType
+    + setOffensiveEquipment(offensiveEquipment : OffensiveEquipment) : void
+    + getOffensiveEquipment() : OffensiveEquipment
+    + setDefensiveEquipment(defensiveEquipment : DefensiveEquipment) : void
+    + getDefensiveEquipment() : DefensiveEquipment
+    + setPotion(potion : Potion) : void
+    + getPotion() : Potion
+    + random() : SurpriseType
+    + getContent() : Object
+    + toString() : String
+}
+
+class Menu {
+}
+
+class Potion {
+    - name : String
+    - type : PotionType
+    - description : String
+    - bonusLife : int
+--
+    + toString() : String
+    + getName() : String
+    + setName() : void
+    + getType() : PotionType
+    + setType(type : PotionType) : void
+    + getDescription() : String
+    + setDescription() : void
+    + getBonusLife() : int
+    + setBonusLife() : void
+    + random() : PotionType
+}
+
+class Cell {
+    - position : int
+    - type : CellType
+    - enemy : Enemy
+    - surprise : Surprise
+--
+    + getPosition() : int
+    + setPosition(position : int) : void
+    + getType() : CellType
+    + setType(type : CellType) : void
+    + getEnemy() : Enemy
+    + setEnemy(enemy : Enemy) : void
+    + getSurprise() : Surprise
+    + setSurprise(surprise : Surprise) : void
+    + getContent() : Object
+    + toString() : String
+}
+
+class Dice {
+    - value : int
+--
+    + roll() : int
+    + getValue() : int
+}
+
+class Game {
+    - board : Board
+    - player : Character
+    - dice : Dice
+    - menu : Menu
+--
+    + toString() : String
+    + getBoard() : Board
+    + getPlayer() : Character
+    + setPlayer(player : Character) : void
+    + getDice() : Dice
+    + getMenu() : Menu
+    + welcome() : void
+    + displayBoard() : void
+    + createPlayer() : void
+    + managePlayer() : void
+    + quit() : void
+    + start() : void
+    + playTurn() : void
+    + playCell() : void
+    + cellEnemy() : void
+    + cellSurprise() : void
+    + cellEmpty() : void
+    + endTurn() : void
+    + playingMenu() : void
+    + inventory() : void
+    + fight() : void
+    + flee() : void
+    + leaveSurprise() : void
+    + openSurprise() : void
+    + usePotion(potion : Potion) : void
+    + getDefensive(defensiveEquipment : DefensiveEquipment) : void
+    + getOffensive(offensiveEquipment : OffensiveEquipment) : void
+    + emptyCell() : void
+    + end() : void
+}
+
+class Board {
+    - cells : Cell[]
+--
+    + getSize() : int
+    + getCell(position : int) : Cell
+}
+
+' Relations
+Surprise --> OffensiveEquipment
+Surprise --> DefensiveEquipment
+Surprise --> Potion
+Cell --> Enemy
+Cell --> Surprise
+Game --> Board
+Game --> Character
+Game --> Dice
+Game --> Menu
+Board --> Cell
+@enduml
