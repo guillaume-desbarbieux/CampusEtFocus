@@ -132,7 +132,7 @@ class Cell {
     - position : int
     - type : CellType
     - enemy : Enemy
-    - surprise : Surprise
+    - gameObject : Surprise
 --
     + getPosition() : int
     + setPosition(position : int) : void
@@ -141,7 +141,7 @@ class Cell {
     + getEnemy() : Enemy
     + setEnemy(enemy : Enemy) : void
     + getSurprise() : Surprise
-    + setSurprise(surprise : Surprise) : void
+    + setSurprise(gameObject : Surprise) : void
     + getContent() : Object
     + toString() : String
 }

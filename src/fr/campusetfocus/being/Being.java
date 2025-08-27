@@ -58,10 +58,10 @@ public abstract class Being {
         if (position < 0 || position > 64) {
             throw new PlayerPositionException("Le joueur ne peut pas être en dehors du plateau.");
         }
-                this.position = position;
+        this.position = position;
     }
 
-    public void setSafePosition (int position){
+    public void setSafePosition(int position) {
         try {
             setPosition(position);
         } catch (PlayerPositionException e) {
@@ -72,6 +72,6 @@ public abstract class Being {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[name=" + name + ", vie=" + life + ", attaque=" + attack + ",  défense="  + defence + "]";
+        return getClass().getSimpleName() + "[name=" + name + ", vie=" + life + ", attaque=" + attack + ",  défense=" + defence + "]";
     }
 }

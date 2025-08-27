@@ -3,6 +3,11 @@ import java.util.Scanner;
 
 public class Menu {
     private static Scanner scanner = new Scanner(System.in);
+    public static final String GREEN = "\u001B[32m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String RED = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
 
     private Menu() {}
 
@@ -23,12 +28,10 @@ public class Menu {
 
     public static void displayError(String error){
         String border = "!".repeat(error.length() + 4);
-        String red = "\u001B[31m";   // Rouge
-        String reset = "\u001B[0m";  // Reset couleur
 
-        display(red + "!!!" + border + "!!!" + reset);
-        display(red + "!!   " + error + "   !!" + reset);
-        display(red + "!!!" + border + "!!!" + reset);
+        display(RED + "!!!" + border + "!!!" + RESET);
+        display(RED + "!!   " + error + "   !!" + RESET);
+        display(RED + "!!!" + border + "!!!" + RESET);
     }
 
 

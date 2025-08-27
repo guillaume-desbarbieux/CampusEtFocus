@@ -1,12 +1,12 @@
 package fr.campusetfocus.game;
 import fr.campusetfocus.being.character.Magus;
 import fr.campusetfocus.being.character.Warrior;
+import fr.campusetfocus.gameobject.GameObject;
 import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.defensive.Potion;
 import fr.campusetfocus.menu.Menu;
 import fr.campusetfocus.being.Character;
-import fr.campusetfocus.surprise.Surprise;
 
 
 /**
@@ -171,12 +171,6 @@ public class Game {
         this.board.displayBoard(player.getPosition());
 
         Cell currentCell = this.board.getCell(player.getPosition());
-        switch (currentCell.getType()) {
-            case ENEMY -> this.cellEnemy();
-            case SURPRISE -> this.cellSurprise();
-            case EMPTY -> this.cellEmpty();
-            case END ->  this.end();
-        }
     }
 
     public void cellEnemy() {
@@ -198,7 +192,7 @@ public class Game {
     }
 
     public void cellSurprise() {
-        int choice = Menu.getChoice("Une surprise apparaît !", new String[] {"Afficher le Menu", "Ouvrir la surprise", "Renoncer à la surprise"});
+        int choice = Menu.getChoice("Une gameObject apparaît !", new String[] {"Afficher le Menu", "Ouvrir la gameObject", "Renoncer à la gameObject"});
         switch (choice) {
             case 1:
                 this.playingMenu();
@@ -275,17 +269,17 @@ public class Game {
     }
 
     public void leaveSurprise() {
-        Menu.display("Prudence est mère de sûreté, vous choisissez d'ignorer cette surprise.");
+        Menu.display("Prudence est mère de sûreté, vous choisissez d'ignorer cette gameObject.");
         this.endTurn();
     }
 
     public void openSurprise() {
         Cell currentCell = this.board.getCell(player.getPosition());
-        Surprise surprise = currentCell.getSurprise();
-        Menu.display(surprise.toString());
-        switch (surprise.getType()) {
-            case DEFENSIVE -> this.getDefensive(surprise.getDefensiveEquipment());
-            case OFFENSIVE -> this.getOffensive(surprise.getOffensiveEquipment());
+        GameObject gameObject = currentCell.getSurprise();
+        Menu.display(gameObject.toString());
+        switch (gameObject.getType()) {
+            case DEFENSIVE -> this.getDefensive(gameObject.getDefensiveEquipment());
+            case OFFENSIVE -> this.getOffensive(gameObject.getOffensiveEquipment());
         }
     }
 

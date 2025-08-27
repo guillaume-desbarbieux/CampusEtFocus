@@ -1,5 +1,11 @@
 package fr.campusetfocus.game;
 
+import fr.campusetfocus.being.Enemy;
+import fr.campusetfocus.being.enemy.EnemyFactory;
+import fr.campusetfocus.game.cell.EmptyCell;
+import fr.campusetfocus.game.cell.EnemyCell;
+import fr.campusetfocus.game.cell.SurpriseCell;
+import fr.campusetfocus.gameobject.equipment.EquipmentFactory;
 import fr.campusetfocus.menu.Menu;
 
 public class Board {
@@ -7,16 +13,14 @@ public class Board {
 
     public Board() {
         this.cells = new Cell[65];
-        cells[1] = new Cell (1, Cell.CellType.START);
-        cells[cells.length -1] =  new Cell (cells.length -1, Cell.CellType.END);
 
-        for (int i = 2; i < this.cells.length -1; i++) {
+        for (int i = 1; i < this.cells.length -1; i++) {
             if (i % 10 == 0) {
-                cells[i] = new Cell(i, Cell.CellType.ENEMY);
+                cells[i] = new EnemyCell(i, EnemyFactory.createRandomEnemy(i));
             } else if (i % 4 == 0) {
-                cells[i] = new Cell(i, Cell.CellType.SURPRISE);
+                cells[i] = new SurpriseCell(i, EquipmentFactory.createRandomEquipment());
             } else {
-                cells[i] = new Cell(i, Cell.CellType.EMPTY);
+                cells[i] = new EmptyCell(i);
             }
         }
     }
