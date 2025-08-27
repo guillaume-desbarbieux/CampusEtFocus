@@ -1,11 +1,11 @@
 package fr.campusetfocus.game;
 import fr.campusetfocus.being.character.Magus;
 import fr.campusetfocus.being.character.Warrior;
-import fr.campusetfocus.object.DefensiveEquipment;
-import fr.campusetfocus.object.OffensiveEquipment;
+import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
+import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
+import fr.campusetfocus.gameobject.equipment.defensive.Potion;
 import fr.campusetfocus.menu.Menu;
 import fr.campusetfocus.being.Character;
-import fr.campusetfocus.object.Potion;
 import fr.campusetfocus.surprise.Surprise;
 
 
@@ -42,13 +42,9 @@ public class Game {
 
     public void welcome() {
 
-        Menu.display("""
-                === === === === === === === === ===
-                === Bienvenu sur Campus & Focus ===
-                === === === === === === === === ===
-                """);
-
-        int choice = Menu.getChoice("=== === Menu principal === ===", new String[]{"Nouvelle Partie", "Gestion du personnage", "Afficher le plateau", "Quitter"});
+        Menu.displayTitle("Bienvenu sur Campus & Focus");
+        Menu.displayTitle("Menu Principal");
+        int choice = Menu.getChoice("", new String[]{"Nouvelle Partie", "Gestion du personnage", "Afficher le plateau", "Quitter"});
 
         switch (choice) {
             case 0:
@@ -62,29 +58,22 @@ public class Game {
                 this.managePlayer();
                 break;
             case 3:
-                this.displayBoard();
+                this.board.displayBoard(0);
                 this.welcome();
                 break;
             case 4:
                 this.quit();
                 break;
             default:
-                Menu.display("Erreur inconnue");
+                Menu.displayError("Erreur inconnue");
                 this.welcome();
         }
 
     }
 
-    public void displayBoard() {
-        for  (int i = 1; i <= this.board.getSize(); i++) {
-            Cell cell = this.board.getCell(i);
-            Menu.display(cell.toString());
-        }
-    }
-
     public void createPlayer() {
 
-        Menu.display("=== === Création de votre personnage === ===");
+        Menu.displayTitle("Création de votre personnage");
         int choice = Menu.getChoice("Choisissez le type de votre personnage :", new String[]{"Guerrier", "Magicien"});
         String name = Menu.getString("Entrez le nom de votre personnage :");
 
@@ -96,14 +85,15 @@ public class Game {
                 this.player = new Magus(name);
                 break;
             default:
-                Menu.display("Erreur inconnue");
+                Menu.displayError("Erreur inconnue");
                 this.createPlayer();
         }
         Menu.display("Votre personnage est créé.");
     }
 
     public void managePlayer() {
-        int choice = Menu.getChoice("=== === Menu Personnage === ===", new String[]{"Afficher infos", "Créer/Modifier le personnage", "Retour au menu principal"});
+        Menu.displayTitle("Menu Personnage");
+        int choice = Menu.getChoice("", new String[]{"Afficher infos", "Créer/Modifier le personnage", "Retour au menu principal"});
 
         switch (choice) {
             case 1:
@@ -111,7 +101,7 @@ public class Game {
                 if (player != null) {
                     Menu.display(player.toString());
                 } else {
-                    Menu.display("Vous n'avez pas encore créé de personnage !");
+                    Menu.displayError("Vous n'avez pas encore créé de personnage !");
                 }
                 this.managePlayer();
                 break;
@@ -135,7 +125,7 @@ public class Game {
 
     public void start() {
         if (player == null) {
-            Menu.display("Vous devez créer un personnage !");
+            Menu.displayError("Vous devez créer un personnage !");
             this.managePlayer();
         } else {
             player.setPosition(1);
@@ -163,7 +153,7 @@ public class Game {
     }
 
     public void playCell() {
-        Menu.display("Nouvelle position : case n° " +  player.getPosition() + "/" + board.getSize());
+        this.board.displayBoard(player.getPosition());
 
         Cell currentCell = this.board.getCell(player.getPosition());
         switch (currentCell.getType()) {
@@ -187,7 +177,7 @@ public class Game {
                 this.flee();
                 break;
             default:
-                Menu.display("Erreur inconnue");
+                Menu.displayError("Erreur inconnue");
                 this.cellEnemy();
         }
     }
@@ -205,7 +195,7 @@ public class Game {
                 this.leaveSurprise();
                 break;
             default:
-                Menu.display("Erreur inconnue");
+                Menu.displayError("Erreur inconnue");
                 this.cellEnemy();
         }
     }
@@ -224,7 +214,8 @@ public class Game {
     }
 
     public void playingMenu() {
-        int choice = Menu.getChoice("=== === Menu Pause === ===", new String[] {"Inventaire", "Statistiques du personnage", "Retour au jeu", "Quitter le jeu"});
+        Menu.displayTitle("Menu Pause");
+        int choice = Menu.getChoice("", new String[] {"Inventaire", "Statistiques du personnage", "Retour au jeu", "Quitter le jeu"});
         switch (choice) {
             case 1:
                 this.inventory();
@@ -241,13 +232,13 @@ public class Game {
                 this.quit();
                 break;
             default:
-                Menu.display("Erreur inconnue");
+                Menu.displayError("Erreur inconnue");
                 this.playingMenu();
         }
     }
 
     public void inventory() {
-        Menu.display("Option non disponible pour le moment. En attendant, faites marcher votre mémoire !");
+        Menu.displayError("Option non disponible pour le moment. En attendant, faites marcher votre mémoire !");
     }
 
     public void fight() {
@@ -278,7 +269,6 @@ public class Game {
         Surprise surprise = currentCell.getSurprise();
         Menu.display(surprise.toString());
         switch (surprise.getType()) {
-            case POTION -> this.usePotion(surprise.getPotion());
             case DEFENSIVE -> this.getDefensive(surprise.getDefensiveEquipment());
             case OFFENSIVE -> this.getOffensive(surprise.getOffensiveEquipment());
         }
@@ -286,7 +276,7 @@ public class Game {
 
     public void usePotion(Potion potion) {
         Menu.display(potion.toString());
-        player.changeLife(potion.getBonusLife());
+        player.changeLife(potion.getLifeBonus());
         this.emptyCell();
         this.playCell();
     }

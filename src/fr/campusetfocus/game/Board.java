@@ -1,5 +1,7 @@
 package fr.campusetfocus.game;
 
+import fr.campusetfocus.menu.Menu;
+
 public class Board {
     private Cell[] cells;
 
@@ -25,5 +27,21 @@ public class Board {
 
     public Cell getCell(int position) {
         return this.cells[position];
+    }
+
+    public void displayBoard(int position) {
+        String board = "";
+        String players = "";
+        for  (int i = 1; i <= this.cells.length -1; i++) {
+            String cell = getCell(i).getSymbol();
+            board = board + cell + " ";
+            if (i == position) {
+                players = players + "# ";
+            } else {
+                players = players + "  ";
+            }
+        }
+        Menu.display(board);
+        Menu.display(players);
     }
 }

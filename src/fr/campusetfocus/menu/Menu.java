@@ -14,6 +14,24 @@ public class Menu {
         System.out.println(message);
     }
 
+    public static void displayTitle(String title){
+        String border = "═".repeat(title.length() + 6);
+        display("╔" + border + "╗");
+        display("║   " + title + "   ║");
+        display("╚" + border + "╝");
+    }
+
+    public static void displayError(String error){
+        String border = "!".repeat(error.length() + 4);
+        String red = "\u001B[31m";   // Rouge
+        String reset = "\u001B[0m";  // Reset couleur
+
+        display(red + "!!!" + border + "!!!" + reset);
+        display(red + "!!   " + error + "   !!" + reset);
+        display(red + "!!!" + border + "!!!" + reset);
+    }
+
+
     /**
      * Affiche un message à l'utilisateur et lui demande de faire un choix dans une liste.
      * Les choix sont numérotés à partir de 1 et affichés avec le numéro correspondant.
@@ -23,29 +41,29 @@ public class Menu {
      */
     public static int getChoice(String message, String[] choices){
         if (choices.length == 0){
-            display("Erreur inconnue");
+            displayError("Erreur inconnue");
             return 0;
         }
 
         while (true){
-
             display(message);
-            for (int i = 1; i <= choices.length; i++){
-                display(i + ". " + choices[i-1]);
+
+            for (int i = 1; i <= choices.length; i++) {
+                display("  " + i + " ▸ " + choices[i - 1]);
             }
-            display("-> Choix ?");
+            display("\n→ Choix ?");
 
             int choice = 0;
             try {
                 choice = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                display("Erreur : veuillez entrer un nombre entier valide !");
+                displayError("Veuillez entrer un nombre entier valide !");
             }
 
             if (choice > 0 && choice <= choices.length){
             return choice;
             } else {
-                display("Erreur : veuillez faire un choix valide");
+                displayError("Veuillez faire un choix valide");
             }
         }
     }

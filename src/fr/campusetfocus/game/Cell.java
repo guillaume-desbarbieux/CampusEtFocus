@@ -61,4 +61,19 @@ public class Cell  {
     public  String toString() {
         return "Cell {number=" + this.position + ", type=" + this.type + "}\n Content : \n" + this.getContent().toString();
     }
+
+    public String getSymbol() {
+        String GREEN = "\u001B[32m";
+        String BLUE = "\u001B[34m";
+        String YELLOW = "\u001B[33m";
+        String RED = "\u001B[31m";
+        String RESET = "\u001B[0m";
+        return switch (type) {
+            case START -> GREEN + '>' + RESET;
+            case END -> BLUE + '<' + RESET;
+            case EMPTY -> ".";
+            case SURPRISE -> YELLOW + '?' + RESET;
+            case ENEMY -> RED + 'X' +  RESET;
+        };
+    }
 }
