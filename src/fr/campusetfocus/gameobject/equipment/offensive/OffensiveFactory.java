@@ -1,6 +1,10 @@
-package fr.campusetfocus.object.offensive;
+package fr.campusetfocus.gameobject.equipment.offensive;
 
-import fr.campusetfocus.object.OffensiveEquipment;
+import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
+import fr.campusetfocus.gameobject.equipment.offensive.spell.Fireball;
+import fr.campusetfocus.gameobject.equipment.offensive.spell.Flash;
+import fr.campusetfocus.gameobject.equipment.offensive.weapon.Mace;
+import fr.campusetfocus.gameobject.equipment.offensive.weapon.Sword;
 
 import java.util.List;
 import java.util.Random;

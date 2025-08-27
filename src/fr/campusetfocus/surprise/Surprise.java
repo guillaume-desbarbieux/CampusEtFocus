@@ -1,9 +1,10 @@
 package fr.campusetfocus.surprise;
-import fr.campusetfocus.object.DefensiveEquipment;
-import fr.campusetfocus.object.OffensiveEquipment;
-import fr.campusetfocus.object.defensive.DefensiveFactory;
-import fr.campusetfocus.object.offensive.OffensiveFactory;
-import fr.campusetfocus.object.Potion;
+import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
+import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
+import fr.campusetfocus.gameobject.equipment.defensive.DefensiveFactory;
+import fr.campusetfocus.gameobject.equipment.defensive.Potion;
+import fr.campusetfocus.gameobject.equipment.offensive.OffensiveFactory;
+
 import java.util.Random;
 
 public class Surprise {
@@ -16,8 +17,7 @@ public class Surprise {
 
     public enum SurpriseType {
         OFFENSIVE,
-        DEFENSIVE,
-        POTION
+        DEFENSIVE
     }
 
     public Surprise(SurpriseType type, int position) {
@@ -29,9 +29,6 @@ public class Surprise {
                 break;
             case DEFENSIVE:
                 setDefensiveEquipment(DefensiveFactory.createRandomDefensive());
-                break;
-            case POTION:
-                setPotion(new Potion(Potion.random()));
                 break;
             default:
                 break;
@@ -82,7 +79,6 @@ public class Surprise {
         return switch (type) {
             case OFFENSIVE -> offensiveEquipment;
             case DEFENSIVE -> defensiveEquipment;
-            case POTION -> potion;
         };
     }
     @Override

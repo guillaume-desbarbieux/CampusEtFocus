@@ -1,6 +1,8 @@
-package fr.campusetfocus.object;
+package fr.campusetfocus.gameobject.equipment;
 
-public abstract class OffensiveEquipment extends Object {
+import fr.campusetfocus.gameobject.Equipment;
+
+public abstract class OffensiveEquipment extends Equipment {
     protected int attackBonus;
 
     public OffensiveEquipment(String name, String description, int attackBonus){
