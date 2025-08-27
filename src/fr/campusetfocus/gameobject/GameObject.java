@@ -1,12 +1,14 @@
-package fr.campusetfocus.object;
+package fr.campusetfocus.gameobject;
 
-public abstract class Object {
+public abstract class GameObject {
     protected String name;
     protected String description;
+    protected int durability;
 
-    public Object(String name, String description) {
+    public GameObject(String name, String description) {
         this.name = name;
         this.description = description;
+        this.durability = 100;
     }
 
     public String getName() {
@@ -14,6 +16,14 @@ public abstract class Object {
     }
     public String getDescription() {
         return description;
+    }
+
+    public int getDurability() {
+        return durability;
+    }
+
+    protected void setDurability(int durability) {
+        this.durability = Math.max(0, Math.min(durability, 100));
     }
 
     @Override
