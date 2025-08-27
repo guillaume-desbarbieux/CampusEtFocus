@@ -1,5 +1,8 @@
 package fr.campusetfocus.being;
 
+import fr.campusetfocus.exception.PlayerPositionException;
+import fr.campusetfocus.menu.Menu;
+
 public abstract class Being {
     protected String name;
     protected int life;
@@ -12,7 +15,7 @@ public abstract class Being {
         this.life = life;
         this.attack = attack;
         this.defence = defence;
-        this.position = position;
+        setSafePosition(position);
     }
 
     public String getName() {
@@ -49,8 +52,22 @@ public abstract class Being {
     public int getPosition() {
         return position;
     }
-    public void setPosition(int position) {
-        this.position = position;
+
+
+    public void setPosition(int position) throws PlayerPositionException {
+        if (position < 0 || position > 64) {
+            throw new PlayerPositionException("Le joueur ne peut pas être en dehors du plateau.");
+        }
+                this.position = position;
+    }
+
+    public void setSafePosition (int position){
+        try {
+            setPosition(position);
+        } catch (PlayerPositionException e) {
+            Menu.displayError(e.getMessage());
+            this.position = 1;
+        }
     }
 
     @Override

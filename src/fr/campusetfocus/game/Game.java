@@ -9,6 +9,10 @@ import fr.campusetfocus.being.Character;
 import fr.campusetfocus.surprise.Surprise;
 
 
+/**
+ * The Game class represents the main gameplay logic for a board game. It manages the
+ * game flow, player interactions, and reactions to events on the board.
+ */
 public class Game {
     private Board board;
     private Character player;
@@ -40,6 +44,17 @@ public class Game {
         return dice;
     }
 
+    /**
+     * Displays the main menu of the game and handles user navigation through the options.
+     * The menu provides the following choices:
+     * - Start a new game
+     * - Manage the player character
+     * - Display the game board
+     * - Quit the game
+     *
+     * Based on the user's choice, the method executes the corresponding functionality.
+     * If the user selects an invalid option, an error message is displayed, and the menu is shown again.
+     */
     public void welcome() {
 
         Menu.displayTitle("Bienvenu sur Campus & Focus");
@@ -128,7 +143,7 @@ public class Game {
             Menu.displayError("Vous devez créer un personnage !");
             this.managePlayer();
         } else {
-            player.setPosition(1);
+            player.setSafePosition(1);
             Menu.display("C'est parti !");
             Menu.display("Vous êtes sur la case n°" + player.getPosition() + " d'un plateau de " + this.board.getSize() + " cases.");
 
@@ -147,7 +162,7 @@ public class Game {
             roll = board.getSize() - oldPosition;
         }
 
-        player.setPosition(oldPosition + roll);
+        player.setSafePosition(oldPosition + roll);
         Menu.display("Vous avancez de " + roll + " cases.");
         this.playCell();
     }
@@ -255,7 +270,7 @@ public class Game {
             back = oldPosition - 1;
         }
         Menu.display("Vous battez en retraite et reculez de " + back + " cases.");
-        player.setPosition(oldPosition - back);
+        player.setSafePosition(oldPosition - back);
         this.playCell();
     }
 
