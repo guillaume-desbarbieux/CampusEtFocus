@@ -9,7 +9,7 @@ import fr.campusetfocus.gameobject.equipment.EquipmentFactory;
 import fr.campusetfocus.menu.Menu;
 
 public class Board {
-    private Cell[] cells;
+    private final Cell[] cells;
 
     public Board() {
         this.cells = new Cell[65];

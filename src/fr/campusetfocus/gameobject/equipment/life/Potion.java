@@ -1,6 +1,5 @@
 package fr.campusetfocus.gameobject.equipment.life;
 
-import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.LifeEquipment;
 
 public abstract class Potion extends LifeEquipment {

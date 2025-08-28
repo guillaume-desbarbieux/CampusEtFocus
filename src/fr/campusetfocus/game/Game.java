@@ -19,9 +19,9 @@ import java.util.List;
 
 public class Game {
 
-    private Board board;
+    private final Board board;
     private Character player;
-    private Dice dice;
+    private final Dice dice;
     private int playerPosition;
     private enum STATE { START, PLAYING, END }
     private STATE GameState;
@@ -236,6 +236,7 @@ public class Game {
     }
 
     public void fight (Enemy enemy) {
+        Menu.display(enemy.toString());
         Menu.display("Que le meilleur gagne !");
         Menu.display("Pif ! Aïe ! Boum ! ... ");
         Menu.display("Vous avez gagné !");

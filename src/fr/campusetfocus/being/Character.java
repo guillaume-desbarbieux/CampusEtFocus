@@ -1,9 +1,7 @@
 package fr.campusetfocus.being;
-import fr.campusetfocus.gameobject.Equipment;
 import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.LifeEquipment;
 import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
-import fr.campusetfocus.menu.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
