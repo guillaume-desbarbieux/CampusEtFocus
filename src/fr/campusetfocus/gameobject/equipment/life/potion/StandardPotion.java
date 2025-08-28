@@ -1,6 +1,6 @@
-package fr.campusetfocus.gameobject.equipment.defensive.potion;
+package fr.campusetfocus.gameobject.equipment.life.potion;
 
-import fr.campusetfocus.gameobject.equipment.defensive.Potion;
+import fr.campusetfocus.gameobject.equipment.life.Potion;
 
 public class StandardPotion extends Potion {
     public StandardPotion() {

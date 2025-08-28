@@ -1,21 +1,21 @@
 package fr.campusetfocus.game;
 
-public abstract class Cell  {
-    protected int position;
+public abstract class Cell {
+    protected int number;
+    protected String symbol;
 
-    public Cell(int position) {
-        this.position = position;
-    }
-    public int getPosition() {
-        return position;
+    public Cell(int number) {
+        this.number = number;
     }
 
-    public abstract Object getContent();
-
-    @Override
-    public  String toString() {
-        return getClass().getSimpleName() + " [number=" + this.position + "content=" + getContent().toString() + "]";
+    public int getNumber() {
+        return number;
     }
 
-    public abstract String getSymbol();
+    public String getSymbol() {
+        return symbol;
     }
+
+    public abstract void interact(Game game);
+    public abstract void empty();
+}

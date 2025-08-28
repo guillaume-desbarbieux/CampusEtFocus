@@ -13,15 +13,15 @@ import java.util.function.Supplier;
 
 public class OffensiveFactory {
 
-    private static List<Supplier<OffensiveEquipment>> OFFENSIVES = List.of(
+    private static final List<Supplier<OffensiveEquipment>> OFFENSIVE_EQUIPMENTS = List.of(
             Fireball::new,
             Flash::new,
             Mace::new,
             Sword::new
     );
 
-    public static OffensiveEquipment createRandomOffensive() {
-        int rand = new Random().nextInt(OFFENSIVES.size());
-        return OFFENSIVES.get(rand).get();
+    public static OffensiveEquipment createRandom() {
+        int rand = new Random().nextInt(OFFENSIVE_EQUIPMENTS.size());
+        return OFFENSIVE_EQUIPMENTS.get(rand).get();
     }
 }

@@ -1,8 +1,6 @@
 package fr.campusetfocus.gameobject.equipment.defensive;
 
 import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
-import fr.campusetfocus.gameobject.equipment.defensive.potion.BigPotion;
-import fr.campusetfocus.gameobject.equipment.defensive.potion.StandardPotion;
 import fr.campusetfocus.gameobject.equipment.defensive.shield.BigShield;
 import fr.campusetfocus.gameobject.equipment.defensive.shield.StandardShield;
 
@@ -12,15 +10,13 @@ import java.util.function.Supplier;
 
 public class DefensiveFactory {
 
-    private static List<Supplier<DefensiveEquipment>> DEFENSIVES = List.of(
-            BigPotion::new,
-            StandardPotion::new,
+    private static final List<Supplier<DefensiveEquipment>> DEFENSIVE_EQUIPMENTS = List.of(
             BigShield::new,
             StandardShield::new
     );
 
-    public static DefensiveEquipment createRandomDefensive() {
-        int rand = new Random().nextInt(DEFENSIVES.size());
-        return DEFENSIVES.get(rand).get();
+    public static DefensiveEquipment createRandom() {
+        int rand = new Random().nextInt(DEFENSIVE_EQUIPMENTS.size());
+        return DEFENSIVE_EQUIPMENTS.get(rand).get();
     }
 }

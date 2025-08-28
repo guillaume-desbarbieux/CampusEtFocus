@@ -7,15 +7,13 @@ public abstract class Being {
     protected String name;
     protected int life;
     protected int attack;
-    protected int defence;
-    protected int position;
+    protected int defense;
 
-    public Being(String name, int life, int attack, int defence, int position) {
+    public Being(String name, int life, int attack, int defense) {
         this.name = name;
         this.life = life;
         this.attack = attack;
-        this.defence = defence;
-        setSafePosition(position);
+        this.defense = defense;
     }
 
     public String getName() {
@@ -40,38 +38,17 @@ public abstract class Being {
         if (attack < 1) attack = 1;
     }
 
-    public int getDefence() {
-        return defence;
+    public int getDefense() {
+        return defense;
     }
 
-    public void changeDefence(int delta) {
-        this.defence += delta;
-        if (defence < 0) defence = 0;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-
-    public void setPosition(int position) throws PlayerPositionException {
-        if (position < 0 || position > 64) {
-            throw new PlayerPositionException("Le joueur ne peut pas être en dehors du plateau.");
-        }
-        this.position = position;
-    }
-
-    public void setSafePosition(int position) {
-        try {
-            setPosition(position);
-        } catch (PlayerPositionException e) {
-            Menu.displayError(e.getMessage());
-            this.position = 1;
-        }
+    public void changeDefense(int delta) {
+        this.defense += delta;
+        if (defense < 0) defense = 0;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[name=" + name + ", vie=" + life + ", attaque=" + attack + ",  défense=" + defence + "]";
+        return getClass().getSimpleName() + "[name=" + name + ", vie=" + life + ", attaque=" + attack + ",  défense=" + defense + "]";
     }
 }

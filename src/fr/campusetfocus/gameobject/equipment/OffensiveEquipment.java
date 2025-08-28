@@ -1,5 +1,6 @@
 package fr.campusetfocus.gameobject.equipment;
 
+import fr.campusetfocus.being.Character;
 import fr.campusetfocus.gameobject.Equipment;
 
 public abstract class OffensiveEquipment extends Equipment {
@@ -12,5 +13,20 @@ public abstract class OffensiveEquipment extends Equipment {
 
     public int getAttackBonus() {
         return attackBonus;
+    }
+
+    @Override
+    public void applyTo(Character player){
+        player.addOffensiveEquipment(this);
+    }
+
+    @Override
+    public void removeFrom(Character player){
+        player.removeOffensiveEquipment(this);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "[attack bonus=" + attackBonus + "]";
     }
 }
