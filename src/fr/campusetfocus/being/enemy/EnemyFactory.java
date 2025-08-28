@@ -3,7 +3,6 @@ package fr.campusetfocus.being.enemy;
 import fr.campusetfocus.being.Enemy;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EnemyFactory {
@@ -14,7 +13,7 @@ public class EnemyFactory {
             Dragon::new
     );
 
-    public static Enemy createRandomEnemy(int position) {
+    public static Enemy createRandomEnemy() {
         int rand = new Random().nextInt(ENEMIES.size());
         return ENEMIES.get(rand).get();
     }

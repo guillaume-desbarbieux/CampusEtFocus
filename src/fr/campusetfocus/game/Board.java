@@ -16,7 +16,7 @@ public class Board {
 
         for (int i = 1; i < this.cells.length ; i++) {
             if (i % 10 == 0) {
-                cells[i] = new EnemyCell(i, EnemyFactory.createRandomEnemy(i));
+                cells[i] = new EnemyCell(i, EnemyFactory.createRandomEnemy());
             } else if (i % 4 == 0) {
                 cells[i] = new SurpriseCell(i, EquipmentFactory.createRandomEquipment());
             } else {

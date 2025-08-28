@@ -55,7 +55,7 @@ public class Game {
      * - Manage the player character
      * - Display the game board
      * - Quit the game
-     *
+
      * Based on the user's choice, the method executes the corresponding functionality.
      */
     public void home() {
