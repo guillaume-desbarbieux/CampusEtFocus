@@ -1,4 +1,5 @@
 package fr.campusetfocus.game;
+import fr.campusetfocus.being.Being;
 import fr.campusetfocus.being.Enemy;
 import fr.campusetfocus.being.character.Magus;
 import fr.campusetfocus.being.character.Warrior;
@@ -23,14 +24,11 @@ public class Game {
     private Character player;
     private final Dice dice;
     private int playerPosition;
-    private enum STATE { START, PLAYING, END }
-    private STATE GameState;
 
     public Game() {
         board = new Board();
         dice = new Dice();
         playerPosition = 1;
-        GameState = STATE.START;
     }
 
     private void setPlayerPosition(int playerPosition) throws PlayerPositionException {
@@ -109,7 +107,6 @@ public class Game {
     public void quit() {
         Menu.display("A bientôt");
         Menu.display("Merci d'avoir joué !");
-        GameState = STATE.END;
     }
 
     public void start() {
@@ -119,14 +116,12 @@ public class Game {
         }
         playerPosition = 1;
 
-        GameState = STATE.PLAYING;
         Menu.display("C'est parti !");
         board.displayBoard(playerPosition);
 
-        while (GameState == STATE.PLAYING) {
+        while (true) {
             playTurn();
         }
-        endGame();
     }
 
     public void playTurn() {
@@ -161,7 +156,7 @@ public class Game {
                 this.playingMenu();
                 break;
             case 3:
-                Menu.display("Retour au jeu !");
+                Menu.displayWarning("Retour au jeu !");
                 break;
             case 4:
                 this.quit();
@@ -176,7 +171,7 @@ public class Game {
         List<LifeEquipment> lifeEquipments = player.getLifeEquipments();
 
         if (offensiveEquipments.isEmpty() && defensiveEquipments.isEmpty() && lifeEquipments.isEmpty()) {
-            Menu.display("Votre inventaire est vide.");
+            Menu.displayWarning("Votre inventaire est vide.");
         } else {
             if (!offensiveEquipments.isEmpty()) {
                 Menu.display("Equipement offensif :");
@@ -217,7 +212,7 @@ public class Game {
     public void useLifeEquipment() {
 
         if (player.getLifeEquipments().isEmpty()) {
-            Menu.display("Vous n’avez aucun équipement de vie à utiliser.");
+            Menu.displayWarning("Vous n’avez aucun équipement de vie à utiliser.");
             return;
         }
 
@@ -248,8 +243,7 @@ public class Game {
     }
 
     public void endGame() {
-        Menu.display("Bravo ! Vous avez gagné.");
-        GameState = STATE.START;
+        Menu.displaySuccess("Bravo ! Vous avez gagné.");
         this.home();
     }
 
@@ -259,11 +253,54 @@ public class Game {
     }
 
     public void fight (Enemy enemy) {
-        Menu.display(enemy.toString());
-        Menu.display("Que le meilleur gagne !");
-        Menu.display("Pif ! Aïe ! Boum ! ... ");
-        Menu.display("Vous avez gagné !");
-        board.getCell(playerPosition).empty();
+        Menu.displayTitle("Combat");
+        int blow = attack(player, enemy);
+        if (blow == 0) {
+            Menu.display("Votre attaque est trop faible pour atteindre l'ennemi.");
+        } else {
+            Menu.display("Vous infligez " + blow + " dégâts à l'ennemi.");
+            Menu.display("Il lui reste " + enemy.getLife() + " points de vie.");
+        }
+        if (enemy.getLife() <= 0) {
+            Menu.displaySuccess("L'ennemi est mort ! Vous gagnez le combat !");
+            board.getCell(playerPosition).empty();
+            return;
+        }
+
+        blow = attack(enemy, player);
+        if (blow == 0) {
+                Menu.display("L'ennemi est trop faible pour vous atteindre.");
+        } else {
+                Menu.display("L'ennemi vous inflige" + blow + " dégâts.");
+                Menu.display("Il vous reste " + player.getLife() + " points de vie.");
+        }
+        if (player.getLife() <= 0) this.dead();
+
+        int choice = Menu.getChoice("Que voulez-vous faire ?", new String[]{"Continuer le combat", "Fuir"});
+        switch (choice) {
+            case 1 -> fight(enemy);
+            case 2 -> flee();
+        }
+    }
+
+    /**
+     * Executes an attack action between two beings, where the attacker tries to inflict damage
+     * to the defender based on their attack and defense attributes. If the attacker's attack
+     * is greater than the defender's defense, the defender's life is reduced, and the method
+     * returns the damage dealt. If the attacker's attack is not greater than the defender's
+     * defense, no damage is dealt, and the method returns 0.
+     *
+     * @param attacker the Being initiating the attack
+     * @param defender the Being defending against the attack
+     * @return the amount of damage dealt by the attacker to the defender, or 0 if no damage is dealt
+     */
+    public int attack(Being attacker, Being defender) {
+        int attack = attacker.getAttack();
+        int defense = defender.getDefense();
+        if (attack > defense) {
+            defender.changeLife(defense-attack);
+            return attack-defense;
+        } else return 0;
     }
 
     public void flee () {
@@ -274,5 +311,10 @@ public class Game {
         Menu.display("Vous battez en retraite et reculez de " + move + " case" + (move > 1 ? "s" : "") + ".");
         movePlayer(move);
         board.displayBoard(playerPosition);
+        }
+
+    public void dead () {
+        Menu.displayTitle("Vous êtes mort !");
+        this.quit();
         }
 }

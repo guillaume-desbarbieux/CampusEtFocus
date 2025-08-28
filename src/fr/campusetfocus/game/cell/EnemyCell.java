@@ -29,7 +29,7 @@ public class EnemyCell extends Cell {
     }
 
     private void interactWithEnemy(Game game) {
-        Menu.display("Vous vous retrouvez face à un ennemi !");
+        Menu.display("Vous vous retrouvez face à un " + enemy.getName() + " !");
 
         int choice = Menu.getChoice("Que souhaitez vous faire ?", new String[]{"Combattre", "Fuir"});
         switch (choice) {

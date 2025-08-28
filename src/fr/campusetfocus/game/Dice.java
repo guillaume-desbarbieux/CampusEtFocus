@@ -8,7 +8,8 @@ public class Dice {
     }
 
     public int roll() {
-        this.value = (int) (Math.random() * 6) + 1;
+        //this.value = (int) (Math.random() * 6) + 1;
+        this.value = 1; // pour le test
         return this.value;
     }
 

@@ -2,7 +2,7 @@ package fr.campusetfocus.menu;
 import java.util.Scanner;
 
 public class Menu {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
     public static final String GREEN = "\u001B[32m";
     public static final String BLUE = "\u001B[34m";
     public static final String YELLOW = "\u001B[33m";
@@ -21,9 +21,9 @@ public class Menu {
 
     public static void displayTitle(String title){
         String border = "═".repeat(title.length() + 6);
-        display("╔" + border + "╗");
-        display("║   " + title + "   ║");
-        display("╚" + border + "╝");
+        display(BLUE + "╔" + border + "╗" + RESET);
+        display(BLUE + "║   " + title + "   ║" + RESET);
+        display(BLUE + "╚" + border + "╝" + RESET);
     }
 
     public static void displayError(String error){
@@ -32,6 +32,20 @@ public class Menu {
         display(RED + "!!!" + border + "!!!" + RESET);
         display(RED + "!!   " + error + "   !!" + RESET);
         display(RED + "!!!" + border + "!!!" + RESET);
+    }
+
+    public static void displaySuccess(String success){
+        String border = "✓".repeat(success.length() + 4);
+        display(GREEN + "✓✓✓" + border + "✓✓✓" + RESET);
+        display(GREEN + "✓   " + success + "   ✓" + RESET);
+        display(GREEN + "✓✓✓" + border + "✓✓✓" + RESET);
+    }
+
+    public static void displayWarning(String warning){
+        String border = "⚠".repeat(warning.length() + 4);
+        display(YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
+        display(YELLOW + "⚠   " + warning + "   ⚠" + RESET);
+        display(YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
     }
 
 
@@ -44,7 +58,7 @@ public class Menu {
      */
     public static int getChoice(String message, String[] choices){
         if (choices.length == 0){
-            displayError("Erreur inconnue");
+            displayError("Aucun choix disponible");
             return 0;
         }
 
@@ -58,7 +72,7 @@ public class Menu {
 
             int choice = 0;
             try {
-                choice = Integer.parseInt(scanner.nextLine());
+                choice = Integer.parseInt(SCANNER.nextLine());
             } catch (NumberFormatException e) {
                 displayError("Veuillez entrer un nombre entier valide !");
             }
@@ -78,7 +92,7 @@ public class Menu {
      */
     public static String getString(String message){
         display(message);
-        return scanner.nextLine();
+        return SCANNER.nextLine();
     }
 
     /**
@@ -88,6 +102,6 @@ public class Menu {
      */
     public static int getInt(String message){
         display(message);
-        return Integer.parseInt(scanner.nextLine());
+        return Integer.parseInt(SCANNER.nextLine());
     }
 }

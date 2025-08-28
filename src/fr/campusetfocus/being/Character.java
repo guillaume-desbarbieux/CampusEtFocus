@@ -43,6 +43,24 @@ public abstract class Character extends Being {
     public void removeLifeEquipment (LifeEquipment equipment) {
         this.lifeEquipments.remove(equipment);
     }
+
+    @Override
+    public int getAttack(){
+        int attackBonus = 0;
+        for (OffensiveEquipment offensiveEquipment : offensiveEquipments) {
+            attackBonus += offensiveEquipment.getAttackBonus();
+        }
+        return attackBonus + attack;
+    }
+    @Override
+    public int getDefense() {
+        int defenseBonus = 0;
+        for (DefensiveEquipment defensiveEquipment : defensiveEquipments) {
+            defenseBonus += defensiveEquipment.getDefenseBonus();
+        }
+        return defenseBonus + defense;
+    }
+
     @Override
     public String toString() {
         return super.toString().replace("type=Inconnu", "type=Personnage");
