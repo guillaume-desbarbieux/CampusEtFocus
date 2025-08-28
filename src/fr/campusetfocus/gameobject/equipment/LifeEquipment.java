@@ -15,6 +15,12 @@ public abstract class LifeEquipment extends Equipment {
         return lifeBonus;
     }
 
+    public int use (Character player) {
+        int oldLife = player.getLife();
+        player.changeLife(lifeBonus);
+        return player.getLife() - oldLife;
+    }
+
     @Override
     public void applyTo(Character player) {
         player.addLifeEquipment(this);

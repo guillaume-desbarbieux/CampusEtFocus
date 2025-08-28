@@ -215,8 +215,31 @@ public class Game {
     }
 
     public void useLifeEquipment() {
+
+        if (player.getLifeEquipments().isEmpty()) {
+            Menu.display("Vous n’avez aucun équipement de vie à utiliser.");
+            return;
+        }
+
         Menu.displayTitle("Utilisation d'un équipement de vie");
-                Menu.displayError("En cours de développement !");
+
+        List<LifeEquipment> lifeEquipments = player.getLifeEquipments();
+        String[] choices = new String[lifeEquipments.size() + 1];
+        for (int i = 0; i < lifeEquipments.size(); i++) {
+            choices[i] = lifeEquipments.get(i).toString();
+        }
+        choices[choices.length-1] = "Annuler";
+
+        int choice = Menu.getChoice("Quel équipement voulez-vous utiliser ?", choices);
+        if (choice <= lifeEquipments.size()) {
+
+            LifeEquipment selected = lifeEquipments.get(choice - 1);
+            int healed = selected.use(player);
+            player.removeLifeEquipment(selected);
+            Menu.display("Vous avez utilisé " + selected.getName() + "et récupéré " + healed + " points de vie.");
+        } else {
+            Menu.display("Action annulée.");
+        }
     }
 
     public void manageInventory() {
