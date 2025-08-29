@@ -1,6 +1,6 @@
 package fr.campusetfocus.gameobject.equipment;
 
-import fr.campusetfocus.being.Character;
+import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.gameobject.Equipment;
 
 public abstract class LifeEquipment extends Equipment {
@@ -15,19 +15,19 @@ public abstract class LifeEquipment extends Equipment {
         return lifeBonus;
     }
 
-    public int use (Character player) {
+    public int use (GameCharacter player) {
         int oldLife = player.getLife();
         player.changeLife(lifeBonus);
         return player.getLife() - oldLife;
     }
 
     @Override
-    public void applyTo(Character player) {
+    public void applyTo(GameCharacter player) {
         player.addLifeEquipment(this);
     }
 
     @Override
-    public void removeFrom(Character player) {
+    public void removeFrom(GameCharacter player) {
         player.removeLifeEquipment(this);
     }
 

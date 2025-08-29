@@ -6,12 +6,12 @@ import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Character extends Being {
+public abstract class GameCharacter extends Being {
     protected List<OffensiveEquipment> offensiveEquipments = new ArrayList<>();
     protected List<DefensiveEquipment> defensiveEquipments =  new ArrayList<>();
     protected List<LifeEquipment> lifeEquipments = new ArrayList<>();
 
-    public Character(String name, int life, int attack, int defense) {
+    public GameCharacter(String name, int life, int attack, int defense) {
         super(name, life, attack,  defense);
     }
 

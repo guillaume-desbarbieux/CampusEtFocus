@@ -1,6 +1,6 @@
 package fr.campusetfocus.gameobject.equipment;
 
-import fr.campusetfocus.being.Character;
+import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.gameobject.Equipment;
 
 public abstract class DefensiveEquipment extends Equipment {
@@ -16,12 +16,12 @@ public abstract class DefensiveEquipment extends Equipment {
     }
 
     @Override
-    public void applyTo(Character player) {
+    public void applyTo(GameCharacter player) {
         player.addDefensiveEquipment(this);
     }
 
     @Override
-    public void removeFrom(Character player) {
+    public void removeFrom(GameCharacter player) {
         player.removeDefensiveEquipment(this);
     }
 
