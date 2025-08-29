@@ -1,21 +1,28 @@
 package fr.campusetfocus.game;
 
+import fr.campusetfocus.game.cell.CellType;
+import fr.campusetfocus.game.interaction.Interaction;
+
 public abstract class Cell {
     protected int number;
-    protected String symbol;
+    protected CellType type;
 
-    public Cell(int number) {
+    public Cell(int number, CellType type) {
         this.number = number;
+        this.type = type;
     }
 
     public int getNumber() {
         return number;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public CellType getType() {
+        return type;
     }
 
-    public abstract void interact(Game game);
-    public abstract void empty();
+    public abstract Interaction interact();
+
+    public void empty() {
+        type = CellType.EMPTY;
+    };
 }

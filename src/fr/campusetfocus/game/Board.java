@@ -1,12 +1,9 @@
 package fr.campusetfocus.game;
 
 
-import fr.campusetfocus.game.cell.EmptyCell;
-import fr.campusetfocus.game.cell.EnemyCell;
-import fr.campusetfocus.game.cell.SurpriseCell;
+import fr.campusetfocus.game.cell.*;
 import fr.campusetfocus.being.enemy.EnemyFactory;
 import fr.campusetfocus.gameobject.equipment.EquipmentFactory;
-import fr.campusetfocus.menu.Menu;
 
 public class Board {
     private final Cell[] cells;
@@ -14,7 +11,9 @@ public class Board {
     public Board() {
         this.cells = new Cell[65];
 
-        for (int i = 1; i < this.cells.length ; i++) {
+        cells[1] = new StartCell(1);
+
+        for (int i = 2; i < cells.length - 1 ; i++) {
             if (i % 10 == 0) {
                 cells[i] = new EnemyCell(i, EnemyFactory.createRandomEnemy());
             } else if (i % 4 == 0) {
@@ -23,6 +22,8 @@ public class Board {
                 cells[i] = new EmptyCell(i);
             }
         }
+
+        cells[cells.length - 1] = new EndCell(cells.length - 1);
     }
 
     public int getSize() {
@@ -35,21 +36,5 @@ public class Board {
 
     public void setCell(int position, Cell cell) {
         this.cells[position] = cell;
-    }
-
-    public void displayBoard(int playerPosition) {
-        String boardString = "";
-        String playerString = "";
-        for  (int i = 1; i <= this.cells.length -1; i++) {
-            String cell = getCell(i).getSymbol();
-            boardString += cell + " ";
-            if (i == playerPosition) {
-                playerString += "# ";
-            } else {
-                playerString += "  ";
-            }
-        }
-        Menu.display(boardString);
-        Menu.display(playerString);
     }
 }

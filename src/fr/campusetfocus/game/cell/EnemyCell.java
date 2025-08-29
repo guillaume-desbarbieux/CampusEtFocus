@@ -1,17 +1,16 @@
 package fr.campusetfocus.game.cell;
 
-import fr.campusetfocus.being.Enemy;
 import fr.campusetfocus.game.Cell;
-import fr.campusetfocus.game.Game;
-import fr.campusetfocus.menu.Menu;
+import fr.campusetfocus.game.interaction.Interaction;
+import fr.campusetfocus.game.interaction.InteractionType;
+import fr.campusetfocus.being.Enemy;
 
 public class EnemyCell extends Cell {
     private Enemy enemy;
 
     public EnemyCell(int position, Enemy enemy) {
-        super(position);
+        super(position, CellType.ENEMY);
         this.enemy = enemy;
-        this.symbol = Menu.RED + "X" + Menu.RESET;
     }
 
     public Enemy getEnemy() {
@@ -19,27 +18,13 @@ public class EnemyCell extends Cell {
     }
 
     @Override
-    public void interact(Game game) {
-        if (enemy == null) interactWithEmpty();
-        else interactWithEnemy(game);
+    public Interaction interact() {
+        return new Interaction(InteractionType.ENEMY, enemy);
     }
 
-    private void interactWithEmpty() {
-        Menu.display("Il n'y a plus d'ennemi ici.");
-    }
-
-    private void interactWithEnemy(Game game) {
-        Menu.display("Vous vous retrouvez face à un " + enemy.getName() + " !");
-
-        int choice = Menu.getChoice("Que souhaitez vous faire ?", new String[]{"Combattre", "Fuir"});
-        switch (choice) {
-            case 1 -> game.fight(enemy);
-            case 2 -> game.flee();
-        }
-    }
     @Override
     public void empty() {
-    enemy = null;
-    symbol = new EmptyCell(0).getSymbol();
+        super.empty();
+        enemy = null;
     }
 }

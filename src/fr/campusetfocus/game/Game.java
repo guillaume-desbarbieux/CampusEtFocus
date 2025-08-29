@@ -1,17 +1,18 @@
 package fr.campusetfocus.game;
+
 import fr.campusetfocus.being.Being;
 import fr.campusetfocus.being.Enemy;
+import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.being.gamecharacter.Cheater;
 import fr.campusetfocus.being.gamecharacter.Magus;
 import fr.campusetfocus.being.gamecharacter.Warrior;
 import fr.campusetfocus.exception.PlayerPositionException;
+import fr.campusetfocus.game.interaction.Interaction;
 import fr.campusetfocus.gameobject.Equipment;
 import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.LifeEquipment;
 import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
 import fr.campusetfocus.menu.Menu;
-import fr.campusetfocus.being.GameCharacter;
-
 import java.util.List;
 
 /**
@@ -20,16 +21,21 @@ import java.util.List;
  */
 
 public class Game {
-
+    private final Menu menu;
     private final Board board;
     private GameCharacter player;
     private final Dice dice;
     private int playerPosition;
 
     public Game() {
+        menu = new Menu();
         board = new Board();
         dice = new Dice();
         playerPosition = 1;
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     /**
@@ -58,7 +64,7 @@ public class Game {
         try {
             setPlayerPosition(playerPosition + move);
         } catch (PlayerPositionException error) {
-            Menu.displayError(error.getMessage());
+            menu.displayError(error.getMessage());
         }
     }
 
@@ -73,20 +79,20 @@ public class Game {
      * En fonction du choix de l'utilisateur, la méthode exécute la fonctionnalité correspondante.
      */
     public void home() {
-        Menu.displayTitle("Bienvenu sur Campus & Focus");
-        Menu.displayTitle("Menu Principal");
-        int choice = Menu.getChoice("", new String[]{"Nouvelle Partie", "Gestion du personnage", "Afficher le plateau", "Quitter", "Cheat Mode"});
+        menu.displayTitle("Bienvenu sur Campus & Focus");
+        menu.displayTitle("Menu Principal");
+        int choice = menu.getChoice("", new String[]{"Nouvelle Partie", "Gestion du personnage", "Afficher le plateau", "Quitter", "Cheat Mode"});
         switch (choice) {
             case 1 -> start();
             case 2 -> managePlayer();
             case 3 -> {
-                board.displayBoard(playerPosition);
+                menu.displayBoard(playerPosition, board);
                 home();
             }
             case 4 -> quit();
             case 5 -> cheatMode();
             default -> {
-                Menu.displayError("Choix invalide !");
+                menu.displayError("Choix invalide !");
                 home();
             }
         }
@@ -98,16 +104,16 @@ public class Game {
      * ou de revenir au menu principal.
      */
     public void cheatMode() {
-        Menu.displayTitle("Cheat Mode - Création d'un cheater personnalisé");
-        String name = Menu.getString("Entrez le nom de votre cheater :");
-        int life = Menu.getInt("Entrez les points de vie :");
-        int attack = Menu.getInt("Entrez les points d'attaque :");
-        int defense = Menu.getInt("Entrez les points de défense :");
+        menu.displayTitle("Cheat Mode - Création d'un cheater personnalisé");
+        String name = menu.getString("Entrez le nom de votre cheater :");
+        int life = menu.getInt("Entrez les points de vie :");
+        int attack = menu.getInt("Entrez les points d'attaque :");
+        int defense = menu.getInt("Entrez les points de défense :");
 
         player = new Cheater(name, life, attack, defense);
 
-        Menu.display("Cheater créé avec succès !");
-        Menu.display(player.toString());
+        menu.display("Cheater créé avec succès !");
+        menu.display(player.toString());
         home();
     }
 
@@ -120,12 +126,12 @@ public class Game {
 
         if (player == null) createPlayer();
 
-        Menu.displayTitle("Menu Personnage");
-        int choice = Menu.getChoice("", new String[]{"Afficher infos", "Modifier le personnage", "Retour au menu principal"});
+        menu.displayTitle("Menu Personnage");
+        int choice = menu.getChoice("", new String[]{"Afficher infos", "Modifier le personnage", "Retour au menu principal"});
 
         switch (choice) {
             case 1:
-                Menu.display(player.toString());
+                menu.display(player.toString());
                 managePlayer();
                 break;
             case 2:
@@ -156,19 +162,19 @@ public class Game {
      * Le personnage est instancié puis ses informations sont affichées.
      */
     public void createPlayer() {
-        Menu.displayTitle("Création de votre personnage");
-        int choice = Menu.getChoice("Choisissez le type de votre personnage :", new String[]{"Guerrier", "Magicien"});
-        String name = Menu.getString("Entrez le nom de votre personnage :");
+        menu.displayTitle("Création de votre personnage");
+        int choice = menu.getChoice("Choisissez le type de votre personnage :", new String[]{"Guerrier", "Magicien"});
+        String name = menu.getString("Entrez le nom de votre personnage :");
         switch (choice) {
             case 1 -> player = new Warrior(name);
             case 2 -> player = new Magus(name);
             default -> {
-                Menu.displayError("Choix invalide !");
+                menu.displayError("Choix invalide !");
                 createPlayer();
             }
         }
-        Menu.display("Votre personnage est créé.");
-        Menu.display(player.toString());
+        menu.display("Votre personnage est créé.");
+        menu.display(player.toString());
     }
 
     /**
@@ -186,8 +192,8 @@ public class Game {
      * Termine l'application via {@code System.exit(0)}.
      */
     public void quit() {
-        Menu.display("A bientôt");
-        Menu.display("Merci d'avoir joué !");
+        menu.display("A bientôt");
+        menu.display("Merci d'avoir joué !");
         System.exit(0);
     }
 
@@ -201,13 +207,13 @@ public class Game {
      */
     public void start() {
         if (player == null) {
-            Menu.displayError("Vous devez créer un personnage !");
+            menu.displayError("Vous devez créer un personnage !");
             this.managePlayer();
         }
         playerPosition = 1;
 
-        Menu.display("C'est parti !");
-        board.displayBoard(playerPosition);
+        menu.display("C'est parti !");
+        menu.displayBoard(playerPosition, board);
 
         while (true) {
             playTurn();
@@ -238,18 +244,27 @@ public class Game {
     public void playTurn() {
         int roll = dice.roll();
         if (player.getClass().equals(Cheater.class)) {
-            roll = dice.cheatRoll();
+            roll = menu.getInt("Entrez le dé de votre dé :");
         }
-        Menu.display("Vous lancez le dé : " + roll);
+        menu.display("Vous lancez le dé : " + roll);
 
         if (playerPosition + roll > board.getSize()) {
             roll = board.getSize() - playerPosition;
         }
         movePlayer(roll);
-        Menu.display("Vous avancez de " + roll + " cases.");
-        board.displayBoard(playerPosition);
-        board.getCell(playerPosition).interact(this);
-        endTurn();
+        menu.display("Vous avancez de " + roll + " cases.");
+        menu.displayBoard(playerPosition, board);
+        Cell cell = board.getCell(playerPosition);
+        Interaction interaction = cell.interact();
+        switch (interaction.getType()) {
+            case NONE -> menu.display("Vous n'avez rien à faire.");
+            case ENEMY -> findEnemy((Enemy) interaction.getObject());
+            case SURPRISE -> findSurprise((Equipment) interaction.getObject());
+            case DISPLAY -> menu.display(interaction.getObject().toString());
+            case END -> endGame();
+            default -> menu.displayError("Interaction inconnue !");
+        }
+               endTurn();
     }
 
     /**
@@ -263,7 +278,7 @@ public class Game {
      * Ouvre le menu si le joueur le choisit.
      */
     public void endTurn() {
-        int choice = Menu.getChoice("Que voulez-vous faire ?", new String[]{"Afficher le Menu", "Continuer"});
+        int choice = menu.getChoice("Que voulez-vous faire ?", new String[]{"Afficher le Menu", "Continuer"});
         if (choice == 1) playingMenu();
     }
 
@@ -276,25 +291,25 @@ public class Game {
      * de reprendre la partie ou de quitter le jeu.
      */
     public void playingMenu() {
-        Menu.displayTitle("Menu Pause");
-        int choice = Menu.getChoice("", new String[] {"Inventaire", "Statistiques du personnage", "Retour au jeu", "Quitter le jeu"});
+        menu.displayTitle("Menu Pause");
+        int choice = menu.getChoice("", new String[] {"Inventaire", "Statistiques du personnage", "Retour au jeu", "Quitter le jeu"});
         switch (choice) {
             case 1:
                 this.displayInventory();
                 this.playingMenu();
                 break;
             case 2:
-                Menu.display(player.toString());
+                menu.display(player.toString());
                 this.playingMenu();
                 break;
             case 3:
-                Menu.displayWarning("Retour au jeu !");
+                menu.displayWarning("Retour au jeu !");
                 break;
             case 4:
                 this.quit();
                 break;
             default:
-                Menu.displayError("Choix invalide !");
+                menu.displayError("Choix invalide !");
                 this.playingMenu();
         }
     }
@@ -313,36 +328,36 @@ public class Game {
      * ou de quitter l'inventaire.
      */
     public void displayInventory() {
-        Menu.displayTitle("Inventaire");
+        menu.displayTitle("Inventaire");
         List<OffensiveEquipment> offensiveEquipments = player.getOffensiveEquipments();
         List<DefensiveEquipment> defensiveEquipments = player.getDefensiveEquipments();
         List<LifeEquipment> lifeEquipments = player.getLifeEquipments();
 
         if (offensiveEquipments.isEmpty() && defensiveEquipments.isEmpty() && lifeEquipments.isEmpty()) {
-            Menu.displayWarning("Votre inventaire est vide.");
+            menu.displayWarning("Votre inventaire est vide.");
         } else {
             if (!offensiveEquipments.isEmpty()) {
-                Menu.display("Equipement offensif :");
+                menu.display("Equipement offensif :");
                 for (OffensiveEquipment equipment : offensiveEquipments) {
-                    Menu.display(equipment.toString());
+                    menu.display(equipment.toString());
                 }
             }
 
             if (!defensiveEquipments.isEmpty()) {
-                Menu.display("Equipement defensif :");
+                menu.display("Equipement défensif :");
                 for (DefensiveEquipment equipment : defensiveEquipments) {
-                    Menu.display(equipment.toString());
+                    menu.display(equipment.toString());
                 }
             }
             if (!lifeEquipments.isEmpty()) {
-                Menu.display("Equipement de vie :");
+                menu.display("Equipement de vie :");
                 for (LifeEquipment equipment : lifeEquipments) {
-                    Menu.display(equipment.toString());
+                    menu.display(equipment.toString());
                 }
             }
         }
 
-        int choice = Menu.getChoice("Que voulez-vous faire ?", new String[]{"Utiliser un équipement de vie", "Jeter un équipement", "Quitter l'inventaire"});
+        int choice = menu.getChoice("Que voulez-vous faire ?", new String[]{"Utiliser un équipement de vie", "Jeter un équipement", "Quitter l'inventaire"});
         switch (choice) {
             case 1 :
                 useLifeEquipment();
@@ -355,7 +370,7 @@ public class Game {
             case 3:
                 break;
             default:
-                Menu.displayError("Choix invalide !");
+                menu.displayError("Choix invalide !");
                 displayInventory();
         }
     }
@@ -379,11 +394,11 @@ public class Game {
     public void useLifeEquipment() {
 
         if (player.getLifeEquipments().isEmpty()) {
-            Menu.displayWarning("Vous n’avez aucun équipement de vie à utiliser.");
+            menu.displayWarning("Vous n’avez aucun équipement de vie à utiliser.");
             return;
         }
 
-        Menu.displayTitle("Utilisation d'un équipement de vie");
+        menu.displayTitle("Utilisation d'un équipement de vie");
 
         List<LifeEquipment> lifeEquipments = player.getLifeEquipments();
         String[] choices = new String[lifeEquipments.size() + 1];
@@ -392,36 +407,36 @@ public class Game {
         }
         choices[choices.length-1] = "Annuler";
 
-        int choice = Menu.getChoice("Quel équipement voulez-vous utiliser ?", choices);
+        int choice = menu.getChoice("Quel équipement voulez-vous utiliser ?", choices);
         if (choice <= lifeEquipments.size()) {
 
             LifeEquipment selected = lifeEquipments.get(choice - 1);
             int healed = selected.use(player);
             player.removeLifeEquipment(selected);
-            Menu.display("Vous avez utilisé " + selected.getName() + "et récupéré " + healed + " points de vie.");
+            menu.display("Vous avez utilisé " + selected.getName() + "et récupéré " + healed + " points de vie.");
         } else {
-            Menu.display("Action annulée.");
+            menu.display("Action annulée.");
         }
     }
 
     /**
      * Affiche le titre "Gestion de l'inventaire" ainsi qu'un message indiquant
      * que cette fonctionnalité est encore en cours de développement.
-     * Utilise {@code Menu.displayTitle()} pour le titre et {@code Menu.displayError()} pour l'information.
+     * Utilise {@code menu.displayTitle()} pour le titre et {@code menu.displayError()} pour l'information.
      */
     public void manageInventory() {
-        Menu.displayTitle("Gestion de l'inventaire");
-        Menu.displayError("En cours de développement !");
+        menu.displayTitle("Gestion de l'inventaire");
+        menu.displayError("En cours de développement !");
     }
 
     /**
      * Termine la partie en affichant un message de victoire,
      * puis renvoie le joueur vers le menu principal.
-     * Utilise {@code Menu.displaySuccess()} pour le message de félicitations,
+     * Utilise {@code menu.displaySuccess()} pour le message de félicitations,
      * puis appelle {@code home()}.
      */
     public void endGame() {
-        Menu.displaySuccess("Bravo ! Vous avez gagné.");
+        menu.displaySuccess("Bravo ! Vous avez gagné.");
         this.home();
     }
 
@@ -432,11 +447,44 @@ public class Game {
      * @param surprise l'équipement représentant la surprise trouvée, dont les effets
      *                 seront appliqués au joueur
      */
+
+    public void findSurprise(Equipment surprise) {
+        if (surprise == null) {
+            menu.display("Il n'y a plus de surprise ici.");
+         } else {
+            menu.display("Vous êtes surpris de trouver une surprise !");
+
+             int choice = menu.getChoice("Que souhaitez vous faire ?", new String[]{"Prendre", "Ignorer"});
+             switch (choice) {
+                 case 1 -> {
+                     menu.display("Vous prenez la surprise !");
+                     openSurprise(surprise);
+                     board.getCell(playerPosition).empty();
+                 }
+                 case 2 -> menu.display("Vous ignorez la surprise.");
+             }
+        }
+
+    }
     public void openSurprise(Equipment surprise) {
-        Menu.display("Vous trouvez" + surprise.toString());
+        menu.display("Vous trouvez" + surprise.toString());
         surprise.applyTo(player);
     }
 
+    public void findEnemy(Enemy enemy) {
+
+        if (enemy == null) {
+            menu.display("Il n'y a plus d'ennemi ici, vous poursuivez votre tour.");
+        } else {
+            menu.display("Vous vous retrouvez face à un " + enemy.getName() + " !");
+
+            int choice = menu.getChoice("Que souhaitez vous faire ?", new String[]{"Combattre", "Fuir"});
+            switch (choice) {
+                case 1 -> fight(enemy);
+                case 2 -> flee();
+            }
+        }
+    }
     /**
      * Gère un tour de combat contre un ennemi.
      * Le joueur attaque d'abord l'ennemi puis, si ce dernier survit, l'ennemi riposte.
@@ -446,35 +494,35 @@ public class Game {
      * @param enemy l'ennemi affronté par le joueur
      */
     public void fight (Enemy enemy) {
-        Menu.displayTitle("Combat");
+        menu.displayTitle("Combat");
         int blow = attack(player, enemy);
         if (blow == 0) {
-            Menu.display("Votre attaque est trop faible pour atteindre l'ennemi.");
+            menu.display("Votre attaque est trop faible pour atteindre l'ennemi.");
         } else {
-            Menu.display("Vous infligez " + blow + " dégâts à l'ennemi.");
-            Menu.display("Il lui reste " + enemy.getLife() + " points de vie.");
+            menu.display("Vous infligez " + blow + " dégâts à l'ennemi.");
+            menu.display("Il lui reste " + enemy.getLife() + " points de vie.");
         }
         if (enemy.getLife() <= 0) {
-            Menu.displaySuccess("L'ennemi est mort ! Vous gagnez le combat !");
+            menu.displaySuccess("L'ennemi est mort ! Vous gagnez le combat !");
             board.getCell(playerPosition).empty();
             return;
         }
 
         blow = attack(enemy, player);
         if (blow == 0) {
-                Menu.display("L'ennemi est trop faible pour vous atteindre.");
+                menu.display("L'ennemi est trop faible pour vous atteindre.");
         } else {
-                Menu.display("L'ennemi vous inflige" + blow + " dégâts.");
-                Menu.display("Il vous reste " + player.getLife() + " points de vie.");
+                menu.display("L'ennemi vous inflige" + blow + " dégâts.");
+                menu.display("Il vous reste " + player.getLife() + " points de vie.");
         }
         if (player.getLife() <= 0) this.dead();
 
-        int choice = Menu.getChoice("Que voulez-vous faire ?", new String[]{"Continuer le combat", "Fuir"});
+        int choice = menu.getChoice("Que voulez-vous faire ?", new String[]{"Continuer le combat", "Fuir"});
         switch (choice) {
             case 1 -> fight(enemy);
             case 2 -> flee();
             default -> {
-                Menu.displayError("Choix invalide, vous poursuivez le combat.");
+                menu.displayError("Choix invalide, vous poursuivez le combat.");
                 fight(enemy);
             }
         }
@@ -508,9 +556,9 @@ public class Game {
         if (playerPosition + move < 1) {
             move = playerPosition - 1;
         }
-        Menu.display("Vous battez en retraite et reculez de " + move + " case" + (move > 1 ? "s" : "") + ".");
+        menu.display("Vous battez en retraite et reculez de " + move + " case" + (move > 1 ? "s" : "") + ".");
         movePlayer(move);
-        board.displayBoard(playerPosition);
+        menu.displayBoard(playerPosition, board);
         }
 
     /**
@@ -518,7 +566,7 @@ public class Game {
      * puis renvoie au menu principal pour recommencer ou quitter.
      */
     public void dead () {
-        Menu.displayTitle("Vous êtes mort !");
+        menu.displayTitle("Vous êtes mort !");
         this.home();
         }
 }

@@ -4,9 +4,9 @@ import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.interaction.Interaction;
 import fr.campusetfocus.game.interaction.InteractionType;
 
-public class EmptyCell extends Cell {
-    public EmptyCell(int position) {
-        super(position, CellType.EMPTY);
+public class StartCell extends Cell {
+    public StartCell(int position) {
+        super(position, CellType.START);
     }
 
     @Override
