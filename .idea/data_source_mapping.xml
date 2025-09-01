@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/970371f8-d853-4fea-91a2-d45b8b139536/console.sql" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+    <file url="file://$PROJECT_DIR$/src/fr/campusetfocus/db/DB.java" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+  </component>
+</project>
