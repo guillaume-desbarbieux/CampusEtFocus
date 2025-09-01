@@ -7,34 +7,16 @@ import fr.campusetfocus.being.gamecharacter.Warrior;
 
 import java.sql.*;
 
-public class DB {
-    static final String DB_URL = "jdbc:mysql://localhost/CampusEtFocus";
-    static final String USER = "root";
-    static final String PASS = "root";
+public class DbCharacter {
+    private final Connection conn;
 
-    public DB () { }
-
-    public static void main(String[] args) {
-       DB database = new DB() ;
-
-       GameCharacter player = new Cheater("Toto", 456, 25, -3);
-       database.createGameCharacter(player);
-
-       GameCharacter player2 = database.getGameCharacter("Toto");
-       player2.changeLife(100);
-       player2.changeAttack(-50);
-       database.editGameCharacter(player2, "Toto");
-       database.displayGameCharacters();
-
-       player2.changeLife(1);
-       database.changeLifePoints(player2);
-       database.displayGameCharacters();
+    public DbCharacter(Connection CONNECTION) {
+    this.conn = CONNECTION;
     }
 
     public void displayGameCharacters() {
         String sql = "SELECT * FROM game_character";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-             PreparedStatement ps = conn.prepareStatement(sql);
+        try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
@@ -50,8 +32,7 @@ public class DB {
     public void createGameCharacter(GameCharacter player) {
         String sql = "INSERT INTO game_character (GameType, Name, LifePoints, Attack, Defense) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, player.getClass().getSimpleName());
             ps.setString(2, player.getName());
@@ -75,8 +56,7 @@ public class DB {
                         "SET GameType= ?, Name= ?, LifePoints= ?, Attack= ?, Defense= ? " +
                         "WHERE Name = ?";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, player.getClass().getSimpleName());
             ps.setString(2, player.getName());
@@ -103,8 +83,7 @@ public class DB {
     public GameCharacter getGameCharacter(String name) {
         String sql = "SELECT * from game_character WHERE Name = ?";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -133,8 +112,7 @@ public class DB {
     public void changeLifePoints(GameCharacter player){
         String sql = "UPDATE game_character SET LifePoints = ? WHERE Name = ?";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, player.getLife());
             ps.setString(2, player.getName());
 
