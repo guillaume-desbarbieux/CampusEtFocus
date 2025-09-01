@@ -16,16 +16,18 @@ public class DB {
 
     public static void main(String[] args) {
        DB database = new DB() ;
-       database.displayGameCharacters();
 
        GameCharacter player = new Cheater("Toto", 456, 25, -3);
        database.createGameCharacter(player);
-       database.displayGameCharacters();
 
        GameCharacter player2 = database.getGameCharacter("Toto");
        player2.changeLife(100);
        player2.changeAttack(-50);
        database.editGameCharacter(player2, "Toto");
+       database.displayGameCharacters();
+
+       player2.changeLife(1);
+       database.changeLifePoints(player2);
        database.displayGameCharacters();
     }
 
@@ -123,6 +125,25 @@ public class DB {
                 };
             }
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void changeLifePoints(GameCharacter player){
+        String sql = "UPDATE game_character SET LifePoints = ? WHERE Name = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, player.getLife());
+            ps.setString(2, player.getName());
+
+            int affected = ps.executeUpdate();
+            if (affected == 0) {
+                System.out.println("Aucun personnage trouvé avec le nom : " + player.getName());
+            } else if (affected > 1) {
+                System.out.println("Attention, plusieurs personnages ont été modifiés !");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
