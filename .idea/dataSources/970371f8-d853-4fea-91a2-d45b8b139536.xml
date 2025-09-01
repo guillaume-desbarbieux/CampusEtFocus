@@ -1060,14 +1060,14 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="300" parent="298" name="Type">
+    <column id="300" parent="298" name="GameType">
       <Position>2</Position>
-      <StoredType>enum(&apos;WARRIOR&apos;, &apos;MAGUS&apos;)|0e</StoredType>
+      <StoredType>enum(&apos;WARRIOR&apos;, &apos;MAGUS&apos;, &apos;CHEATER&apos;)|0e</StoredType>
     </column>
     <column id="301" parent="298" name="Name">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StoredType>text|0s</StoredType>
+      <StoredType>varchar(151)|0s</StoredType>
     </column>
     <column id="302" parent="298" name="LifePoints">
       <Position>4</Position>
@@ -1094,10 +1094,18 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="308" parent="298" name="PRIMARY">
+    <index id="308" parent="298" name="game_character_pk">
+      <ColNames>Name</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="309" parent="298" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="310" parent="298" name="game_character_pk">
+      <UnderlyingIndexName>game_character_pk</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>
