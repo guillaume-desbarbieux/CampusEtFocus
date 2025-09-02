@@ -9,11 +9,9 @@ import java.sql.*;
 
 public class DbBoard {
     private final Connection conn;
-    private final DbCell cell;
 
     public DbBoard(Connection CONNECTION) {
         this.conn = CONNECTION;
-        this.cell = new DbCell(CONNECTION);
     }
 
     public boolean saveBoard(Board board) {
@@ -27,10 +25,10 @@ public class DbBoard {
             Cell cell = board.getCell(i);
             if (cell == null) return false;
 
-            saved = this.cell.saveCell(cell);
+            saved = db.cell.saveCell(cell);
             if (!saved) return false;
 
-            int cell_id = this.cell.getLastCellId();
+            int cell_id = db.cell.getLastCellId();
             if (cell_id == -1) return false;
 
             String sql2 = "INSERT INTO cell_board (board_id, cell_id) VALUES (?, ?)";
@@ -48,12 +46,12 @@ public class DbBoard {
             switch (cell.getType()) {
                 case ENEMY -> {
                     EnemyCell enemyCell = (EnemyCell) cell;
-                    saveGameCharacter(enemyCell.getEnemy());
+                    db.character.saveGameCharacter(enemyCell.getEnemy());
                     // ajouter une ligne sur table pivot game_character_cell
                 }
                 case SURPRISE -> {
                     SurpriseCell surpriseCell = (SurpriseCell) cell;
-                    saveEquipment(surpriseCell.getSurprise());
+                    db.equipment.saveEquipment(surpriseCell.getSurprise());
                     // ajouter une ligne sur table pivot equipement_cell
 
                 }
@@ -91,5 +89,6 @@ public class DbBoard {
     }
 
 
-
+    public Integer save(Board board) {
+    }
 }

@@ -1,6 +1,7 @@
 package fr.campusetfocus.gameobject;
 
 public abstract class GameObject {
+    protected Integer id;
     protected String name;
     protected String description;
     protected int durability;
@@ -10,7 +11,13 @@ public abstract class GameObject {
         this.description = description;
         this.durability = 100;
     }
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public String getName() {
         return name;
     }

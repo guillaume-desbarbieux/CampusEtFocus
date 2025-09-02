@@ -1,6 +1,7 @@
 package fr.campusetfocus.being;
 
 public abstract class Being {
+    protected Integer id;
     protected String name;
     protected int life;
     protected int attack;
@@ -13,6 +14,13 @@ public abstract class Being {
         this.defense = defense;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public String getName() {
         return name;
     }

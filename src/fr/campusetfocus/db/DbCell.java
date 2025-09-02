@@ -40,4 +40,17 @@ public class DbCell {
         return -1;
 
     }
+
+    public Integer save(Cell cell) {
+    }
+
+    public boolean edit(Cell cell) {
+    }
+
+    public boolean linkToBoard(Integer id, Integer id1) {
+    }
+
+
+    public boolean removeLinkToBoard(Integer boardId) {
+    }
 }

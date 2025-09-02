@@ -1,5 +1,6 @@
 package fr.campusetfocus.db;
 
+import fr.campusetfocus.being.Being;
 import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.being.gamecharacter.Cheater;
 import fr.campusetfocus.being.gamecharacter.Magus;
@@ -7,10 +8,10 @@ import fr.campusetfocus.being.gamecharacter.Warrior;
 
 import java.sql.*;
 
-public class DbCharacter {
+public class DbBeing {
     private final Connection conn;
 
-    public DbCharacter(Connection CONNECTION) {
+    public DbBeing(Connection CONNECTION) {
     this.conn = CONNECTION;
     }
 
@@ -28,29 +29,28 @@ public class DbCharacter {
         }
     }
 
-    public boolean saveGameCharacter(GameCharacter player)  {
-        String sql = "INSERT INTO game_character (GameType, Name, LifePoints, Attack, Defense) VALUES (?, ?, ?, ?, ?)";
+    public Integer save(Being character) {
+        return null;
+    }
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+    private Integer getLastId() {
+        String sql = "SELECT Id FROM being ORDER BY Id DESC LIMIT 1";
 
-            ps.setString(1, player.getClass().getSimpleName());
-            ps.setString(2, player.getName());
-            ps.setInt(3, player.getLife());
-            ps.setInt(4, player.getAttack());
-            ps.setInt(5, player.getDefense());
-
-            int saved = ps.executeUpdate();
-            return saved == 1;
-
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt("Id");
+            }
         } catch (SQLException e) {
-            return false;
+            return -1;
         }
+        return -1;
     }
 
     public boolean editGameCharacter (GameCharacter player, String name) {
         if (player == null) return false;
 
-        String sql =    "UPDATE game_character " +
+        String sql =    "UPDATE being " +
                         "SET GameType= ?, Name= ?, LifePoints= ?, Attack= ?, Defense= ? " +
                         "WHERE Name = ?";
 
@@ -78,7 +78,7 @@ public class DbCharacter {
     }
 
     public GameCharacter getGameCharacter(String name) {
-        String sql = "SELECT * from game_character WHERE Name = ?";
+        String sql = "SELECT * from being WHERE Name = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
@@ -105,7 +105,7 @@ public class DbCharacter {
     }
 
     public boolean changeLifePoints(GameCharacter player){
-        String sql = "UPDATE game_character SET LifePoints = ? WHERE Name = ?";
+        String sql = "UPDATE being SET LifePoints = ? WHERE Name = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, player.getLife());
@@ -120,6 +120,20 @@ public class DbCharacter {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean edit(Being character) {
+        return true;
+    }
+
+    public GameCharacter get(Integer id) {
+        return null;
+    }
+
+    public boolean removeLinkToCell(Integer cellId) {
+    }
+
+    public boolean linkToCell(Integer enemyId, Integer cellId) {
     }
 }
 

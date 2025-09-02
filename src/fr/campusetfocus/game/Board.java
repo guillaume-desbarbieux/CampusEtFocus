@@ -6,6 +6,7 @@ import fr.campusetfocus.being.enemy.EnemyFactory;
 import fr.campusetfocus.gameobject.equipment.EquipmentFactory;
 
 public class Board {
+    protected Integer id;
     private final Cell[] cells;
 
     public Board() {
@@ -26,6 +27,13 @@ public class Board {
         cells[cells.length - 1] = new EndCell(cells.length - 1);
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public int getSize() {
         return this.cells.length -1;
     }

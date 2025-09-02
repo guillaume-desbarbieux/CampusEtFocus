@@ -1,4 +1,5 @@
 package fr.campusetfocus.being;
+import fr.campusetfocus.gameobject.Equipment;
 import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.LifeEquipment;
 import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
@@ -23,6 +24,28 @@ public abstract class GameCharacter extends Being {
     }
     public List<LifeEquipment> getLifeEquipments() {
         return lifeEquipments;
+    }
+    public List<Equipment> getEquipments() {
+        List<Equipment> equipments = new ArrayList<>();
+        equipments.addAll(offensiveEquipments);
+        equipments.addAll(defensiveEquipments);
+        equipments.addAll(lifeEquipments);
+        return equipments;
+    }
+
+    public boolean setEquipment(List<Equipment> equipments) {
+        for (Equipment equipment : equipments) {
+            if (equipment instanceof OffensiveEquipment) {
+                addOffensiveEquipment((OffensiveEquipment) equipment);
+            } else if (equipment instanceof DefensiveEquipment) {
+                addDefensiveEquipment((DefensiveEquipment) equipment);
+            } else if (equipment instanceof LifeEquipment) {
+                addLifeEquipment((LifeEquipment) equipment);
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void addOffensiveEquipment (OffensiveEquipment equipment) {
