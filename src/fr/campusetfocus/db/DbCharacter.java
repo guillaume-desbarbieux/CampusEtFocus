@@ -18,18 +18,17 @@ public class DbCharacter {
         String sql = "SELECT * FROM game_character";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                System.out.println(rs.getString("Name") + " (" + rs.getString("GameType") + ")");
-                System.out.println("Life=" + rs.getInt("LifePoints") + " Att=" + rs.getInt("Attack") + " Def=" + rs.getInt("Defense"));
-                System.out.println();
-            }
+                while (rs.next()) {
+                    System.out.println(rs.getString("Name") + " (" + rs.getString("GameType") + ")");
+                    System.out.println("Life=" + rs.getInt("LifePoints") + " Att=" + rs.getInt("Attack") + " Def=" + rs.getInt("Defense"));
+                    System.out.println();
+                }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void createGameCharacter(GameCharacter player) {
+    public boolean createGameCharacter(GameCharacter player)  {
         String sql = "INSERT INTO game_character (GameType, Name, LifePoints, Attack, Defense) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -41,17 +40,16 @@ public class DbCharacter {
             ps.setInt(5, player.getDefense());
 
             int affected = ps.executeUpdate();
-            if (affected != 1) {
-                throw new SQLException("Insertion du personnage non effectuée.");
-            }
-        } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println("Ce nom est déjà utilisé");
+            return affected == 1;
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
-    public void editGameCharacter (GameCharacter player, String oldName) {
+    public boolean editGameCharacter (GameCharacter player, String name) {
+        if (player == null) return false;
+
         String sql =    "UPDATE game_character " +
                         "SET GameType= ?, Name= ?, LifePoints= ?, Attack= ?, Defense= ? " +
                         "WHERE Name = ?";
@@ -63,20 +61,21 @@ public class DbCharacter {
             ps.setInt(3, player.getLife());
             ps.setInt(4, player.getAttack());
             ps.setInt(5, player.getDefense());
-            ps.setString(6, oldName);
+            ps.setString(6, name);
 
             int affected = ps.executeUpdate();
 
-            if (affected == 0) {
-                System.out.println("Aucun personnage trouvé avec le nom : " + oldName);
-            } else if (affected > 1) {
-                System.out.println("Attention, plusieurs personnages ont été modifiés !");
+            if (affected != 1) {
+                return false;
+            } else {
+                GameCharacter player2 = getGameCharacter(player.getName());
+                System.out.println(player.toString());
+                System.out.println(player2.toString());
+                return player.isSame(player2);
             }
 
-        } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println("Ce nom est déjà utilisé");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
@@ -90,7 +89,6 @@ public class DbCharacter {
                 if (!rs.next()) {
                     return null;
                 }
-
                 String type = rs.getString("GameType");
                 int life = rs.getInt("LifePoints");
                 int attack = rs.getInt("Attack");
@@ -103,13 +101,12 @@ public class DbCharacter {
                     default -> null;
                 };
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 
-    public void changeLifePoints(GameCharacter player){
+    public boolean changeLifePoints(GameCharacter player){
         String sql = "UPDATE game_character SET LifePoints = ? WHERE Name = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -117,10 +114,10 @@ public class DbCharacter {
             ps.setString(2, player.getName());
 
             int affected = ps.executeUpdate();
-            if (affected == 0) {
-                System.out.println("Aucun personnage trouvé avec le nom : " + player.getName());
-            } else if (affected > 1) {
-                System.out.println("Attention, plusieurs personnages ont été modifiés !");
+            if (affected != 1 ) {
+                return false;
+            } else {
+                return player.getLife() == getGameCharacter(player.getName()).getLife();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

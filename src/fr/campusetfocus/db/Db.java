@@ -2,6 +2,7 @@ package fr.campusetfocus.db;
 
 import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.being.gamecharacter.Cheater;
+import fr.campusetfocus.being.gamecharacter.Magus;
 
 import java.sql.*;
 
@@ -10,6 +11,7 @@ public class Db {
     protected final String USER = "root";
     protected final String PASS = "root";
     protected final DbCharacter character;
+
     protected final Connection CONNECTION;
 
     public Db() {
@@ -24,22 +26,30 @@ public class Db {
     public static void main(String[] args) {
        Db db = new Db() ;
 
-       GameCharacter player = new Cheater("Toto", 456, 25, -3);
-       db.character.createGameCharacter(player);
+       GameCharacter player1 = new Cheater("test1", 456, 25, -3);
+       GameCharacter player2 = new Cheater("test2", 456, 25, -3);
+        System.out.println("player1 and 2 are equal : " + player1.isSame(player2));
 
-       GameCharacter player2 = db.character.getGameCharacter("Toto");
+/*
+       boolean created = db.character.createGameCharacter(player1);
+       System.out.println("Game character created: " + created);
+*/
+       GameCharacter player3 = db.character.getGameCharacter("Toto");
        player2.changeLife(100);
        player2.changeAttack(-50);
-       db.character.editGameCharacter(player2, "Toto");
+       boolean edited = db.character.editGameCharacter(player3, "Toto");
+       System.out.println("Game character edited: " + edited);
        db.character.displayGameCharacters();
-
+/*
        player2.changeLife(1);
-       db.character.changeLifePoints(player2);
+       edited = db.character.changeLifePoints(player2);
+       System.out.println("Game character life points changed: " + edited);
        db.character.displayGameCharacters();
+       */
+
     }
 
     protected Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 }
-

@@ -65,4 +65,15 @@ public abstract class GameCharacter extends Being {
     public String toString() {
         return super.toString().replace("type=Inconnu", "type=Personnage");
     }
+
+    @Override
+    public boolean isSame(Object object) {
+        if (!super.isSame(object)) return false;
+
+        GameCharacter other = (GameCharacter) object;
+
+        return this.getOffensiveEquipments().equals(other.getOffensiveEquipments())
+            && this.getDefensiveEquipments().equals(other.getDefensiveEquipments())
+            && this.getLifeEquipments().equals(other.getLifeEquipments());
+    }
 }
