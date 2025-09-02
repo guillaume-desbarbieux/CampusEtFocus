@@ -1,7 +1,5 @@
 package fr.campusetfocus.being;
 
-import java.util.Objects;
-
 public abstract class Being {
     protected String name;
     protected int life;

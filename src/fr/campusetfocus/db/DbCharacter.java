@@ -69,8 +69,6 @@ public class DbCharacter {
                 return false;
             } else {
                 GameCharacter player2 = getGameCharacter(player.getName());
-                System.out.println(player.toString());
-                System.out.println(player2.toString());
                 return player.isSame(player2);
             }
 

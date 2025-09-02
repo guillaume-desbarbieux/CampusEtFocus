@@ -2,7 +2,6 @@ package fr.campusetfocus.db;
 
 import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.being.gamecharacter.Cheater;
-import fr.campusetfocus.being.gamecharacter.Magus;
 
 import java.sql.*;
 
@@ -30,14 +29,14 @@ public class Db {
        GameCharacter player2 = new Cheater("test2", 456, 25, -3);
         System.out.println("player1 and 2 are equal : " + player1.isSame(player2));
 
-/*
+
        boolean created = db.character.createGameCharacter(player1);
        System.out.println("Game character created: " + created);
-*/
-       GameCharacter player3 = db.character.getGameCharacter("Toto");
+
+       GameCharacter player3 = db.character.getGameCharacter("test1");
        player2.changeLife(100);
        player2.changeAttack(-50);
-       boolean edited = db.character.editGameCharacter(player3, "Toto");
+       boolean edited = db.character.editGameCharacter(player3, "test1");
        System.out.println("Game character edited: " + edited);
        db.character.displayGameCharacters();
 /*
