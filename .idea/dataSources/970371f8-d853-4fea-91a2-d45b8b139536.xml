@@ -1023,7 +1023,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     <schema id="292" parent="1" name="CampusEtFocus">
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2025-09-01.11:20:06</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-09-02.09:19:41</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="293" parent="1" name="mysql.infoschema">
@@ -1049,53 +1049,59 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <table id="298" parent="292" name="game_character">
+    <table id="298" parent="292" name="board">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <column id="299" parent="298" name="Id">
-      <AutoIncrement>3</AutoIncrement>
+    <table id="299" parent="292" name="cell">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="300" parent="292" name="cell_board">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="301" parent="292" name="equipment">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="302" parent="292" name="equipment_cell">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="303" parent="292" name="equipment_game_character">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="304" parent="292" name="game_character">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="305" parent="292" name="game_character_cell">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <column id="306" parent="298" name="Id">
+      <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="300" parent="298" name="GameType">
-      <Position>2</Position>
-      <StoredType>enum(&apos;WARRIOR&apos;, &apos;MAGUS&apos;, &apos;CHEATER&apos;)|0e</StoredType>
-    </column>
-    <column id="301" parent="298" name="Name">
+    <column id="307" parent="298" name="size">
       <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>varchar(151)|0s</StoredType>
-    </column>
-    <column id="302" parent="298" name="LifePoints">
-      <Position>4</Position>
+      <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="303" parent="298" name="Attack">
-      <Position>5</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="304" parent="298" name="Defense">
-      <Position>6</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="305" parent="298" name="OffensiveEquipment">
-      <Position>7</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="306" parent="298" name="DefensiveEquipment">
-      <Position>8</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <index id="307" parent="298" name="PRIMARY">
+    <index id="308" parent="298" name="PRIMARY">
       <ColNames>Id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="308" parent="298" name="game_character_pk">
-      <ColNames>Name</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
@@ -1104,8 +1110,308 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="310" parent="298" name="game_character_pk">
+    <column id="310" parent="299" name="Id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="311" parent="299" name="cell_type">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>enum(&apos;START&apos;, &apos;END&apos;, &apos;EMPTY&apos;, &apos;ENEMY&apos;, &apos;SURPRISE&apos;)|0e</StoredType>
+    </column>
+    <column id="312" parent="299" name="number">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <index id="313" parent="299" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="314" parent="299" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="315" parent="300" name="Id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="316" parent="300" name="cell_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="317" parent="300" name="board_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <foreign-key id="318" parent="300" name="cell_board_cell_Id_fk">
+      <ColNames>cell_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>cell</RefTableName>
+    </foreign-key>
+    <foreign-key id="319" parent="300" name="cell_board_board_Id_fk">
+      <ColNames>board_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>board</RefTableName>
+    </foreign-key>
+    <index id="320" parent="300" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="321" parent="300" name="cell_board_cell_Id_fk">
+      <ColNames>cell_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="322" parent="300" name="cell_board_board_Id_fk">
+      <ColNames>board_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="323" parent="300" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="324" parent="301" name="Id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="325" parent="301" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>varchar(151)|0s</StoredType>
+    </column>
+    <column id="326" parent="301" name="description">
+      <Position>3</Position>
+      <StoredType>varchar(151)|0s</StoredType>
+    </column>
+    <column id="327" parent="301" name="durability">
+      <Position>4</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="328" parent="301" name="equipment_type">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>enum(&apos;LIFE&apos;, &apos;OFFENSIVE&apos;, &apos;DEFENSIVE&apos;)|0e</StoredType>
+    </column>
+    <column id="329" parent="301" name="bonus">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <index id="330" parent="301" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="331" parent="301" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="332" parent="302" name="Id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="333" parent="302" name="equipment_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="334" parent="302" name="cell_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <foreign-key id="335" parent="302" name="equipment_cell_equipment_Id_fk">
+      <ColNames>equipment_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>equipment</RefTableName>
+    </foreign-key>
+    <foreign-key id="336" parent="302" name="equipment_cell_cell_Id_fk">
+      <ColNames>cell_id</ColNames>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>cell</RefTableName>
+    </foreign-key>
+    <index id="337" parent="302" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="338" parent="302" name="equipment_cell_equipment_Id_fk">
+      <ColNames>equipment_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="339" parent="302" name="equipment_cell_cell_Id_fk">
+      <ColNames>cell_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="340" parent="302" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="341" parent="303" name="Id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="342" parent="303" name="equipment_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="343" parent="303" name="game_character_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <foreign-key id="344" parent="303" name="equipment_game_character_equipment_Id_fk">
+      <ColNames>equipment_id</ColNames>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>equipment</RefTableName>
+    </foreign-key>
+    <foreign-key id="345" parent="303" name="equipment_game_character_game_character_Id_fk">
+      <ColNames>game_character_id</ColNames>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>game_character</RefTableName>
+    </foreign-key>
+    <index id="346" parent="303" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="347" parent="303" name="equipment_game_character_equipment_Id_fk">
+      <ColNames>equipment_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="348" parent="303" name="equipment_game_character_game_character_Id_fk">
+      <ColNames>game_character_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="349" parent="303" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="350" parent="304" name="Id">
+      <AutoIncrement>3</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="351" parent="304" name="GameType">
+      <Position>2</Position>
+      <StoredType>enum(&apos;WARRIOR&apos;, &apos;MAGUS&apos;, &apos;CHEATER&apos;, &apos;DRAGON&apos;, &apos;GOBLIN&apos;, &apos;WIZARD&apos;)|0e</StoredType>
+    </column>
+    <column id="352" parent="304" name="Name">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>varchar(151)|0s</StoredType>
+    </column>
+    <column id="353" parent="304" name="LifePoints">
+      <Position>4</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="354" parent="304" name="Attack">
+      <Position>5</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="355" parent="304" name="Defense">
+      <Position>6</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="356" parent="304" name="OffensiveEquipment">
+      <Position>7</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="357" parent="304" name="DefensiveEquipment">
+      <Position>8</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <index id="358" parent="304" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="359" parent="304" name="game_character_pk">
+      <ColNames>Name</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="360" parent="304" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="361" parent="304" name="game_character_pk">
       <UnderlyingIndexName>game_character_pk</UnderlyingIndexName>
+    </key>
+    <column id="362" parent="305" name="Id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="363" parent="305" name="cell_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="364" parent="305" name="game_character_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <foreign-key id="365" parent="305" name="game_character_cell_cell_Id_fk">
+      <ColNames>cell_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>cell</RefTableName>
+    </foreign-key>
+    <foreign-key id="366" parent="305" name="game_character_cell_game_character_Id_fk">
+      <ColNames>game_character_id</ColNames>
+      <RefColNames>Id</RefColNames>
+      <RefTableName>game_character</RefTableName>
+    </foreign-key>
+    <index id="367" parent="305" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="368" parent="305" name="game_character_cell_cell_Id_fk">
+      <ColNames>cell_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="369" parent="305" name="game_character_cell_game_character_Id_fk">
+      <ColNames>game_character_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="370" parent="305" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>

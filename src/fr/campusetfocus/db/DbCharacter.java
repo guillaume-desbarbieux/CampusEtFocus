@@ -28,7 +28,7 @@ public class DbCharacter {
         }
     }
 
-    public boolean createGameCharacter(GameCharacter player)  {
+    public boolean saveGameCharacter(GameCharacter player)  {
         String sql = "INSERT INTO game_character (GameType, Name, LifePoints, Attack, Defense) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -39,8 +39,8 @@ public class DbCharacter {
             ps.setInt(4, player.getAttack());
             ps.setInt(5, player.getDefense());
 
-            int affected = ps.executeUpdate();
-            return affected == 1;
+            int saved = ps.executeUpdate();
+            return saved == 1;
 
         } catch (SQLException e) {
             return false;
