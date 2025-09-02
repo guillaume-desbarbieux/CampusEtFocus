@@ -19,8 +19,7 @@ public class DbCell {
             ps.setInt(2, cell.getNumber());
 
             int saved = ps.executeUpdate();
-            if (saved == 1) return true;
-            else return false;
+            return saved == 1;
 
         } catch (SQLException e) {
             return false;

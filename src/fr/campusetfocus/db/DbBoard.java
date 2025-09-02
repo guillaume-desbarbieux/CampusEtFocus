@@ -4,7 +4,6 @@ import fr.campusetfocus.game.Board;
 import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.cell.EnemyCell;
 import fr.campusetfocus.game.cell.SurpriseCell;
-import fr.campusetfocus.gameobject.Equipment;
 
 import java.sql.*;
 
