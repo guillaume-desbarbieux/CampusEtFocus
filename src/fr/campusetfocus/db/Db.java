@@ -5,11 +5,11 @@ import fr.campusetfocus.being.Enemy;
 import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.game.Board;
 import fr.campusetfocus.game.Cell;
-import fr.campusetfocus.game.cell.EnemyCell;
-import fr.campusetfocus.game.cell.SurpriseCell;
+import fr.campusetfocus.game.cell.*;
 import fr.campusetfocus.gameobject.Equipment;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Db {
@@ -111,10 +111,10 @@ public class Db {
         return true;
     }
 
-    public Being getBeing(Integer id) {
-        Being being = this.being.get(id);
+    public Being getBeing(Integer beingId) {
+        Being being = this.being.get(beingId);
 
-        List<Equipment> equipments = this.equipment.getCharacterEquipment(id);
+        List<Equipment> equipments = this.equipment.getCharacterEquipment(beingId);
         if (equipments != null) {
             boolean set = ((GameCharacter) being).setEquipment(equipments);
             if (!set) return null;
@@ -144,6 +144,15 @@ public class Db {
         return true;
     }
 
+    private boolean editCell(Cell cell) {
+        boolean edited = this.cell.edit(cell);
+        if (!edited) return false;
+
+        if (cell instanceof SurpriseCell surpriseCell) return this.saveCellSurprise(surpriseCell.getSurprise(), cell.getId());
+        if (cell instanceof EnemyCell enemyCell) return this.saveCellEnemy(enemyCell.getEnemy(), cell.getId());
+        return true;
+    }
+
     private boolean saveCellSurprise(Equipment equipment, Integer cellId) {
         boolean removed = this.equipment.removeLinkToCell(cellId);
         if (!removed) return false;
@@ -170,16 +179,41 @@ public class Db {
         return this.being.linkToCell(enemyId, cellId);
     }
 
-    private boolean editCell(Cell cell) {
-        boolean edited = this.cell.edit(cell);
-        if (!edited) return false;
+    public Cell getCell(Integer cellId) {
+        CellType cellType = this.cell.getType(cellId);
+        if (cellType == null) return null;
 
-        if (cell instanceof SurpriseCell surpriseCell) return this.saveCellSurprise(surpriseCell.getSurprise(), cell.getId());
-        if (cell instanceof EnemyCell enemyCell) return this.saveCellEnemy(enemyCell.getEnemy(), cell.getId());
-        return true;
+        int cellPosition = this.cell.getPosition(cellId);
+        if (cellPosition == -1) return null;
+
+        Cell cell;
+        switch (cellType) {
+            case START -> cell = new StartCell(cellPosition);
+            case END -> cell = new EndCell(cellPosition);
+            case EMPTY -> cell = new EmptyCell(cellPosition);
+            case ENEMY -> {
+                Integer enemyId = this.cell.getEnemyId(cellId);
+                Enemy enemy = (Enemy) this.being.get(enemyId);
+                cell = new EnemyCell(cellPosition, enemy);
+            }
+            case SURPRISE -> {
+                Integer equipmentId = this.cell.getEquipmentId(cellId);
+                Equipment surprise = this.equipment.get(equipmentId);
+                cell = new SurpriseCell(cellPosition, surprise);
+            }
+            default -> {
+                return null;
+            }
+        }
+        cell.setId(cellId);
+        return cell;
     }
 
-    
+    /*
+****************************************
+            ALL ABOUT BOARD
+****************************************
+ */
 
     public boolean saveBoard(Board board) {
         if (board.getId() == null)
@@ -187,43 +221,53 @@ public class Db {
         else return this.editBoard(board);
     }
 
-
     private boolean setNewBoard(Board board) {
         Integer boardId = this.board.save(board);
         if (boardId == -1) return false;
         board.setId(boardId);
 
+        return this.saveBoardCell(board);
+    }
+
+    private boolean editBoard(Board board) {
+        boolean edited = this.board.edit(board);
+        if (!edited) return false;
+
+        return this.saveBoardCell(board);
+    }
+
+    private boolean saveBoardCell(Board board) {
+        boolean removed = this.cell.removeLinkToBoard(board.getId());
+        if (!removed) return false;
+
         for (int i = 1; i <= board.getSize(); i++) {
             Cell cell = board.getCell(i);
             if (cell == null) return false;
 
-            boolean saved = this.saveBoardCell(cell, boardId);
+            boolean saved = this.saveCell(cell);
             if (!saved) return false;
+
+            boolean linked = this.cell.linkToBoard(cell.getId(), board.getId());
+            if (!linked) return false;
         }
-    }
-
-    private boolean saveBoardCell(Cell cell, Integer boardId) {
-        boolean removed = this.cell.removeLinkToBoard(boardId);
-        if (!removed) return false;
-
-        boolean saved = this.saveCell(cell);
-        if (!saved) return false;
-
-        boolean linked = this.cell.linkToBoard(cell.getId(), boardId);
-        if (!linked) return false;
-
         return true;
-
-
     }
 
-    private boolean editBoard(Board board) {
-    }
+    public Board getBoard(Integer boardId) {
+        List<Integer> cellsId = this.board.getCellsId(boardId);
+        if (cellsId == null) return null;
 
-    public Board getBoard(int id) {
+        List<Cell> cells = new ArrayList<Cell>(cellsId.size());
 
+        for (Integer cellId : cellsId) {
+            Cell cell = this.getCell(cellId);
+            if (cell == null) return null;
+            cells.add(cell);
+        }
+        Board board = new Board(cells);
+        board.setId(boardId);
+        return board;
     }
-    
 }
         
         

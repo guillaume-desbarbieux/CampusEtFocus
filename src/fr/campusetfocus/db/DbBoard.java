@@ -6,6 +6,7 @@ import fr.campusetfocus.game.cell.EnemyCell;
 import fr.campusetfocus.game.cell.SurpriseCell;
 
 import java.sql.*;
+import java.util.List;
 
 public class DbBoard {
     private final Connection conn;
@@ -90,5 +91,11 @@ public class DbBoard {
 
 
     public Integer save(Board board) {
+    }
+
+    public boolean edit(Board board) {
+    }
+
+    public List<Integer> getCellsId(Integer boardId) {
     }
 }

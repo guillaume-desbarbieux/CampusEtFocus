@@ -126,7 +126,7 @@ public class DbBeing {
         return true;
     }
 
-    public GameCharacter get(Integer id) {
+    public Being get(Integer id) {
         return null;
     }
 

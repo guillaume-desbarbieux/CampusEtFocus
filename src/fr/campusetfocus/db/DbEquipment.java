@@ -33,4 +33,7 @@ public class DbEquipment {
 
     public boolean removeLinkToCell(Integer cellId) {
     }
+
+    public Equipment get(Integer equipmentId) {
+    }
 }

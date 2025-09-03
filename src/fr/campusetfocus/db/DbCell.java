@@ -1,6 +1,7 @@
 package fr.campusetfocus.db;
 
 import fr.campusetfocus.game.Cell;
+import fr.campusetfocus.game.cell.CellType;
 
 import java.sql.*;
 
@@ -26,7 +27,7 @@ public class DbCell {
         }
     }
 
-    public int getLastCellId() {
+    public Integer getLastCellId() {
         String sql = "SELECT Id FROM cell ORDER BY Id DESC LIMIT 1";
 
         try (Statement stmt = conn.createStatement();
@@ -52,5 +53,17 @@ public class DbCell {
 
 
     public boolean removeLinkToBoard(Integer boardId) {
+    }
+
+    public CellType getType(Integer cellId) {
+    }
+
+    public int getPosition(Integer cellId) {
+    }
+
+    public Integer getEnemyId(Integer cellId) {
+    }
+
+    public Integer getEquipmentId(Integer cellId) {
     }
 }
