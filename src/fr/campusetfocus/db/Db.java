@@ -172,7 +172,7 @@ public class Db {
 
         if (enemy == null) return true;
 
-        Integer enemyId = this.being.save((Being) enemy);
+        Integer enemyId = this.being.save(enemy);
         if (enemyId == -1) return false;
         enemy.setId(enemyId);
 
@@ -257,7 +257,7 @@ public class Db {
         List<Integer> cellsId = this.board.getCellsId(boardId);
         if (cellsId == null) return null;
 
-        List<Cell> cells = new ArrayList<Cell>(cellsId.size());
+        List<Cell> cells = new ArrayList<>(cellsId.size());
 
         for (Integer cellId : cellsId) {
             Cell cell = this.getCell(cellId);

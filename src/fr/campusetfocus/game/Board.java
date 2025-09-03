@@ -13,7 +13,7 @@ public class Board {
     private final List<Cell> cells;
 
     public Board() {
-        this.cells = new ArrayList<Cell>(65);
+        this.cells = new ArrayList<>(65);
         int boardSize = this.getSize();
 
         cells.set(1, new StartCell(1));
