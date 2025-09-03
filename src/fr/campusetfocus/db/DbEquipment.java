@@ -20,6 +20,7 @@ public class DbEquipment {
     }
 
     public List<Equipment> getCharacterEquipment(Integer id) {
+        return null;
     }
 
     public boolean linkToCharacter(Integer equipmentId, Integer characterId) {

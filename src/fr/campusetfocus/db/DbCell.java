@@ -12,28 +12,30 @@ public class DbCell {
         this.conn = CONNECTION;
     }
 
-    public boolean saveCell(Cell cell) {
-        String sql = "INSERT INTO cell (cell_type, number) VALUES (?, ?)";
+    public Integer save(Cell cell) {
+        String sql = "INSERT INTO Cell (CellType, Number) VALUES (?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, cell.getType().toString());
+            ps.setString(1, cell.getType().toString().toUpperCase());
             ps.setInt(2, cell.getNumber());
 
             int saved = ps.executeUpdate();
-            return saved == 1;
+            if (saved != 1) return -1;
+
+            return this.getLastId();
 
         } catch (SQLException e) {
-            return false;
+            return -1;
         }
     }
 
-    public Integer getLastCellId() {
-        String sql = "SELECT Id FROM cell ORDER BY Id DESC LIMIT 1";
+    public Integer getLastId() {
+        String sql = "SELECT Id FROM Cell ORDER BY Id DESC LIMIT 1";
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
-                return rs.getInt("id");
+                return rs.getInt("Id");
             }
         } catch (SQLException e) {
             return -1;
@@ -42,11 +44,31 @@ public class DbCell {
 
     }
 
-    public Integer save(Cell cell) {
+    public boolean edit(Cell cell) {
+        if (cell == null) return false;
+        if (cell.getId() == null) return false;
+
+        String sql = "UPDATE Cell SET CellType = ?, Number = ? WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, cell.getType().toString().toUpperCase());
+            ps.setInt(2, cell.getNumber());
+            ps.setInt(3, cell.getId());
+
+            int edited = ps.executeUpdate();
+            return  edited == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
-    public boolean edit(Cell cell) {
-    }
+    /**
+     * ******************************
+     * J'en suis ici !!!!! ******************************************
+     * ******************************
+     * */
 
     public boolean linkToBoard(Integer id, Integer id1) {
     }

@@ -1,8 +1,6 @@
 package fr.campusetfocus.db;
 
-import fr.campusetfocus.being.Being;
-import fr.campusetfocus.being.Enemy;
-import fr.campusetfocus.being.GameCharacter;
+import fr.campusetfocus.being.*;
 import fr.campusetfocus.game.Board;
 import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.cell.*;
@@ -95,6 +93,10 @@ public class Db {
     }
 
     private boolean saveCharacterEquipment(List<Equipment> equipments, Integer characterId) {
+        String type = this.being.getType(characterId);
+        if (type == null) return false;
+        if (!type.equals("Cheater") && !type.equals("Magus") && !type.equals("Warrior")) return false;
+
         boolean removed = this.equipment.removeLinkToCharacter(characterId);
         if (!removed) return false;
 
