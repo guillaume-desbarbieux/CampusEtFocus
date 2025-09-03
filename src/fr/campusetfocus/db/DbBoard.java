@@ -1,9 +1,6 @@
 package fr.campusetfocus.db;
 
 import fr.campusetfocus.game.Board;
-import fr.campusetfocus.game.Cell;
-import fr.campusetfocus.game.cell.EnemyCell;
-import fr.campusetfocus.game.cell.SurpriseCell;
 
 import java.sql.*;
 import java.util.ArrayList;

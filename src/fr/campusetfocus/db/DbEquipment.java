@@ -1,12 +1,5 @@
 package fr.campusetfocus.db;
 
-import fr.campusetfocus.being.Being;
-import fr.campusetfocus.being.enemy.Dragon;
-import fr.campusetfocus.being.enemy.Goblin;
-import fr.campusetfocus.being.enemy.Wizard;
-import fr.campusetfocus.being.gamecharacter.Cheater;
-import fr.campusetfocus.being.gamecharacter.Magus;
-import fr.campusetfocus.being.gamecharacter.Warrior;
 import fr.campusetfocus.gameobject.Equipment;
 import fr.campusetfocus.gameobject.equipment.defensive.shield.BigShield;
 import fr.campusetfocus.gameobject.equipment.defensive.shield.StandardShield;
