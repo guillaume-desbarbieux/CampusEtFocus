@@ -1,8 +1,23 @@
 package fr.campusetfocus.db;
 
+import fr.campusetfocus.being.Being;
+import fr.campusetfocus.being.enemy.Dragon;
+import fr.campusetfocus.being.enemy.Goblin;
+import fr.campusetfocus.being.enemy.Wizard;
+import fr.campusetfocus.being.gamecharacter.Cheater;
+import fr.campusetfocus.being.gamecharacter.Magus;
+import fr.campusetfocus.being.gamecharacter.Warrior;
 import fr.campusetfocus.gameobject.Equipment;
+import fr.campusetfocus.gameobject.equipment.defensive.shield.BigShield;
+import fr.campusetfocus.gameobject.equipment.defensive.shield.StandardShield;
+import fr.campusetfocus.gameobject.equipment.life.potion.BigPotion;
+import fr.campusetfocus.gameobject.equipment.life.potion.StandardPotion;
+import fr.campusetfocus.gameobject.equipment.offensive.spell.Fireball;
+import fr.campusetfocus.gameobject.equipment.offensive.spell.Flash;
+import fr.campusetfocus.gameobject.equipment.offensive.weapon.Mace;
+import fr.campusetfocus.gameobject.equipment.offensive.weapon.Sword;
 
-import java.sql.Connection;
+import java.sql.*;
 import java.util.List;
 
 public class DbEquipment {
@@ -12,29 +27,168 @@ public class DbEquipment {
         this.conn = CONNECTION;
     }
 
-    private boolean saveEquipment(Equipment equipment) {
-        return false;
-    }
-
     public Integer save(Equipment equipment) {
+        String sql = "INSERT INTO Equipment (EquipmentType, Name, Description, Bonus) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, equipment.getType());
+            ps.setString(2, equipment.getName());
+            ps.setString(3, equipment.getDescription());
+            ps.setInt(4, equipment.getBonus());
+
+            int saved = ps.executeUpdate();
+            if (saved != 1) return -1;
+
+            return this.getLastId();
+
+        } catch (SQLException e) {
+            return -1;
+        }
     }
 
-    public List<Equipment> getCharacterEquipment(Integer id) {
-        return null;
+    private Integer getLastId() {
+        String sql = "SELECT Id FROM Equipment ORDER BY Id DESC LIMIT 1";
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt("Id");
+            }
+        } catch (SQLException e) {
+            return -1;
+        }
+        return -1;
     }
 
-    public boolean linkToCharacter(Integer equipmentId, Integer characterId) {
-    }
+    public boolean edit(Equipment equipment) {
+        if (equipment == null) return false;
+        if (equipment.getId() == null) return false;
 
-    public boolean linkToCell(Integer equipmentId, Integer cellId) {
-    }
+        String sql = "UPDATE Equipment SET EquipmentType = ?, Name = ?, Description = ?, Bonus = ? WHERE Id = ?";
 
-    public boolean removeLinkToCharacter(Integer characterId) {
-    }
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, equipment.getType());
+            ps.setString(2, equipment.getName());
+            ps.setString(3, equipment.getDescription());
+            ps.setInt(4, equipment.getBonus());
+            ps.setInt(5, equipment.getId());
 
-    public boolean removeLinkToCell(Integer cellId) {
+            int edited = ps.executeUpdate();
+            return edited == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     public Equipment get(Integer equipmentId) {
+        if (equipmentId == null) return null;
+
+        String sql = "SELECT Name, Description, Bonus from Equipment WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, equipmentId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                String name = rs.getString("Name").toUpperCase();
+                String description = rs.getString("Description");
+                int bonus = rs.getInt("Bonus");
+
+                Equipment equipment;
+                switch (name) {
+                    case "BIGSHIELD" -> equipment = new BigShield(name, description, bonus);
+                    case "STANDARDSHIELD" -> equipment = new StandardShield(name, description, bonus);
+                    case "BIGPOTION" -> equipment = new BigPotion(name, description, bonus);
+                    case "STANDARDPOTION" -> equipment = new StandardPotion(name, description, bonus);
+                    case "FIREBALL" -> equipment = new Fireball(name, description, bonus);
+                    case "FLASH" -> equipment = new Flash(name, description, bonus);
+                    case "MACE" -> equipment = new Mace(name, description, bonus);
+                    case "SWORD" -> equipment = new Sword(name, description, bonus);
+                    default -> {
+                        return null;
+                    }
+                }
+                equipment.setId(equipmentId);
+                return equipment;
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public boolean linkToCharacter(Integer equipmentId, Integer characterId) {
+        if (equipmentId == null || characterId == null) return false;
+        String sql = "INSERT INTO Being_Equipment (BeingId, EquipmentId) VALUES (?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, characterId);
+            ps.setInt(2, equipmentId);
+
+            int saved = ps.executeUpdate();
+            return saved == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean removeLinkToCharacter(Integer characterId) {
+        if (characterId == null) return false;
+
+        String sql = "DELETE FROM Being_Equipment WHERE BeingId = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, characterId);
+
+            int deleted = ps.executeUpdate();
+            return deleted == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean linkToCell(Integer equipmentId, Integer cellId) {
+        if (equipmentId == null || cellId == null) return false;
+        String sql = "INSERT INTO Cell_Equipment (CellId, EquipmentId) VALUES (?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cellId);
+            ps.setInt(2, equipmentId);
+
+            int saved = ps.executeUpdate();
+            return saved == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean removeLinkToCell(Integer cellId) {
+        if (cellId == null) return false;
+
+        String sql = "DELETE FROM Cell_Equipment WHERE CellId = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cellId);
+
+            int deleted = ps.executeUpdate();
+            return deleted == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public List<Equipment> getCharacterEquipment(Integer id) {
+        if (id == null) return null;
+
+        String sql = "SELECT EquipmentId FROM Being_Equipment WHERE BeingId = ?";
+
+
+        return null;
     }
 }

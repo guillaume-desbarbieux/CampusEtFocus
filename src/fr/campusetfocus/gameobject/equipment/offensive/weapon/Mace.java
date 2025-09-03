@@ -8,4 +8,8 @@ public class Mace extends Weapon {
                 "Massue massivement massive",
                 3);
     }
+
+    public Mace(String name, String description, int bonus) {
+        super(name, description, bonus);
+    }
 }

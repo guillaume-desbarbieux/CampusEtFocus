@@ -11,26 +11,28 @@ import java.util.List;
 public class Board {
     protected Integer id;
     private final List<Cell> cells;
+    private final int BOARD_SIZE;
 
     public Board() {
-        this.cells = new ArrayList<>(65);
-        int boardSize = this.getSize();
+        this.BOARD_SIZE = 64;
+        this.cells = new ArrayList<>(BOARD_SIZE);
 
-        cells.set(1, new StartCell(1));
+        cells.add(new StartCell(1));
 
-        for (int i = 2; i < boardSize ; i++) {
+        for (int i = 1; i < BOARD_SIZE ; i++) {
             if (i % 10 == 0) {
-                cells.set(i, new EnemyCell(i, EnemyFactory.createRandomEnemy()));
+                cells.add(new EnemyCell(i, EnemyFactory.createRandomEnemy()));
             } else if (i % 4 == 0) {
-                cells.set(i, new SurpriseCell(i, EquipmentFactory.createRandomEquipment()));
+                cells.add(new SurpriseCell(i, EquipmentFactory.createRandomEquipment()));
             } else {
-                cells.set(i, new EmptyCell(i));
+                cells.add(new EmptyCell(i));
             }
         }
-        cells.set(boardSize,new EndCell(boardSize));
+        cells.add(new EndCell(BOARD_SIZE));
     }
 
     public Board(List<Cell> cells) {
+        this.BOARD_SIZE = cells.size();
         this.cells = cells;
     }
 

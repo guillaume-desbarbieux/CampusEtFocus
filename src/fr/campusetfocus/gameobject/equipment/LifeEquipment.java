@@ -4,21 +4,20 @@ import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.gameobject.Equipment;
 
 public abstract class LifeEquipment extends Equipment {
-    protected int lifeBonus;
 
     public LifeEquipment(String name, String description, int lifeBonus){
-        super(name, description);
-        this.lifeBonus = lifeBonus;
-    }
-
-    public int getLifeBonus() {
-        return lifeBonus;
+        super(name, description, lifeBonus);
     }
 
     public int use (GameCharacter player) {
         int oldLife = player.getLife();
-        player.changeLife(lifeBonus);
+        player.changeLife(bonus);
         return player.getLife() - oldLife;
+    }
+
+    @Override
+    public String getType() {
+        return "LIFE";
     }
 
     @Override
@@ -33,6 +32,6 @@ public abstract class LifeEquipment extends Equipment {
 
     @Override
     public String toString() {
-        return super.toString() + "[life bonus=" + lifeBonus + "]";
+        return super.toString() + "[life bonus=" + bonus + "]";
     }
 }

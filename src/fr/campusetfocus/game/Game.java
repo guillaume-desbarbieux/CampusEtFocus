@@ -6,6 +6,7 @@ import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.being.gamecharacter.Cheater;
 import fr.campusetfocus.being.gamecharacter.Magus;
 import fr.campusetfocus.being.gamecharacter.Warrior;
+import fr.campusetfocus.db.Db;
 import fr.campusetfocus.exception.PlayerPositionException;
 import fr.campusetfocus.game.interaction.Interaction;
 import fr.campusetfocus.gameobject.Equipment;
@@ -22,16 +23,18 @@ import java.util.List;
 
 public class Game {
     private final Menu menu;
-    private final Board board;
+    private Board board;
     private GameCharacter player;
     private final Dice dice;
     private int playerPosition;
+    private Db db = new Db();
 
     public Game() {
         menu = new Menu();
         board = new Board();
         dice = new Dice();
         playerPosition = 1;
+
     }
 
     public Menu getMenu() {
@@ -81,7 +84,7 @@ public class Game {
     public void home() {
         menu.displayTitle("Bienvenu sur Campus & Focus");
         menu.displayTitle("Menu Principal");
-        int choice = menu.getChoice("", new String[]{"Nouvelle Partie", "Gestion du personnage", "Afficher le plateau", "Quitter", "Cheat Mode"});
+        int choice = menu.getChoice("", new String[]{"Nouvelle Partie", "Gestion du personnage", "Afficher le plateau", "Gestion Base de données","Quitter", "Cheat Mode"});
         switch (choice) {
             case 1 -> start();
             case 2 -> managePlayer();
@@ -89,11 +92,62 @@ public class Game {
                 menu.displayBoard(playerPosition, board);
                 home();
             }
-            case 4 -> quit();
-            case 5 -> cheatMode();
+            case 4 -> manageDb();
+            case 5 -> quit();
+            case 6 -> cheatMode();
             default -> {
                 menu.displayError("Choix invalide !");
                 home();
+            }
+        }
+    }
+
+    private void manageDb() {
+        menu.displayTitle("Gestion de la Base de données");
+        int choice = menu.getChoice("", new String[]{"Sauvegarder la partie en cours", "Charger une ancienne partie", "Sauvegarder mon personnage", "Charger un personnage", "Retour au menu principal"});
+
+        switch (choice) {
+            case 1 -> {
+                menu.displayTitle("Sauvegarde de la partie en cours...");
+                boolean saved = db.saveBoard(board);
+                if (saved) menu.displaySuccess("Sauvegarde réussie !");
+                else menu.displayError("Echec de la sauvegarde !");
+                manageDb();
+            }
+            case 2 -> {
+                menu.displayTitle("Chargement de la dernière partie...");
+                Board newBoard = db.getBoard(1);
+                if (newBoard == null) menu.displayError("Echec du chargement !");
+                else {
+                    this.board = newBoard;
+                    menu.displaySuccess("Chargement réussi !");
+                }
+                manageDb();
+            }
+            case 3 -> {
+                if (player == null) menu.displayError("Aucun joueur existant !");
+                else {
+                    menu.displayTitle("Sauvegarde du joueur en cours...");
+                    boolean saved = db.saveBeing(player);
+                    if (saved) menu.displaySuccess("Sauvegarde réussie !");
+                    else menu.displayError("Echec de la sauvegarde !");
+                }
+                manageDb();
+            }
+            case 4 -> {
+                    menu.displayTitle("Chargement du dernier joueur...");
+                    Being being = db.getBeing(1);
+                    if (being == null) menu.displayError("Echec du chargement !");
+                    else {
+                        this.player = (GameCharacter) being;
+                        menu.displaySuccess("Chargement réussi !");
+                    }
+                manageDb();
+            }
+            case 5 -> home();
+            default -> {
+                menu.displayError("Choix invalide !");
+                manageDb();
             }
         }
     }
@@ -255,7 +309,9 @@ public class Game {
         menu.display("Vous avancez de " + roll + " cases.");
         menu.displayBoard(playerPosition, board);
         Cell cell = board.getCell(playerPosition);
+
         Interaction interaction = cell.interact();
+
         switch (interaction.getType()) {
             case NONE -> menu.display("Vous n'avez rien à faire.");
             case ENEMY -> findEnemy((Enemy) interaction.getObject());

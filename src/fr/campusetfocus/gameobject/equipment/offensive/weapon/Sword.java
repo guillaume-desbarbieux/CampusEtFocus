@@ -8,4 +8,8 @@ public class Sword extends Weapon {
                 "Epée tranchante, coupante et acérée",
                 5);
     }
+
+    public Sword(String name, String description, int bonus) {
+        super(name, description, bonus);
+    }
 }

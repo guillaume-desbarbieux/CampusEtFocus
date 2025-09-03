@@ -6,6 +6,7 @@ import fr.campusetfocus.game.cell.EnemyCell;
 import fr.campusetfocus.game.cell.SurpriseCell;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DbBoard {
@@ -15,68 +16,24 @@ public class DbBoard {
         this.conn = CONNECTION;
     }
 
-    public boolean saveBoard(Board board) {
-        boolean saved = setNewBoard(board.getSize());
-        if (!saved) return false;
-
-        int board_id = getLastBoardId();
-        if (board_id == -1) return false;
-
-        for (int i = 1; i <= board.getSize(); i++) {
-            Cell cell = board.getCell(i);
-            if (cell == null) return false;
-
-            saved = db.cell.saveCell(cell);
-            if (!saved) return false;
-
-            int cell_id = db.cell.getLastCellId();
-            if (cell_id == -1) return false;
-
-            String sql2 = "INSERT INTO cell_board (board_id, cell_id) VALUES (?, ?)";
-            try (PreparedStatement ps = conn.prepareStatement(sql2)){
-                ps.setInt(1,board_id);
-                ps.setInt(2,cell_id);
-
-                int saved2 = ps.executeUpdate();
-                if (saved2 != 1) return false;
-
-            } catch (SQLException e) {
-                return false;
-            }
-
-            switch (cell.getType()) {
-                case ENEMY -> {
-                    EnemyCell enemyCell = (EnemyCell) cell;
-                    db.character.saveGameCharacter(enemyCell.getEnemy());
-                    // ajouter une ligne sur table pivot game_character_cell
-                }
-                case SURPRISE -> {
-                    SurpriseCell surpriseCell = (SurpriseCell) cell;
-                    db.equipment.saveEquipment(surpriseCell.getSurprise());
-                    // ajouter une ligne sur table pivot equipement_cell
-
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean setNewBoard(int size) {
-        String sql = "INSERT INTO board (size) VALUES (?)";
+    public Integer save(Board board) {
+        String sql = "INSERT INTO Board (Size) VALUES (?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, size);
+            ps.setInt(1, board.getSize());
 
             int saved = ps.executeUpdate();
-            return  saved == 1;
+            if (saved != 1) return -1;
+
+            return this.getLastId();
 
         } catch (SQLException e) {
-            return false;
+            return -1;
         }
     }
 
-    private int getLastBoardId() {
-        String sql = "SELECT Id FROM board ORDER BY Id DESC LIMIT 1";
+    private int getLastId() {
+        String sql = "SELECT Id FROM Board ORDER BY Id DESC LIMIT 1";
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -89,13 +46,42 @@ public class DbBoard {
         return -1;
     }
 
-
-    public Integer save(Board board) {
-    }
-
     public boolean edit(Board board) {
+        if (board == null) return false;
+        if (board.getId() == null) return false;
+
+        String sql = "UPDATE Board SET Size = ? WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+
+            ps.setInt(1, board.getSize());
+            ps.setInt(2, board.getId());
+
+            int edited = ps.executeUpdate();
+            return edited == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     public List<Integer> getCellsId(Integer boardId) {
+        if (boardId == null) return null;
+        String sql = "SELECT CellId FROM Board_Cell WHERE BoardId = ?";
+
+        List<Integer> cellsId = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, boardId);
+
+            ResultSet rs = ps.getResultSet();
+            while (rs.next()) {
+                cellsId.add(rs.getInt("CellId"));
+            }
+             return cellsId;
+        } catch (SQLException e) {
+            return null;
+        }
     }
 }

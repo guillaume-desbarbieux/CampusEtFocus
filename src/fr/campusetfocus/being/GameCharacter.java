@@ -71,7 +71,7 @@ public abstract class GameCharacter extends Being {
     public int getAttack(){
         int attackBonus = 0;
         for (OffensiveEquipment offensiveEquipment : offensiveEquipments) {
-            attackBonus += offensiveEquipment.getAttackBonus();
+            attackBonus += offensiveEquipment.getBonus();
         }
         return attackBonus + attack;
     }
@@ -79,7 +79,7 @@ public abstract class GameCharacter extends Being {
     public int getDefense() {
         int defenseBonus = 0;
         for (DefensiveEquipment defensiveEquipment : defensiveEquipments) {
-            defenseBonus += defensiveEquipment.getDefenseBonus();
+            defenseBonus += defensiveEquipment.getBonus();
         }
         return defenseBonus + defense;
     }

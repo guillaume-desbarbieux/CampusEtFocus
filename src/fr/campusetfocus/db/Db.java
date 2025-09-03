@@ -15,18 +15,20 @@ public class Db {
     private final DbBoard board;
     private final DbCell cell;
     private final DbEquipment equipment;
+    private final Connection conn;
 
     public Db() {
-        Connection CONNECTION;
         try {
-            CONNECTION = getConnection();
+            this.conn = getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        this.being = new DbBeing(CONNECTION);
-        this.board = new DbBoard(CONNECTION);
-        this.cell = new DbCell(CONNECTION);
-        this.equipment = new DbEquipment(CONNECTION);
+        if (conn == null) throw new RuntimeException("Connection failed");
+
+        this.being = new DbBeing(conn);
+        this.board = new DbBoard(conn);
+        this.cell = new DbCell(conn);
+        this.equipment = new DbEquipment(conn);
     }
 
     protected Connection getConnection() throws SQLException {
@@ -37,7 +39,7 @@ public class Db {
     }
 
     public static void main(String[] args) {
-       Db db = new Db() ;
+        Db db = new Db();
 /*
        GameCharacter player1 = new Cheater("test1", 456, 25, -3);
        GameCharacter player2 = new Cheater("test2", 456, 25, -3);
@@ -130,7 +132,7 @@ public class Db {
 ****************************************
  */
 
-    public boolean saveCell (Cell cell) {
+    public boolean saveCell(Cell cell) {
         if (cell.getId() == null)
             return this.setNewCell(cell);
         else return this.editCell(cell);
@@ -150,7 +152,8 @@ public class Db {
         boolean edited = this.cell.edit(cell);
         if (!edited) return false;
 
-        if (cell instanceof SurpriseCell surpriseCell) return this.saveCellSurprise(surpriseCell.getSurprise(), cell.getId());
+        if (cell instanceof SurpriseCell surpriseCell)
+            return this.saveCellSurprise(surpriseCell.getSurprise(), cell.getId());
         if (cell instanceof EnemyCell enemyCell) return this.saveCellEnemy(enemyCell.getEnemy(), cell.getId());
         return true;
     }
@@ -182,26 +185,26 @@ public class Db {
     }
 
     public Cell getCell(Integer cellId) {
-        CellType cellType = this.cell.getType(cellId);
+        String cellType = this.cell.getType(cellId);
         if (cellType == null) return null;
 
-        int cellPosition = this.cell.getPosition(cellId);
-        if (cellPosition == -1) return null;
+        int cellNumber = this.cell.getNumber(cellId);
+        if (cellNumber == -1) return null;
 
         Cell cell;
         switch (cellType) {
-            case START -> cell = new StartCell(cellPosition);
-            case END -> cell = new EndCell(cellPosition);
-            case EMPTY -> cell = new EmptyCell(cellPosition);
-            case ENEMY -> {
+            case "START" -> cell = new StartCell(cellNumber);
+            case "END" -> cell = new EndCell(cellNumber);
+            case "EMPTY" -> cell = new EmptyCell(cellNumber);
+            case "ENEMY" -> {
                 Integer enemyId = this.cell.getEnemyId(cellId);
                 Enemy enemy = (Enemy) this.being.get(enemyId);
-                cell = new EnemyCell(cellPosition, enemy);
+                cell = new EnemyCell(cellNumber, enemy);
             }
-            case SURPRISE -> {
+            case "SURPRISE" -> {
                 Integer equipmentId = this.cell.getEquipmentId(cellId);
                 Equipment surprise = this.equipment.get(equipmentId);
-                cell = new SurpriseCell(cellPosition, surprise);
+                cell = new SurpriseCell(cellNumber, surprise);
             }
             default -> {
                 return null;
@@ -224,22 +227,27 @@ public class Db {
     }
 
     private boolean setNewBoard(Board board) {
+        System.out.println( "Creating new board");
         Integer boardId = this.board.save(board);
+        System.out.println( "Board created : " + boardId);
         if (boardId == -1) return false;
         board.setId(boardId);
-
         return this.saveBoardCell(board);
     }
 
     private boolean editBoard(Board board) {
+        System.out.println( "Editing board : " + board.getId());
         boolean edited = this.board.edit(board);
+        System.out.println( "Board edited :" + edited);
         if (!edited) return false;
 
         return this.saveBoardCell(board);
     }
 
     private boolean saveBoardCell(Board board) {
+        System.out.println( "Saving cells to board : " + board.getId());
         boolean removed = this.cell.removeLinkToBoard(board.getId());
+        System.out.println( "Removed cells from board: " + removed);
         if (!removed) return false;
 
         for (int i = 1; i <= board.getSize(); i++) {
@@ -249,7 +257,7 @@ public class Db {
             boolean saved = this.saveCell(cell);
             if (!saved) return false;
 
-            boolean linked = this.cell.linkToBoard(cell.getId(), board.getId());
+            boolean linked = this.cell.linkToBoard(board.getId(), cell.getId());
             if (!linked) return false;
         }
         return true;
@@ -270,6 +278,44 @@ public class Db {
         board.setId(boardId);
         return board;
     }
+
+        
+            /*
+****************************************
+            UTILS
+****************************************
+ */
+
+    private int getIntById (String table, String columnName, Integer id) {
+        String sql = DbUtils.buildSelect(table, columnName, id);
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) return rs.getInt(columnName);
+                else return -1;
+            }
+        } catch (SQLException e) {
+            return -1;
+        }
+    }
+
+    private String getStringById (String table, String columnName, Integer id) {
+        String sql = "SELECT " + columnName + " FROM " + table + " WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) return rs.getString(columnName);
+                else return null;
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
 }
-        
-        

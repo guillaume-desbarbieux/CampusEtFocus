@@ -4,15 +4,14 @@ import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.gameobject.Equipment;
 
 public abstract class DefensiveEquipment extends Equipment {
-    protected int defenseBonus;
 
     public DefensiveEquipment(String name, String description, int defenseBonus){
-        super(name, description);
-        this.defenseBonus = defenseBonus;
+        super(name, description, defenseBonus);
     }
 
-    public int getDefenseBonus() {
-        return defenseBonus;
+    @Override
+    public String getType() {
+        return "DEFENSIVE";
     }
 
     @Override
@@ -27,6 +26,6 @@ public abstract class DefensiveEquipment extends Equipment {
 
     @Override
     public String toString() {
-        return super.toString() + "[defense bonus=" + defenseBonus + "]";
+        return super.toString() + "[defense bonus=" + bonus + "]";
     }
 }

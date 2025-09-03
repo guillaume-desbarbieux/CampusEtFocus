@@ -1,7 +1,6 @@
 package fr.campusetfocus.db;
 
 import fr.campusetfocus.game.Cell;
-import fr.campusetfocus.game.cell.CellType;
 
 import java.sql.*;
 
@@ -64,28 +63,109 @@ public class DbCell {
         }
     }
 
-    /**
-     * ******************************
-     * J'en suis ici !!!!! ******************************************
-     * ******************************
-     * */
+    public boolean linkToBoard(Integer boardId, Integer cellId) {
+        if (cellId == null || boardId == null) return false;
+        String sql = "INSERT INTO Board_Cell (BoardId, CellId) VALUES (?, ?)";
 
-    public boolean linkToBoard(Integer id, Integer id1) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, boardId);
+            ps.setInt(2, cellId);
+
+            int saved = ps.executeUpdate();
+            return saved == 1;
+        } catch (SQLException e) {
+            return false;
+        }
     }
-
 
     public boolean removeLinkToBoard(Integer boardId) {
+        System.out.println("Removing link to board:" + boardId);
+        if (boardId == null) return false;
+
+        /*****
+         * **********************************
+         * Avant la suppression, vérifier s'il y a quelquechose à supprimer !
+         */
+
+        String sql = "DELETE FROM Board_Cell WHERE BoardId = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, boardId);
+
+            int deleted = ps.executeUpdate();
+            System.out.println( "Deleted: " + deleted);
+            return deleted == 1;
+
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
-    public CellType getType(Integer cellId) {
+    public String getType(Integer cellId) {
+        if (cellId == null) return null;
+
+        String sql = "SELECT CellType FROM Cell WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cellId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) return rs.getString("CellType").toUpperCase();
+                else return null;
+            }
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
-    public int getPosition(Integer cellId) {
+    public int getNumber(Integer cellId) {
+        if (cellId == null) return -1;
+
+        String sql = "SELECT Number FROM Cell WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cellId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) return rs.getInt("Number");
+                else return -1;
+            }
+        } catch (SQLException e) {
+            return -1;
+        }
     }
 
     public Integer getEnemyId(Integer cellId) {
+        if (cellId == null) return -1;
+
+        String sql = "SELECT BeingId FROM Cell_Being WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cellId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) return rs.getInt("BeingId");
+                else return -1;
+            }
+        } catch (SQLException e) {
+            return -1;
+        }
     }
 
     public Integer getEquipmentId(Integer cellId) {
+        if (cellId == null) return -1;
+
+        String sql = "SELECT EquipmentId FROM Cell_Equipment WHERE Id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cellId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) return rs.getInt("EquipmentId");
+                else return -1;
+            }
+        } catch (SQLException e) {
+            return -1;
+        }
     }
 }
