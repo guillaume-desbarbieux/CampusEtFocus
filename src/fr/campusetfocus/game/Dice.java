@@ -1,18 +1,44 @@
 package fr.campusetfocus.game;
 
-public class Dice {
-    private int value;
+import fr.campusetfocus.interfaces.Rollable;
+
+import java.util.ArrayList;
+
+public class Dice implements Rollable {
+    private final ArrayList<Integer> history;
+    private final int MIN_VALUE;
+    private final int MAX_VALUE;
+
+
+    public Dice(int min, int max) {
+        history = new ArrayList<>();
+        MIN_VALUE = min;
+        MAX_VALUE = max;
+    }
+
+    public Dice(int max) {
+        history = new ArrayList<>();
+        MIN_VALUE = 1;
+        MAX_VALUE = max;
+    }
 
     public Dice() {
-        this.value = roll();
+        history = new ArrayList<>();
+        MIN_VALUE = 1;
+        MAX_VALUE = 6;
     }
 
     public int roll() {
-        this.value = (int) (Math.random() * 6) + 1;
-        return this.value;
+        int value = MIN_VALUE + (int) (Math.random() * (MAX_VALUE - MIN_VALUE+1)) ;
+        this.history.add(value);
+        return value;
     }
 
-    public int getValue() {
-        return value;
+    public int lastRoll() {
+        return history.get(history.size() - 1);
+    }
+
+    public ArrayList<Integer> getHistory() {
+        return history;
     }
 }

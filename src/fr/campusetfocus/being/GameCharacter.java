@@ -5,35 +5,34 @@ import fr.campusetfocus.gameobject.equipment.LifeEquipment;
 import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class GameCharacter extends Being {
-    protected List<OffensiveEquipment> offensiveEquipments = new ArrayList<>();
-    protected List<DefensiveEquipment> defensiveEquipments =  new ArrayList<>();
-    protected List<LifeEquipment> lifeEquipments = new ArrayList<>();
+    protected ArrayList<OffensiveEquipment> offensiveEquipments = new ArrayList<>();
+    protected ArrayList<DefensiveEquipment> defensiveEquipments =  new ArrayList<>();
+    protected ArrayList<LifeEquipment> lifeEquipments = new ArrayList<>();
 
     public GameCharacter(String name, int life, int attack, int defense) {
         super(name, life, attack,  defense);
     }
 
-    public List<OffensiveEquipment> getOffensiveEquipments() {
+    public ArrayList<OffensiveEquipment> getOffensiveEquipments() {
         return offensiveEquipments;
     }
-    public List<DefensiveEquipment> getDefensiveEquipments() {
+    public ArrayList<DefensiveEquipment> getDefensiveEquipments() {
         return defensiveEquipments;
     }
-    public List<LifeEquipment> getLifeEquipments() {
+    public ArrayList<LifeEquipment> getLifeEquipments() {
         return lifeEquipments;
     }
-    public List<Equipment> getEquipments() {
-        List<Equipment> equipments = new ArrayList<>();
+    public ArrayList<Equipment> getEquipments() {
+        ArrayList<Equipment> equipments = new ArrayList<>();
         equipments.addAll(offensiveEquipments);
         equipments.addAll(defensiveEquipments);
         equipments.addAll(lifeEquipments);
         return equipments;
     }
 
-    public boolean setEquipment(List<Equipment> equipments) {
+    public boolean setEquipment(ArrayList<Equipment> equipments) {
         for (Equipment equipment : equipments) {
             if (equipment instanceof OffensiveEquipment) {
                 addOffensiveEquipment((OffensiveEquipment) equipment);
