@@ -131,7 +131,7 @@ public class Db {
         Being being = this.being.get(beingId);
         System.out.println("Being récupéré : " + being.toString());
 
-        List<Equipment> equipments = this.equipment.getCharacterEquipment(beingId);
+        ArrayList<Equipment> equipments = this.equipment.getCharacterEquipment(beingId);
         System.out.println("Equipements récupérés " + equipments.toString());
         if (equipments != null) {
             boolean set = ((GameCharacter) being).setEquipment(equipments);

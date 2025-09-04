@@ -320,9 +320,7 @@ public class Game {
             case NONE -> menu.display("Vous n'avez rien à faire.");
             case ENEMY -> findEnemy((Enemy) interaction.getObject());
             case SURPRISE -> findSurprise((Equipment) interaction.getObject());
-            case DISPLAY -> menu.display(interaction.getObject().toString());
             case END -> endGame();
-            default -> menu.displayError("Interaction inconnue !");
         }
                endTurn();
     }
