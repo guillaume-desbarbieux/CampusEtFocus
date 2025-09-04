@@ -139,7 +139,8 @@ public class Game {
             }
             case 4 -> {
                     menu.displayTitle("Chargement du dernier joueur...");
-                    Being being = db.getBeing(1);
+                    Integer beingId = db.being.getLastId();
+                    Being being = db.getBeing(beingId);
                     if (being == null) menu.displayError("Echec du chargement !");
                     else {
                         this.player = (GameCharacter) being;

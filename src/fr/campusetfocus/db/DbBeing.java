@@ -38,7 +38,7 @@ public class DbBeing {
         }
     }
 
-    private Integer getLastId() {
+    public Integer getLastId() {
         String sql = "SELECT Id FROM Being ORDER BY Id DESC LIMIT 1";
 
         try (Statement stmt = conn.createStatement();
@@ -68,10 +68,7 @@ public class DbBeing {
             ps.setInt(6, being.getId());
 
             int edited = ps.executeUpdate();
-            if (edited != 1) return false;
-
-            Being clone = this.get(being.getId());
-            return being.isSame(clone);
+            return edited == 1;
 
         } catch (SQLException e) {
             return false;

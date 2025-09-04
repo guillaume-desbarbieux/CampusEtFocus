@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Db {
-    private final DbBeing being;
+    public final DbBeing being;
     public final DbBoard board;
     private final DbCell cell;
     private final DbEquipment equipment;
@@ -71,9 +71,14 @@ public class Db {
 ****************************************
  */
     public boolean saveBeing(Being being) {
-        if (being.getId() == null)
+        if (being.getId() == null) {
+            System.out.println("Creating new being");
             return this.setNewBeing(being);
-        else return this.editBeing(being);
+        }
+        else {
+            System.out.println("Editing being id " + being.getId());
+            return this.editBeing(being);
+        }
     }
 
     private boolean setNewBeing(Being being) {
@@ -89,20 +94,24 @@ public class Db {
 
     private boolean editBeing(Being being) {
         boolean edited = this.being.edit(being);
+        System.out.println("Being edited : " + edited);
         if (!edited) return false;
 
-        if (being instanceof GameCharacter player)
+        if (being instanceof GameCharacter player) {
+            System.out.println("Saving character equipments");
             return this.saveCharacterEquipment(player.getEquipments(), player.getId());
+        }
         else return true;
     }
 
     private boolean saveCharacterEquipment(List<Equipment> equipments, Integer characterId) {
-
+        System.out.println("Equipments to save :"  + equipments.toString());
         String type = this.being.getType(characterId);
         if (type == null) return false;
         if (!type.equals("CHEATER") && !type.equals("MAGUS") && !type.equals("WARRIOR")) return false;
-
+        System.out.println("Checked that being is a character");
         boolean removed = this.equipment.removeLinkToCharacter(characterId);
+        System.out.println("Removed old equipments from character : " + removed);
         if (!removed) return false;
 
         if (equipments == null) return true;
@@ -120,8 +129,10 @@ public class Db {
 
     public Being getBeing(Integer beingId) {
         Being being = this.being.get(beingId);
+        System.out.println("Being récupéré : " + being.toString());
 
         List<Equipment> equipments = this.equipment.getCharacterEquipment(beingId);
+        System.out.println("Equipements récupérés " + equipments.toString());
         if (equipments != null) {
             boolean set = ((GameCharacter) being).setEquipment(equipments);
             if (!set) return null;

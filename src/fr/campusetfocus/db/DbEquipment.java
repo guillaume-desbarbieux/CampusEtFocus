@@ -11,6 +11,7 @@ import fr.campusetfocus.gameobject.equipment.offensive.weapon.Mace;
 import fr.campusetfocus.gameobject.equipment.offensive.weapon.Sword;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DbEquipment {
@@ -180,13 +181,41 @@ public class DbEquipment {
         }
     }
 
-    public List<Equipment> getCharacterEquipment(Integer id) {
-        if (id == null) return null;
+    public List<Equipment> getCharacterEquipment(Integer beingId) {
+        if (beingId == null) return null;
+
+        List<Integer> equipementsId = getEquipmentsId(beingId);
+        if (equipementsId == null) return null;
+
+        List<Equipment> equipments = new ArrayList<>(equipementsId.size());
+        for (Integer equipmentId : equipementsId) {
+            Equipment equipment = this.get(equipmentId);
+            if (equipment == null) return null;
+            equipments.add(equipment);
+        }
+        return equipments;
+    }
+
+    private List<Integer> getEquipmentsId(Integer beingId) {
+        if (beingId == null || beingId == -1) return null;
+        if (!this.exists(beingId, "Being_Equipment", "BeingId")) return null;
 
         String sql = "SELECT EquipmentId FROM Being_Equipment WHERE BeingId = ?";
+        List<Integer> equipmentsId = new ArrayList<>();
 
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        return null;
+            ps.setInt(1, beingId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    equipmentsId.add(rs.getInt("EquipmentId"));
+                }
+            }
+            return equipmentsId;
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
     private boolean exists(Integer id, String table, String columnName) {
