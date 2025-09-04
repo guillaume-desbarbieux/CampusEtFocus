@@ -5,5 +5,4 @@ class DbUtils {
         return "SELECT " + columnName + " FROM " + table + " WHERE id = " + id;
     }
 
-
 }

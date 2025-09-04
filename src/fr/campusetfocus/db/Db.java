@@ -133,13 +133,19 @@ public class Db {
  */
 
     public boolean saveCell(Cell cell) {
-        if (cell.getId() == null)
+        if (cell.getId() == null) {
+            System.out.println("Creating new cell");
             return this.setNewCell(cell);
-        else return this.editCell(cell);
+        }
+        else {
+            System.out.println("Editing cell : " + cell.getId());
+            return this.editCell(cell);
+        }
     }
 
     private boolean setNewCell(Cell cell) {
         Integer cellId = this.cell.save(cell);
+        System.out.println("Cell created : " + cellId);
         if (cellId == -1) return false;
         cell.setId(cellId);
 
@@ -252,12 +258,16 @@ public class Db {
 
         for (int i = 1; i <= board.getSize(); i++) {
             Cell cell = board.getCell(i);
+            System.out.println( "Saving cell : " + i);
             if (cell == null) return false;
 
             boolean saved = this.saveCell(cell);
+            System.out.println( "Cell saved : " + saved);
             if (!saved) return false;
 
+            System.out.println( "Linking cell to board : " + i);
             boolean linked = this.cell.linkToBoard(board.getId(), cell.getId());
+            System.out.println( "Linked cell to board : " + linked);
             if (!linked) return false;
         }
         return true;

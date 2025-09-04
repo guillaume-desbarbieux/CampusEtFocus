@@ -81,11 +81,7 @@ public class DbCell {
     public boolean removeLinkToBoard(Integer boardId) {
         System.out.println("Removing link to board:" + boardId);
         if (boardId == null) return false;
-
-        /*****
-         * **********************************
-         * Avant la suppression, vérifier s'il y a quelquechose à supprimer !
-         */
+        if (!this.exists(boardId, "Board_Cell", "BoardId")) return true;
 
         String sql = "DELETE FROM Board_Cell WHERE BoardId = ?";
 
@@ -166,6 +162,21 @@ public class DbCell {
             }
         } catch (SQLException e) {
             return -1;
+        }
+    }
+
+    private boolean exists(Integer id, String table, String columnName) {
+        if (id == null) return false;
+        String sql = "SELECT COUNT(*) FROM " + table + " WHERE " + columnName + " = ?";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1,id);
+
+            int exist = ps.executeUpdate();
+            return exist > 0;
+        }catch (SQLException e) {
+            return false;
         }
     }
 }

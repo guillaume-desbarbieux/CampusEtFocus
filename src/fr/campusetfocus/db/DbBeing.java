@@ -130,6 +130,7 @@ public class DbBeing {
     public boolean removeLinkToCell(Integer cellId) {
         if (cellId == null) return false;
 
+        if (!this.exists(cellId, "Cell_Being", "CellId")) return true;
         String sql = "DELETE FROM Cell_Being WHERE CellId = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -157,6 +158,21 @@ public class DbBeing {
             }
         } catch (SQLException e) {
             return null;
+        }
+    }
+
+    private boolean exists(Integer id, String table, String columnName) {
+        if (id == null) return false;
+        String sql = "SELECT COUNT(*) FROM " + table + " WHERE " + columnName + " = ?";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1,id);
+
+            int exist = ps.executeUpdate();
+            return exist > 0;
+        }catch (SQLException e) {
+            return false;
         }
     }
 }
