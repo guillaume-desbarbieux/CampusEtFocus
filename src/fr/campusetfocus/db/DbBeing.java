@@ -14,6 +14,7 @@ public class DbBeing {
     }
 
     public Integer save(Being being) {
+
         String sql = "INSERT INTO Being (GameType, Name, Life, Attack, Defense) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -23,12 +24,16 @@ public class DbBeing {
             ps.setInt(4, being.getAttack());
             ps.setInt(5, being.getDefense());
 
+            System.out.println("SQL: " + ps);
+
             int saved = ps.executeUpdate();
+            System.out.println("Saved: " + saved);
             if (saved != 1) return -1;
 
             return this.getLastId();
 
         } catch (SQLException e) {
+            System.out.println("Erreur !!!! : " + e.getMessage());
             return -1;
         }
     }
@@ -90,6 +95,7 @@ public class DbBeing {
                 int life = rs.getInt("Life");
                 int attack = rs.getInt("Attack");
                 int defense = rs.getInt("Defense");
+                System.out.println("Being: " + name + type + life + attack + defense);
 
                 Being being;
                 switch (type) {
@@ -163,15 +169,16 @@ public class DbBeing {
 
     private boolean exists(Integer id, String table, String columnName) {
         if (id == null) return false;
-        String sql = "SELECT COUNT(*) FROM " + table + " WHERE " + columnName + " = ?";
+        String sql = "SELECT " + columnName + " FROM " + table + " WHERE " + columnName + " = ? LIMIT 1";
 
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1,id);
-
-            int exist = ps.executeUpdate();
-            return exist > 0;
-        }catch (SQLException e) {
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur !!!! : " + e.getMessage());
             return false;
         }
     }

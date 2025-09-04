@@ -84,7 +84,7 @@ public class Game {
     public void home() {
         menu.displayTitle("Bienvenu sur Campus & Focus");
         menu.displayTitle("Menu Principal");
-        int choice = menu.getChoice("", new String[]{"Nouvelle Partie", "Gestion du personnage", "Afficher le plateau", "Gestion Base de données","Quitter", "Cheat Mode"});
+        int choice = menu.getChoice("", new String[]{"Retourner sur le plateau", "Gestion du personnage", "Afficher le plateau", "Gestion Base de données", "Quitter", "Cheat Mode"});
         switch (choice) {
             case 1 -> start();
             case 2 -> managePlayer();
@@ -104,7 +104,7 @@ public class Game {
 
     private void manageDb() {
         menu.displayTitle("Gestion de la Base de données");
-        int choice = menu.getChoice("", new String[]{"Sauvegarder la partie en cours", "Charger une ancienne partie", "Sauvegarder mon personnage", "Charger un personnage", "Retour au menu principal"});
+        int choice = menu.getChoice("", new String[]{"Sauvegarder le plateau", "Charger un ancien plateau", "Sauvegarder mon personnage", "Charger un ancien personnage", "Retour au menu principal"});
 
         switch (choice) {
             case 1 -> {
@@ -116,11 +116,14 @@ public class Game {
             }
             case 2 -> {
                 menu.displayTitle("Chargement de la dernière partie...");
-                Board newBoard = db.getBoard(1);
+                Integer boardId = db.board.getLastId();
+                Board newBoard = db.getBoard(boardId);
                 if (newBoard == null) menu.displayError("Echec du chargement !");
                 else {
                     this.board = newBoard;
-                    menu.displaySuccess("Chargement réussi !");
+                    menu.displayBoard(1,board);
+                    menu.display("id " + board.getId() + " size " +board.getSize());
+
                 }
                 manageDb();
             }
@@ -348,7 +351,7 @@ public class Game {
      */
     public void playingMenu() {
         menu.displayTitle("Menu Pause");
-        int choice = menu.getChoice("", new String[] {"Inventaire", "Statistiques du personnage", "Retour au jeu", "Quitter le jeu"});
+        int choice = menu.getChoice("", new String[] {"Inventaire", "Statistiques du personnage", "Retour au jeu", "Quitter le plateau"});
         switch (choice) {
             case 1:
                 this.displayInventory();
@@ -362,7 +365,7 @@ public class Game {
                 menu.displayWarning("Retour au jeu !");
                 break;
             case 4:
-                this.quit();
+                this.home();
                 break;
             default:
                 menu.displayError("Choix invalide !");

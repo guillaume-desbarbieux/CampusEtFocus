@@ -4,6 +4,7 @@ import fr.campusetfocus.being.*;
 import fr.campusetfocus.game.Board;
 import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.cell.*;
+import fr.campusetfocus.game.interaction.Interaction;
 import fr.campusetfocus.gameobject.Equipment;
 
 import java.sql.*;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class Db {
     private final DbBeing being;
-    private final DbBoard board;
+    public final DbBoard board;
     private final DbCell cell;
     private final DbEquipment equipment;
     private final Connection conn;
@@ -77,6 +78,7 @@ public class Db {
 
     private boolean setNewBeing(Being being) {
         Integer characterId = this.being.save(being);
+        System.out.println("Being created : " + characterId);
         if (characterId == -1) return false;
         being.setId(characterId);
 
@@ -95,9 +97,10 @@ public class Db {
     }
 
     private boolean saveCharacterEquipment(List<Equipment> equipments, Integer characterId) {
+
         String type = this.being.getType(characterId);
         if (type == null) return false;
-        if (!type.equals("Cheater") && !type.equals("Magus") && !type.equals("Warrior")) return false;
+        if (!type.equals("CHEATER") && !type.equals("MAGUS") && !type.equals("WARRIOR")) return false;
 
         boolean removed = this.equipment.removeLinkToCharacter(characterId);
         if (!removed) return false;
@@ -165,10 +168,11 @@ public class Db {
     }
 
     private boolean saveCellSurprise(Equipment equipment, Integer cellId) {
-        boolean removed = this.equipment.removeLinkToCell(cellId);
-        if (!removed) return false;
-
         if (equipment == null) return true;
+        System.out.println( "Saving surprise : " + equipment.toString());
+        boolean removed = this.equipment.removeLinkToCell(cellId);
+        System.out.println( "Removed old surprise from cell : " + removed);
+        if (!removed) return false;
 
         Integer equipmentId = this.equipment.save(equipment);
         if (equipmentId == -1) return false;
@@ -178,12 +182,15 @@ public class Db {
     }
 
     private boolean saveCellEnemy(Enemy enemy, Integer cellId) {
+        if (enemy == null) return true;
+        System.out.println("Saving enemy : " + enemy.toString());
         boolean removed = this.being.removeLinkToCell(cellId);
+        System.out.println("Removed old enemy from cell : " + removed);
         if (!removed) return false;
 
-        if (enemy == null) return true;
-
+        System.out.println("Creating enemy...");
         Integer enemyId = this.being.save(enemy);
+        System.out.println("Enemy created with id " + enemyId);
         if (enemyId == -1) return false;
         enemy.setId(enemyId);
 
@@ -197,6 +204,8 @@ public class Db {
         int cellNumber = this.cell.getNumber(cellId);
         if (cellNumber == -1) return null;
 
+        System.out.println( "Getting cell : " + cellId + " (" + cellType + ")");
+
         Cell cell;
         switch (cellType) {
             case "START" -> cell = new StartCell(cellNumber);
@@ -204,11 +213,13 @@ public class Db {
             case "EMPTY" -> cell = new EmptyCell(cellNumber);
             case "ENEMY" -> {
                 Integer enemyId = this.cell.getEnemyId(cellId);
+                System.out.println("Getting enemy id " + enemyId);
                 Enemy enemy = (Enemy) this.being.get(enemyId);
                 cell = new EnemyCell(cellNumber, enemy);
             }
             case "SURPRISE" -> {
                 Integer equipmentId = this.cell.getEquipmentId(cellId);
+                System.out.println("Getting surprise id " + equipmentId);
                 Equipment surprise = this.equipment.get(equipmentId);
                 cell = new SurpriseCell(cellNumber, surprise);
             }
@@ -274,6 +285,10 @@ public class Db {
     }
 
     public Board getBoard(Integer boardId) {
+        System.out.println( "Getting board : " + boardId);
+        if (!exists(boardId, "Board", "Id")) return null;
+        System.out.println( "Board exists");
+
         List<Integer> cellsId = this.board.getCellsId(boardId);
         if (cellsId == null) return null;
 
@@ -282,6 +297,11 @@ public class Db {
         for (Integer cellId : cellsId) {
             Cell cell = this.getCell(cellId);
             if (cell == null) return null;
+            System.out.println("> Cell : " + cell.getId() + cell.getType());
+            Interaction interaction = cell.interact();
+            System.out.println("> Interaction : " + interaction.getType());
+            if (interaction.getObject() != null)
+                System.out.println("> Contenu : " + interaction.getObject().toString());
             cells.add(cell);
         }
         Board board = new Board(cells);
@@ -295,6 +315,23 @@ public class Db {
             UTILS
 ****************************************
  */
+
+    private boolean exists(Integer id, String table, String columnName) {
+        if (id == null) return false;
+        String sql = "SELECT " + columnName + " FROM " + table + " WHERE " + columnName + " = ? LIMIT 1";
+
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1,id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur !!!! : " + e.getMessage());
+            return false;
+        }
+    }
 
     private int getIntById (String table, String columnName, Integer id) {
         String sql = DbUtils.buildSelect(table, columnName, id);

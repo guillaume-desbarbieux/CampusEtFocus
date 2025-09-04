@@ -90,7 +90,7 @@ public class DbCell {
 
             int deleted = ps.executeUpdate();
             System.out.println( "Deleted: " + deleted);
-            return deleted == 1;
+            return deleted > 0;
 
         } catch (SQLException e) {
             return false;
@@ -134,7 +134,7 @@ public class DbCell {
     public Integer getEnemyId(Integer cellId) {
         if (cellId == null) return -1;
 
-        String sql = "SELECT BeingId FROM Cell_Being WHERE Id = ?";
+        String sql = "SELECT BeingId FROM Cell_Being WHERE cellId = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, cellId);
@@ -151,7 +151,7 @@ public class DbCell {
     public Integer getEquipmentId(Integer cellId) {
         if (cellId == null) return -1;
 
-        String sql = "SELECT EquipmentId FROM Cell_Equipment WHERE Id = ?";
+        String sql = "SELECT EquipmentId FROM Cell_Equipment WHERE cellId = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, cellId);
@@ -167,15 +167,16 @@ public class DbCell {
 
     private boolean exists(Integer id, String table, String columnName) {
         if (id == null) return false;
-        String sql = "SELECT COUNT(*) FROM " + table + " WHERE " + columnName + " = ?";
+        String sql = "SELECT " + columnName + " FROM " + table + " WHERE " + columnName + " = ? LIMIT 1";
 
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1,id);
-
-            int exist = ps.executeUpdate();
-            return exist > 0;
-        }catch (SQLException e) {
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur !!!! : " + e.getMessage());
             return false;
         }
     }

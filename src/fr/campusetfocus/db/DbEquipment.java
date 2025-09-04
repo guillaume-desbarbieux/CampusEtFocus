@@ -21,13 +21,14 @@ public class DbEquipment {
     }
 
     public Integer save(Equipment equipment) {
-        String sql = "INSERT INTO Equipment (EquipmentType, Name, Description, Bonus) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Equipment (EquipmentType, EquipmentClass, Name, Description, Bonus) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, equipment.getType());
-            ps.setString(2, equipment.getName());
-            ps.setString(3, equipment.getDescription());
-            ps.setInt(4, equipment.getBonus());
+            ps.setString(2, equipment.getClass().getSimpleName().toUpperCase());
+            ps.setString(3, equipment.getName());
+            ps.setString(4, equipment.getDescription());
+            ps.setInt(5, equipment.getBonus());
 
             int saved = ps.executeUpdate();
             if (saved != 1) return -1;
@@ -77,7 +78,7 @@ public class DbEquipment {
     public Equipment get(Integer equipmentId) {
         if (equipmentId == null) return null;
 
-        String sql = "SELECT Name, Description, Bonus from Equipment WHERE Id = ?";
+        String sql = "SELECT EquipmentClass, Name, Description, Bonus from Equipment WHERE Id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, equipmentId);
@@ -86,12 +87,13 @@ public class DbEquipment {
                 if (!rs.next()) {
                     return null;
                 }
-                String name = rs.getString("Name").toUpperCase();
+                String EquipmentClass = rs.getString("EquipmentClass").toUpperCase();
+                String name = rs.getString("Name");
                 String description = rs.getString("Description");
                 int bonus = rs.getInt("Bonus");
 
                 Equipment equipment;
-                switch (name) {
+                switch (EquipmentClass) {
                     case "BIGSHIELD" -> equipment = new BigShield(name, description, bonus);
                     case "STANDARDSHIELD" -> equipment = new StandardShield(name, description, bonus);
                     case "BIGPOTION" -> equipment = new BigPotion(name, description, bonus);
@@ -130,7 +132,7 @@ public class DbEquipment {
 
     public boolean removeLinkToCharacter(Integer characterId) {
         if (characterId == null) return false;
-        if (!this.exists(characterId, "Being_Equipment", "characterId")) return true;
+        if (!this.exists(characterId, "Being_Equipment", "BeingId")) return true;
 
         String sql = "DELETE FROM Being_Equipment WHERE BeingId = ?";
 
@@ -189,15 +191,16 @@ public class DbEquipment {
 
     private boolean exists(Integer id, String table, String columnName) {
         if (id == null) return false;
-        String sql = "SELECT COUNT(*) FROM " + table + " WHERE " + columnName + " = ?";
+        String sql = "SELECT " + columnName + " FROM " + table + " WHERE " + columnName + " = ? LIMIT 1";
 
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1,id);
-
-            int exist = ps.executeUpdate();
-            return exist > 0;
-        }catch (SQLException e) {
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur !!!! : " + e.getMessage());
             return false;
         }
     }

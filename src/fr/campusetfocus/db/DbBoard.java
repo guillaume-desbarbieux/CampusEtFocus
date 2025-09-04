@@ -29,7 +29,7 @@ public class DbBoard {
         }
     }
 
-    private int getLastId() {
+    public int getLastId() {
         String sql = "SELECT Id FROM Board ORDER BY Id DESC LIMIT 1";
 
         try (Statement stmt = conn.createStatement();
@@ -72,9 +72,11 @@ public class DbBoard {
 
             ps.setInt(1, boardId);
 
-            ResultSet rs = ps.getResultSet();
-            while (rs.next()) {
-                cellsId.add(rs.getInt("CellId"));
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    cellsId.add(rs.getInt("CellId"));
+                }
             }
              return cellsId;
         } catch (SQLException e) {
