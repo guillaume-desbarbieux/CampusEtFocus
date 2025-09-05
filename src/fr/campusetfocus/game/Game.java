@@ -70,6 +70,25 @@ public class Game {
         } catch (PlayerPositionException error) {
             menu.displayError(error.getMessage());
         }
+        if (move > 0) {
+            menu.display("Vous avancez de " + move + " cases.");
+        } else if (move < 0) {
+            menu.display("Vous reculez de " + (-move) + " cases.");
+        } else {
+            menu.display("Vous restez immobile.");
+        }
+
+        menu.displayBoard(playerPosition, board);
+        Cell cell = board.getCell(playerPosition);
+
+        Interaction interaction = cell.interact();
+
+        switch (interaction.getType()) {
+            case NONE -> menu.display("Vous n'avez rien à faire.");
+            case ENEMY -> findEnemy((Enemy) interaction.getObject());
+            case SURPRISE -> findSurprise((Equipment) interaction.getObject());
+            case END -> endGame();
+        }
     }
 
     /**
@@ -296,18 +315,7 @@ public class Game {
             roll = board.getSize() - playerPosition;
         }
         movePlayer(roll);
-        menu.display("Vous avancez de " + roll + " cases.");
-        menu.displayBoard(playerPosition, board);
-        Cell cell = board.getCell(playerPosition);
 
-        Interaction interaction = cell.interact();
-
-        switch (interaction.getType()) {
-            case NONE -> menu.display("Vous n'avez rien à faire.");
-            case ENEMY -> findEnemy((Enemy) interaction.getObject());
-            case SURPRISE -> findSurprise((Equipment) interaction.getObject());
-            case END -> endGame();
-        }
         endTurn();
     }
 
