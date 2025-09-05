@@ -426,9 +426,12 @@ public class Game {
         if (choice <= lifeEquipments.size()) {
 
             LifeEquipment selected = lifeEquipments.get(choice - 1);
-            int healed = selected.use(player);
-            player.removeLifeEquipment(selected);
-            menu.display("Vous avez utilisé " + selected.getName() + "et récupéré " + healed + " points de vie.");
+            if (player.removeLifeEquipment(selected)) {
+                int healed = selected.use(player);
+                menu.display("Vous avez utilisé " + selected.getName() + " et récupéré " + healed + " points de vie.");
+            } else {
+                menu.display("Vous ne parvenez pas à ouvrir cette potion.");
+            }
         } else {
             menu.display("Action annulée.");
         }
