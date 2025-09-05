@@ -26,13 +26,15 @@ public class Game {
     private Board board;
     private GameCharacter player;
     private final Dice dice;
+    private final Dice criticalDice;
     private int playerPosition;
     private Db db;
 
     public Game() {
         menu = new Menu();
         board = new Board();
-        dice = new Dice();
+        dice = new Dice(6);
+        criticalDice = new Dice(20);
         playerPosition = 1;
     }
 
@@ -517,8 +519,20 @@ public class Game {
      */
     public void fight (Enemy enemy) {
         menu.displayTitle("Combat");
+
+
         int blow = attack(player, enemy);
-        if (blow == 0) {
+
+        int criticallity = criticalDice.roll();
+        if (criticallity == 1) {
+            blow = 0;
+            menu.display("Echec critique ! Votre coup est raté !");
+        }
+        if (criticallity == 20) {
+            blow += 2;
+            menu.display("Réussite critique ! Votre coup est très efficace !");
+        }
+        if (blow <= 0) {
             menu.display("Votre attaque est trop faible pour atteindre l'ennemi.");
         } else {
             menu.display("Vous infligez " + blow + " dégâts à l'ennemi.");
