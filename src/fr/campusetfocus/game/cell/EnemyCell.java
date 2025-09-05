@@ -69,8 +69,7 @@ public class EnemyCell extends Cell {
             }
             if (player.getLife() <= 0) throw new PlayerLostException("Vous avez été tué par " + enemy.getName() + " !");
         }
-        throw new PlayerMovedException("Vous fuyez le combat.", -dice.roll(Math.min(6, this.getNumber()6
-        )));
+        throw new PlayerMovedException("Vous fuyez le combat.", -dice.roll(Math.min(6, this.getNumber())));
     }
 
         /**

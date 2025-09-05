@@ -4,7 +4,6 @@ import fr.campusetfocus.being.*;
 import fr.campusetfocus.game.Board;
 import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.cell.*;
-import fr.campusetfocus.game.interaction.Interaction;
 import fr.campusetfocus.gameobject.Equipment;
 
 import java.sql.*;
@@ -39,51 +38,18 @@ public class Db {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
-    public static void main(String[] args) {
-        Db db = new Db();
-/*
-       GameCharacter player1 = new Cheater("test1", 456, 25, -3);
-       GameCharacter player2 = new Cheater("test2", 456, 25, -3);
-        System.out.println("player1 and 2 are equal : " + player1.isSame(player2));
-
-
-       boolean created = db.character.save(player1);
-       System.out.println("Game character created: " + created);
-
-       GameCharacter player3 = db.character.getGameCharacter("test1");
-       player2.changeLife(100);
-       player2.changeAttack(-50);
-       boolean edited = db.character.editGameCharacter(player3, "test1");
-       System.out.println("Game character edited: " + edited);
-       db.character.displayGameCharacters();
-
-       player2.changeLife(1);
-       edited = db.character.changeLifePoints(player2);
-       System.out.println("Game character life points changed: " + edited);
-       db.character.displayGameCharacters();
-       */
-
-    }
-
     /*
 ****************************************
             ALL ABOUT BEINGS
 ****************************************
  */
     public boolean saveBeing(Being being) {
-        if (being.getId() == null) {
-            System.out.println("Creating new being");
-            return this.setNewBeing(being);
-        }
-        else {
-            System.out.println("Editing being id " + being.getId());
-            return this.editBeing(being);
-        }
+        if (being.getId() == null) return this.setNewBeing(being);
+        else return this.editBeing(being);
     }
 
     private boolean setNewBeing(Being being) {
         Integer characterId = this.being.save(being);
-        System.out.println("Being created : " + characterId);
         if (characterId == -1) return false;
         being.setId(characterId);
 
@@ -94,27 +60,21 @@ public class Db {
 
     private boolean editBeing(Being being) {
         boolean edited = this.being.edit(being);
-        System.out.println("Being edited : " + edited);
         if (!edited) return false;
 
-        if (being instanceof GameCharacter player) {
-            System.out.println("Saving character equipments");
+        if (being instanceof GameCharacter player)
             return this.saveCharacterEquipment(player.getEquipments(), player.getId());
-        }
         else return true;
     }
 
     private boolean saveCharacterEquipment(List<Equipment> equipments, Integer characterId) {
-        System.out.println("Equipments to save :"  + equipments.toString());
         String type = this.being.getType(characterId);
         if (type == null) return false;
         if (!type.equals("CHEATER") && !type.equals("MAGUS") && !type.equals("WARRIOR")) return false;
-        System.out.println("Checked that being is a character");
         boolean removed = this.equipment.removeLinkToCharacter(characterId);
-        System.out.println("Removed old equipments from character : " + removed);
         if (!removed) return false;
 
-        if (equipments == null) return true;
+        if (equipments.isEmpty()) return true;
 
         for (Equipment equipment : equipments) {
             Integer equipmentId = this.equipment.save(equipment);
@@ -129,11 +89,8 @@ public class Db {
 
     public Being getBeing(Integer beingId) {
         Being being = this.being.get(beingId);
-        System.out.println("Being récupéré : " + being.toString());
-
         ArrayList<Equipment> equipments = this.equipment.getCharacterEquipment(beingId);
-        System.out.println("Equipements récupérés " + equipments.toString());
-        if (equipments != null) {
+        if (!equipments.isEmpty()) {
             boolean set = ((GameCharacter) being).setEquipment(equipments);
             if (!set) return null;
         }
@@ -147,19 +104,12 @@ public class Db {
  */
 
     public boolean saveCell(Cell cell) {
-        if (cell.getId() == null) {
-            System.out.println("Creating new cell");
-            return this.setNewCell(cell);
-        }
-        else {
-            System.out.println("Editing cell : " + cell.getId());
-            return this.editCell(cell);
-        }
+        if (cell.getId() == null) return this.setNewCell(cell);
+        else return this.editCell(cell);
     }
 
     private boolean setNewCell(Cell cell) {
         Integer cellId = this.cell.save(cell);
-        System.out.println("Cell created : " + cellId);
         if (cellId == -1) return false;
         cell.setId(cellId);
 
@@ -180,9 +130,7 @@ public class Db {
 
     private boolean saveCellSurprise(Equipment equipment, Integer cellId) {
         if (equipment == null) return true;
-        System.out.println( "Saving surprise : " + equipment.toString());
         boolean removed = this.equipment.removeLinkToCell(cellId);
-        System.out.println( "Removed old surprise from cell : " + removed);
         if (!removed) return false;
 
         Integer equipmentId = this.equipment.save(equipment);
@@ -194,14 +142,9 @@ public class Db {
 
     private boolean saveCellEnemy(Enemy enemy, Integer cellId) {
         if (enemy == null) return true;
-        System.out.println("Saving enemy : " + enemy.toString());
         boolean removed = this.being.removeLinkToCell(cellId);
-        System.out.println("Removed old enemy from cell : " + removed);
         if (!removed) return false;
-
-        System.out.println("Creating enemy...");
         Integer enemyId = this.being.save(enemy);
-        System.out.println("Enemy created with id " + enemyId);
         if (enemyId == -1) return false;
         enemy.setId(enemyId);
 
@@ -215,8 +158,6 @@ public class Db {
         int cellNumber = this.cell.getNumber(cellId);
         if (cellNumber == -1) return null;
 
-        System.out.println( "Getting cell : " + cellId + " (" + cellType + ")");
-
         Cell cell;
         switch (cellType) {
             case "START" -> cell = new StartCell(cellNumber);
@@ -224,13 +165,11 @@ public class Db {
             case "EMPTY" -> cell = new EmptyCell(cellNumber);
             case "ENEMY" -> {
                 Integer enemyId = this.cell.getEnemyId(cellId);
-                System.out.println("Getting enemy id " + enemyId);
                 Enemy enemy = (Enemy) this.being.get(enemyId);
                 cell = new EnemyCell(cellNumber, enemy);
             }
             case "SURPRISE" -> {
                 Integer equipmentId = this.cell.getEquipmentId(cellId);
-                System.out.println("Getting surprise id " + equipmentId);
                 Equipment surprise = this.equipment.get(equipmentId);
                 cell = new SurpriseCell(cellNumber, surprise);
             }
@@ -255,50 +194,37 @@ public class Db {
     }
 
     private boolean setNewBoard(Board board) {
-        System.out.println( "Creating new board");
         Integer boardId = this.board.save(board);
-        System.out.println( "Board created : " + boardId);
         if (boardId == -1) return false;
         board.setId(boardId);
         return this.saveBoardCell(board);
     }
 
     private boolean editBoard(Board board) {
-        System.out.println( "Editing board : " + board.getId());
-        boolean edited = this.board.edit(board);
-        System.out.println( "Board edited :" + edited);
-        if (!edited) return false;
-
-        return this.saveBoardCell(board);
+        if (!this.board.edit(board))
+            return false;
+        else return this.saveBoardCell(board);
     }
 
     private boolean saveBoardCell(Board board) {
-        System.out.println( "Saving cells to board : " + board.getId());
         boolean removed = this.cell.removeLinkToBoard(board.getId());
-        System.out.println( "Removed cells from board: " + removed);
         if (!removed) return false;
 
         for (int i = 1; i <= board.getSize(); i++) {
             Cell cell = board.getCell(i);
-            System.out.println( "Saving cell : " + i);
             if (cell == null) return false;
 
             boolean saved = this.saveCell(cell);
-            System.out.println( "Cell saved : " + saved);
             if (!saved) return false;
 
-            System.out.println( "Linking cell to board : " + i);
             boolean linked = this.cell.linkToBoard(board.getId(), cell.getId());
-            System.out.println( "Linked cell to board : " + linked);
             if (!linked) return false;
         }
         return true;
     }
 
     public Board getBoard(Integer boardId) {
-        System.out.println( "Getting board : " + boardId);
         if (!exists(boardId, "Board", "Id")) return null;
-        System.out.println( "Board exists");
 
         List<Integer> cellsId = this.board.getCellsId(boardId);
         if (cellsId == null) return null;
@@ -334,7 +260,6 @@ public class Db {
                 return rs.next();
             }
         } catch (SQLException e) {
-            System.out.println("Erreur !!!! : " + e.getMessage());
             return false;
         }
     }

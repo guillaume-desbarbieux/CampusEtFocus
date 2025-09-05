@@ -1,17 +1,17 @@
 package fr.campusetfocus.game;
 
 import fr.campusetfocus.being.Being;
-import fr.campusetfocus.being.Enemy;
 import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.being.gamecharacter.Cheater;
 import fr.campusetfocus.being.gamecharacter.Magus;
 import fr.campusetfocus.being.gamecharacter.Warrior;
 import fr.campusetfocus.db.Db;
+
 import fr.campusetfocus.exception.PlayerLostException;
 import fr.campusetfocus.exception.PlayerMovedException;
 import fr.campusetfocus.exception.PlayerPositionException;
 import fr.campusetfocus.exception.PlayerWonException;
-import fr.campusetfocus.gameobject.Equipment;
+
 import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.LifeEquipment;
 import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;

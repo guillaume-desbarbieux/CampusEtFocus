@@ -23,7 +23,7 @@ public class Menu {
         }
     }
 
-    public static void closeScanner() {
+    public void closeScanner() {
         scanner.close();
     }
 

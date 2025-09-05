@@ -2,8 +2,6 @@ package fr.campusetfocus.game;
 
 import fr.campusetfocus.interfaces.Rollable;
 
-import java.util.ArrayList;
-
 public class Dice implements Rollable {
     public Dice() {
     }

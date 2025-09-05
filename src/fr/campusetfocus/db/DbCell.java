@@ -79,7 +79,6 @@ public class DbCell {
     }
 
     public boolean removeLinkToBoard(Integer boardId) {
-        System.out.println("Removing link to board:" + boardId);
         if (boardId == null) return false;
         if (!this.exists(boardId, "Board_Cell", "BoardId")) return true;
 
@@ -89,7 +88,6 @@ public class DbCell {
             ps.setInt(1, boardId);
 
             int deleted = ps.executeUpdate();
-            System.out.println( "Deleted: " + deleted);
             return deleted > 0;
 
         } catch (SQLException e) {
@@ -176,7 +174,6 @@ public class DbCell {
                 return rs.next();
             }
         } catch (SQLException e) {
-            System.out.println("Erreur !!!! : " + e.getMessage());
             return false;
         }
     }

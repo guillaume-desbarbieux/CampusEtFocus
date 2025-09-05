@@ -228,7 +228,6 @@ public class DbEquipment {
                 return rs.next();
             }
         } catch (SQLException e) {
-            System.out.println("Erreur !!!! : " + e.getMessage());
             return false;
         }
     }
