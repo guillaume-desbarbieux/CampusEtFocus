@@ -5,29 +5,25 @@ import fr.campusetfocus.game.cell.CellType;
 import java.util.Scanner;
 
 public class Menu {
-    private Scanner scanner;
-    public final String GREEN;
-    public final String BLUE;
-    public final String YELLOW;
-    public final String RED;
-    public final String RESET;
+    private static Scanner scanner;
+    public static final String RESET = "\u001B[0m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String RED = "\u001B[31m";
+
 
     public Menu() {
-        GREEN = "\u001B[32m";
-        BLUE = "\u001B[34m";
-        YELLOW = "\u001B[33m";
-        RED = "\u001B[31m";
-        RESET = "\u001B[0m";
         openScanner();
     }
 
-    public void openScanner() {
+    private void openScanner() {
         if (scanner == null) {
             scanner = new Scanner(System.in);
         }
     }
 
-    public void closeScanner() {
+    public static void closeScanner() {
         scanner.close();
     }
 
@@ -67,6 +63,10 @@ public class Menu {
         display(YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
         display(YELLOW + "⚠   " + warning + "   ⚠" + RESET);
         display(YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
+    }
+
+    public void displayBoard (Board board) {
+        displayBoard(0, board);
     }
 
     public void displayBoard(int playerPosition, Board board) {

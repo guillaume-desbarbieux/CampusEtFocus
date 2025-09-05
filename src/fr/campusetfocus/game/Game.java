@@ -7,8 +7,10 @@ import fr.campusetfocus.being.gamecharacter.Cheater;
 import fr.campusetfocus.being.gamecharacter.Magus;
 import fr.campusetfocus.being.gamecharacter.Warrior;
 import fr.campusetfocus.db.Db;
+import fr.campusetfocus.exception.PlayerLostException;
+import fr.campusetfocus.exception.PlayerMovedException;
 import fr.campusetfocus.exception.PlayerPositionException;
-import fr.campusetfocus.game.interaction.Interaction;
+import fr.campusetfocus.exception.PlayerWonException;
 import fr.campusetfocus.gameobject.Equipment;
 import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.LifeEquipment;
@@ -26,15 +28,13 @@ public class Game {
     private Board board;
     private GameCharacter player;
     private final Dice dice;
-    private final Dice criticalDice;
     private int playerPosition;
     private Db db;
 
     public Game() {
         menu = new Menu();
         board = new Board();
-        dice = new Dice(6);
-        criticalDice = new Dice(20);
+        dice = new Dice();
         playerPosition = 1;
     }
 
@@ -81,13 +81,17 @@ public class Game {
         menu.displayBoard(playerPosition, board);
         Cell cell = board.getCell(playerPosition);
 
-        Interaction interaction = cell.interact();
-
-        switch (interaction.getType()) {
-            case NONE -> menu.display("Vous n'avez rien à faire.");
-            case ENEMY -> findEnemy((Enemy) interaction.getObject());
-            case SURPRISE -> findSurprise((Equipment) interaction.getObject());
-            case END -> endGame();
+        try {
+            cell.interact(menu, player, dice);
+        } catch (PlayerWonException exception) {
+            menu.displaySuccess(exception.getMessage());
+            endGame();
+        } catch (PlayerLostException exception) {
+            menu.displayError(exception.getMessage());
+            dead();
+        } catch (PlayerMovedException exception) {
+            menu.display(exception.getMessage());
+            movePlayer(exception.getMove());
         }
     }
 
@@ -467,141 +471,6 @@ public class Game {
         menu.displaySuccess("Bravo ! Vous avez gagné.");
         this.home();
     }
-
-    /**
-     * Ouvre une surprise rencontrée dans le jeu : affiche la surprise trouvée
-     * puis applique ses effets au joueur.
-     * @param surprise l'équipement représentant la surprise trouvée, dont les effets
-     *                 seront appliqués au joueur
-     */
-
-    public void findSurprise(Equipment surprise) {
-        if (surprise == null) {
-            menu.display("Il n'y a plus de surprise ici.");
-         } else {
-            menu.display("Vous êtes surpris de trouver une surprise !");
-
-             int choice = menu.getChoice("Que souhaitez vous faire ?", new String[]{"Prendre", "Ignorer"});
-             switch (choice) {
-                 case 1 -> {
-                     menu.display("Vous prenez la surprise !");
-                     openSurprise(surprise);
-                     board.getCell(playerPosition).empty();
-                 }
-                 case 2 -> menu.display("Vous ignorez la surprise.");
-             }
-        }
-
-    }
-    public void openSurprise(Equipment surprise) {
-        menu.display("Vous trouvez un.e " + surprise.getName() + " !");
-        boolean applied = surprise.applyTo(player);
-        if (applied) {
-            menu.displaySuccess("L'équipement a été ajouté à votre inventaire !");
-        } else {
-            menu.displayError("Vous ne pouvez pas récupérer cet équipement.");
-        }
-    }
-
-    public void findEnemy(Enemy enemy) {
-
-        if (enemy == null) {
-            menu.display("Il n'y a plus d'ennemi ici, vous poursuivez votre tour.");
-        } else {
-            menu.display("Vous vous retrouvez face à un " + enemy.getName() + " !");
-
-            int choice = menu.getChoice("Que souhaitez vous faire ?", new String[]{"Combattre", "Fuir"});
-            switch (choice) {
-                case 1 -> fight(enemy);
-                case 2 -> flee();
-            }
-        }
-    }
-    /**
-     * Gère un tour de combat contre un ennemi.
-     * Le joueur attaque d'abord l'ennemi puis, si ce dernier survit, l'ennemi riposte.
-     * Après chaque échange, la mort éventuelle de l'un des protagonistes est vérifiée.
-     * Enfin, le joueur choisit de poursuivre le combat (appel récursif) ou de fuir.
-     *
-     * @param enemy l'ennemi affronté par le joueur
-     */
-    public void fight (Enemy enemy) {
-        menu.displayTitle("Combat");
-
-
-        int blow = attack(player, enemy);
-
-        int criticallity = criticalDice.roll();
-        if (criticallity == 1) {
-            blow = 0;
-            menu.display("Echec critique ! Votre coup est raté !");
-        }
-        if (criticallity == 20) {
-            blow += 2;
-            menu.display("Réussite critique ! Votre coup est très efficace !");
-        }
-        if (blow <= 0) {
-            menu.display("Votre attaque est trop faible pour atteindre l'ennemi.");
-        } else {
-            menu.display("Vous infligez " + blow + " dégâts à l'ennemi.");
-            menu.display("Il lui reste " + enemy.getLife() + " points de vie.");
-        }
-        if (enemy.getLife() <= 0) {
-            menu.displaySuccess("L'ennemi est mort ! Vous gagnez le combat !");
-            board.getCell(playerPosition).empty();
-            return;
-        }
-
-        blow = attack(enemy, player);
-        if (blow == 0) {
-                menu.display("L'ennemi est trop faible pour vous atteindre.");
-        } else {
-                menu.display("L'ennemi vous inflige" + blow + " dégâts.");
-                menu.display("Il vous reste " + player.getLife() + " points de vie.");
-        }
-        if (player.getLife() <= 0) this.dead();
-
-        int choice = menu.getChoice("Que voulez-vous faire ?", new String[]{"Continuer le combat", "Fuir"});
-        switch (choice) {
-            case 1 -> fight(enemy);
-            case 2 -> flee();
-            default -> {
-                menu.displayError("Choix invalide, vous poursuivez le combat.");
-                fight(enemy);
-            }
-        }
-    }
-
-    /**
-     * Exécute une action d'attaque entre deux Being : l'attaquant tente d'infliger des dégâts
-     * au défenseur en fonction de leurs attributs d'attaque et de défense. Si l'attaque de l'attaquant
-     * est supérieure à la défense du défenseur, la vie du défenseur est réduite et la méthode
-     * renvoie les dégâts infligés. Sinon, aucun dégât n'est infligé et la méthode renvoie 0.
-     *
-     * @param attacker le Being qui initie l'attaque
-     * @param defender le Being qui subit l'attaque
-     * @return le montant des dégâts infligés au défenseur, ou 0 si aucun dégât n'est infligé
-     */
-    public int attack(Being attacker, Being defender) {
-        int attack = attacker.getAttack();
-        int defense = defender.getDefense();
-        if (attack > defense) {
-            defender.changeLife(defense-attack);
-            return attack-defense;
-        } else return 0;
-    }
-
-    /**
-     * Exécute une action de fuite : l'utilisateur décide de quitter le combat.
-     * L'utilisateur est déplacé de 5 cases en arrière, ou retourne en case 1 si elle est plus proche.
-     */
-    public void flee () {
-        int moveBack = - dice.roll();
-        if (playerPosition + moveBack < 1) {
-            moveBack = playerPosition - 1;
-        }
-        movePlayer(moveBack);
-        }
 
     /**
      * Affiche un message indiquant la mort du joueur,

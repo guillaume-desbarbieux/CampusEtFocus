@@ -308,11 +308,6 @@ public class Db {
         for (Integer cellId : cellsId) {
             Cell cell = this.getCell(cellId);
             if (cell == null) return null;
-            System.out.println("> Cell : " + cell.getId() + cell.getType());
-            Interaction interaction = cell.interact();
-            System.out.println("> Interaction : " + interaction.getType());
-            if (interaction.getObject() != null)
-                System.out.println("> Contenu : " + interaction.getObject().toString());
             cells.add(cell);
         }
         Board board = new Board(cells);

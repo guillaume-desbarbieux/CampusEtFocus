@@ -1,8 +1,9 @@
 package fr.campusetfocus.game.cell;
 
+import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.game.Cell;
-import fr.campusetfocus.game.interaction.Interaction;
-import fr.campusetfocus.game.interaction.InteractionType;
+import fr.campusetfocus.game.Dice;
+import fr.campusetfocus.menu.Menu;
 
 public class EmptyCell extends Cell {
     public EmptyCell(int position) {
@@ -10,7 +11,7 @@ public class EmptyCell extends Cell {
     }
 
     @Override
-    public Interaction interact() {
-        return new Interaction(InteractionType.NONE);
+    public void interact(Menu menu, GameCharacter player, Dice dice) {
+        menu.display("Vous êtes dans une case vide.");
     }
 }

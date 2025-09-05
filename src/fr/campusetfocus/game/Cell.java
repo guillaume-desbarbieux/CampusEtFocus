@@ -1,7 +1,11 @@
 package fr.campusetfocus.game;
 
+import fr.campusetfocus.being.GameCharacter;
+import fr.campusetfocus.exception.PlayerLostException;
+import fr.campusetfocus.exception.PlayerMovedException;
+import fr.campusetfocus.exception.PlayerWonException;
 import fr.campusetfocus.game.cell.CellType;
-import fr.campusetfocus.game.interaction.Interaction;
+import fr.campusetfocus.menu.Menu;
 
 public abstract class Cell {
     protected Integer id;
@@ -29,9 +33,10 @@ public abstract class Cell {
         return type;
     }
 
-    public abstract Interaction interact();
+    public abstract void interact(Menu menu, GameCharacter player, Dice dice) throws PlayerWonException, PlayerLostException, PlayerMovedException;
 
     public void empty() {
         type = CellType.EMPTY;
     };
+
 }
