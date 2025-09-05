@@ -77,7 +77,6 @@ public class Game {
      * - Gérer le personnage
      * - Afficher le plateau de jeu
      * - Quitter le jeu
-     *
      * En fonction du choix de l'utilisateur, la méthode exécute la fonctionnalité correspondante.
      */
     public void home() {

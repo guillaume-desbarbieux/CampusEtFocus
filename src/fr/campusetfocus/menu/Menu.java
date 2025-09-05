@@ -70,8 +70,8 @@ public class Menu {
     }
 
     public void displayBoard(int playerPosition, Board board) {
-        String boardString = "";
-        String playerString = "";
+        StringBuilder boardString = new StringBuilder();
+        StringBuilder playerString = new StringBuilder();
         for  (int i = 1; i <= board.getSize(); i++) {
 
             CellType type = board.getCell(i).getType();
@@ -84,15 +84,15 @@ public class Menu {
                                 case SURPRISE -> YELLOW + "?" + RESET;
                             };
 
-            boardString += symbol + " ";
+            boardString.append(symbol).append(" ");
             if (i == playerPosition) {
-                playerString += "# ";
+                playerString.append("# ");
             } else {
-                playerString += "  ";
+                playerString.append("  ");
             }
         }
-        display(boardString);
-        display(playerString);
+        display(boardString.toString());
+        display(playerString.toString());
     }
 
 
