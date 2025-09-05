@@ -27,14 +27,13 @@ public class Game {
     private GameCharacter player;
     private final Dice dice;
     private int playerPosition;
-    private Db db = new Db();
+    private Db db;
 
     public Game() {
         menu = new Menu();
         board = new Board();
         dice = new Dice();
         playerPosition = 1;
-
     }
 
     public Menu getMenu() {
@@ -102,7 +101,28 @@ public class Game {
         }
     }
 
+    private void createDb() {
+        menu.displayTitle("Création de la Base de données");
+        int choice = menu.getChoice("Voulez-vous créer une Base de données ?",new String[]{"Oui","Non"});
+        switch (choice) {
+            case 1 -> {
+                db = new Db();
+                menu.displaySuccess("Base de données créée avec succès !");
+            }
+            case 2 -> {
+                menu.displayWarning("Création de la Base de données annulée !");
+            }
+            default -> {
+                menu.displayError("Choix invalide !");
+            }
+        }
+        home();
+    }
+
     private void manageDb() {
+        if (db == null) {
+            createDb();
+        }
         menu.displayTitle("Gestion de la Base de données");
         int choice = menu.getChoice("", new String[]{"Sauvegarder le plateau", "Charger un ancien plateau", "Sauvegarder mon personnage", "Charger un ancien personnage", "Retour au menu principal"});
 
