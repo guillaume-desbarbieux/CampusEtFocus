@@ -481,8 +481,13 @@ public class Game {
 
     }
     public void openSurprise(Equipment surprise) {
-        menu.display("Vous trouvez" + surprise.toString());
-        surprise.applyTo(player);
+        menu.display("Vous trouvez un.e " + surprise.getName() + " !");
+        boolean applied = surprise.applyTo(player);
+        if (applied) {
+            menu.displaySuccess("L'équipement a été ajouté à votre inventaire !");
+        } else {
+            menu.displayError("Vous ne pouvez pas récupérer cet équipement.");
+        }
     }
 
     public void findEnemy(Enemy enemy) {

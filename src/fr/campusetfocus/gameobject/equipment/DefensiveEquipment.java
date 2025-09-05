@@ -15,13 +15,13 @@ public abstract class DefensiveEquipment extends Equipment {
     }
 
     @Override
-    public void applyTo(GameCharacter player) {
-        player.addDefensiveEquipment(this);
+    public boolean applyTo(GameCharacter player) {
+        return player.addDefensiveEquipment(this);
     }
 
     @Override
-    public void removeFrom(GameCharacter player) {
-        player.removeDefensiveEquipment(this);
+    public boolean removeFrom(GameCharacter player) {
+        return player.removeDefensiveEquipment(this);
     }
 
     @Override

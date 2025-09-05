@@ -47,23 +47,23 @@ public abstract class GameCharacter extends Being {
         return true;
     }
 
-    public void addOffensiveEquipment (OffensiveEquipment equipment) {
-        this.offensiveEquipments.add(equipment);
+    public boolean addOffensiveEquipment (OffensiveEquipment equipment) {
+        return this.offensiveEquipments.add(equipment);
     }
-    public void addDefensiveEquipment (DefensiveEquipment equipment) {
-        this.defensiveEquipments.add(equipment);
+    public boolean addDefensiveEquipment (DefensiveEquipment equipment) {
+        return this.defensiveEquipments.add(equipment);
     }
-    public void addLifeEquipment (LifeEquipment equipment) {
-        this.lifeEquipments.add(equipment);
+    public boolean addLifeEquipment (LifeEquipment equipment) {
+        return this.lifeEquipments.add(equipment);
     }
-    public void removeOffensiveEquipment (OffensiveEquipment equipment) {
-        this.offensiveEquipments.remove(equipment);
+    public boolean removeOffensiveEquipment (OffensiveEquipment equipment) {
+        return this.offensiveEquipments.remove(equipment);
     }
-    public void removeDefensiveEquipment (DefensiveEquipment equipment) {
-        this.defensiveEquipments.remove(equipment);
+    public boolean removeDefensiveEquipment (DefensiveEquipment equipment) {
+        return this.defensiveEquipments.remove(equipment);
     }
-    public void removeLifeEquipment (LifeEquipment equipment) {
-        this.lifeEquipments.remove(equipment);
+    public boolean removeLifeEquipment (LifeEquipment equipment) {
+        return this.lifeEquipments.remove(equipment);
     }
 
     @Override

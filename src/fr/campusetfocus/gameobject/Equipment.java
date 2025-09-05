@@ -19,6 +19,6 @@ public abstract class Equipment extends GameObject {
         return getClass().getSimpleName() + "[name=" + name + ", description=" + description + "]";
     }
     public abstract String getType();
-    public abstract void applyTo(GameCharacter player);
-    public abstract void removeFrom(GameCharacter player);
+    public abstract boolean applyTo(GameCharacter player);
+    public abstract boolean removeFrom(GameCharacter player);
 }

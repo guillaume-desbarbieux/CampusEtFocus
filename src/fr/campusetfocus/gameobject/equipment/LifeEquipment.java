@@ -21,13 +21,14 @@ public abstract class LifeEquipment extends Equipment {
     }
 
     @Override
-    public void applyTo(GameCharacter player) {
-        player.addLifeEquipment(this);
+    public boolean applyTo(GameCharacter player) {
+        return player.addLifeEquipment(this);
     }
 
     @Override
-    public void removeFrom(GameCharacter player) {
+    public boolean removeFrom(GameCharacter player) {
         player.removeLifeEquipment(this);
+        return false;
     }
 
     @Override
