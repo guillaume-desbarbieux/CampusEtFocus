@@ -596,13 +596,11 @@ public class Game {
      * L'utilisateur est déplacé de 5 cases en arrière, ou retourne en case 1 si elle est plus proche.
      */
     public void flee () {
-        int move = - 5;
-        if (playerPosition + move < 1) {
-            move = playerPosition - 1;
+        int moveBack = - dice.roll();
+        if (playerPosition + moveBack < 1) {
+            moveBack = playerPosition - 1;
         }
-        menu.display("Vous battez en retraite et reculez de " + move + " case" + (move > 1 ? "s" : "") + ".");
-        movePlayer(move);
-        menu.displayBoard(playerPosition, board);
+        movePlayer(moveBack);
         }
 
     /**
