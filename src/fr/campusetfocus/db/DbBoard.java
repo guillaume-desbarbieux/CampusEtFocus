@@ -62,11 +62,11 @@ public class DbBoard {
         }
     }
 
-    public List<Integer> getCellsId(Integer boardId) {
+    public ArrayList<Integer> getCellsId(Integer boardId) {
         if (boardId == null) return null;
         String sql = "SELECT CellId FROM Board_Cell WHERE BoardId = ?";
 
-        List<Integer> cellsId = new ArrayList<>();
+        ArrayList<Integer> cellsId = new ArrayList<>();
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
