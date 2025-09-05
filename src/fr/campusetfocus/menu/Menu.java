@@ -5,7 +5,7 @@ import fr.campusetfocus.game.cell.CellType;
 import java.util.Scanner;
 
 public class Menu {
-    private final Scanner SCANNER;
+    private Scanner scanner;
     public final String GREEN;
     public final String BLUE;
     public final String YELLOW;
@@ -13,12 +13,23 @@ public class Menu {
     public final String RESET;
 
     public Menu() {
-        SCANNER = new Scanner(System.in);
         GREEN = "\u001B[32m";
         BLUE = "\u001B[34m";
         YELLOW = "\u001B[33m";
         RED = "\u001B[31m";
-        RESET = "\u001B[0m";}
+        RESET = "\u001B[0m";
+        openScanner();
+    }
+
+    public void openScanner() {
+        if (scanner == null) {
+            scanner = new Scanner(System.in);
+        }
+    }
+
+    public void closeScanner() {
+        scanner.close();
+    }
 
     /**
      * Affiche le message dans la console.
@@ -123,7 +134,7 @@ public class Menu {
      */
     public String getString(String message) {
         display(message);
-        return SCANNER.nextLine();
+        return scanner.nextLine();
     }
 
     /**
@@ -135,7 +146,7 @@ public class Menu {
     public int getInt(String message) {
         while (true) {
             display(message);
-            String input = SCANNER.nextLine();
+            String input = scanner.nextLine();
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {

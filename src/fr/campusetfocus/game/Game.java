@@ -109,12 +109,8 @@ public class Game {
                 db = new Db();
                 menu.displaySuccess("Base de données créée avec succès !");
             }
-            case 2 -> {
-                menu.displayWarning("Création de la Base de données annulée !");
-            }
-            default -> {
-                menu.displayError("Choix invalide !");
-            }
+            case 2 -> menu.displayWarning("Création de la Base de données annulée !");
+            default -> menu.displayError("Choix invalide !");
         }
         home();
     }
@@ -223,19 +219,6 @@ public class Game {
     }
 
     /**
-     * Creates a new player for the game by facilitating character creation.
-     *
-     * This method guides the user through the steps of creating a player character, 
-     * including selecting the character type (Warrior or Magus) and specifying the character's name.
-     * After creation, a summary of the new character is displayed to confirm the player's choices.
-     *
-     * Features:
-     * - Displays a prompt to choose the type of character.
-     * - Allows the user to input a name for their character.
-     * - Creates an instance of either the Warrior or Magus class based on user selection.
-     * - Displays confirmation and the details of the newly created character.
-     */
-    /**
      * Crée un personnage jouable en demandant le type (Guerrier ou Magicien) et le nom.
      * Le personnage est instancié puis ses informations sont affichées.
      */
@@ -255,16 +238,7 @@ public class Game {
         menu.display(player.toString());
     }
 
-    /**
-     * Terminates the game session and exits the application.
-     *
-     * This method displays two messages:
-     * - A farewell message to the player.
-     * - A thank you message for playing the game.
-     *
-     * After displaying these messages, the method calls {@code System.exit(0)}
-     * to close the application.
-     */
+
     /**
      * Quitte le jeu après avoir affiché des messages d'au revoir.
      * Termine l'application via {@code System.exit(0)}.
@@ -272,12 +246,10 @@ public class Game {
     public void quit() {
         menu.display("A bientôt");
         menu.display("Merci d'avoir joué !");
+        menu.closeScanner();
         System.exit(0);
     }
 
-    /**
-     * Starts the gameplay loop for the current game session.
-     */
     /**
      * Démarre une nouvelle partie.
      * Vérifie qu'un personnage existe, réinitialise la position à 1,
@@ -307,13 +279,6 @@ public class Game {
     }
 
     /**
-     * Executes a single turn for the current player in the game.
-     *
-     * During the turn, the player rolls the dice to determine how far to move
-     * on the game board. If the roll exceeds the number of spaces remaining
-     * to reach the end of the board, the player only moves the necessary 
-     * number of spaces*/
-    /**
      * Exécute un tour de jeu :
      * lance le dé, ajuste le déplacement si nécessaire pour rester sur le plateau,
      * déplace le joueur, affiche le plateau, déclenche l'interaction de la case,
@@ -342,15 +307,9 @@ public class Game {
             case SURPRISE -> findSurprise((Equipment) interaction.getObject());
             case END -> endGame();
         }
-               endTurn();
+        endTurn();
     }
 
-    /**
-     * Ends the current player's turn by providing a menu with options for the next action.
-     *
-     * This method displays a choice to the player to either show the main game menu or 
-     * continue with their turn. If the player chooses to display the menu, the 
-     * {@code playingMenu*/
     /**
      * Termine le tour en proposant au joueur d'ouvrir le menu de jeu ou de continuer.
      * Ouvre le menu si le joueur le choisit.
@@ -360,9 +319,6 @@ public class Game {
         if (choice == 1) playingMenu();
     }
 
-    /**
-     * Displays the in-game pause menu and handles user navigation through the available options.
-     */
     /**
      * Affiche le menu de pause pendant la partie.
      * Permet d'accéder à l'inventaire, aux statistiques du personnage,
@@ -392,14 +348,7 @@ public class Game {
         }
     }
 
-    /**
-     * Displays the player's current inventory, organizing it into three categories:
-     * offensive equipment, defensive equipment, and life equipment.
-     *
-     * If the inventory is empty, a warning message is displayed notifying the player.
-     * Otherwise, the method lists the items in each category, if available.
-     *
-     * After displaying*/
+
     /**
      * Affiche l'inventaire du joueur (équipements offensifs, défensifs et de vie).
      * Propose d'utiliser un équipement de vie, de gérer l'inventaire (fonctionnalité à venir)
@@ -453,17 +402,6 @@ public class Game {
         }
     }
 
-    /**
-     * Allows the player to use one of their life equipment items to restore health.
-     *
-     * If the player has no life equipment available, a warning message is displayed 
-     * notifying them that they cannot use one. Otherwise, the method displays a menu 
-     * listing the available life equipment and allows the player to select one.
-     *
-     * When a life equipment is selected, it is used to heal the player, removed from 
-     * their inventory, and a confirmation message is shown along with the amount of 
-     * health restored. If the player cancels the action, a cancellation message is displayed.
-     */
     /**
      * Permet d'utiliser un équipement de vie de l'inventaire du joueur.
      * L'utilisateur sélectionne l'objet à consommer, ses effets sont appliqués,
@@ -521,7 +459,6 @@ public class Game {
     /**
      * Ouvre une surprise rencontrée dans le jeu : affiche la surprise trouvée
      * puis applique ses effets au joueur.
-     *
      * @param surprise l'équipement représentant la surprise trouvée, dont les effets
      *                 seront appliqués au joueur
      */
