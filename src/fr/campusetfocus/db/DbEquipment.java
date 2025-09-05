@@ -14,7 +14,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class DbEquipment {
-    private Connection conn;
+    private final Connection conn;
 
     public DbEquipment(Connection CONNECTION) {
         this.conn = CONNECTION;

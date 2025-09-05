@@ -161,9 +161,7 @@ public class Game {
                 if (newBoard == null) menu.displayError("Echec du chargement !");
                 else {
                     this.board = newBoard;
-                    menu.displayBoard(1,board);
-                    menu.display("id " + board.getId() + " size " +board.getSize());
-
+                    menu.displayBoard(board);
                 }
                 manageDb();
             }
