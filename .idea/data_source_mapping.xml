@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/src/fr/campusetfocus/db/dao/DAOBeing.java" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+    <file url="file://$PROJECT_DIR$/src/fr/campusetfocus/db/dao/DAOBeing_Equipment.java" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+    <file url="file://$PROJECT_DIR$/src/fr/campusetfocus/db/dao/DAOBoard.java" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+    <file url="file://$PROJECT_DIR$/src/fr/campusetfocus/db/dao/DAOBoard_Cell.java" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+    <file url="file://$PROJECT_DIR$/src/fr/campusetfocus/db/dao/DAOCell.java" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+    <file url="file://$PROJECT_DIR$/src/fr/campusetfocus/db/dao/DAOEquipment.java" value="970371f8-d853-4fea-91a2-d45b8b139536" />
+  </component>
+</project>

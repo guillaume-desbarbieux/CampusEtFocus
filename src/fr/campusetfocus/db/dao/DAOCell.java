@@ -1,15 +1,15 @@
-package fr.campusetfocus.db;
+package fr.campusetfocus.db.dao;
 
+import fr.campusetfocus.db.DAOTable;
 import fr.campusetfocus.game.Cell;
 
 import java.sql.*;
 
-public class DbCell {
-    private final Connection conn;
+public class DAOCell extends DAOTable<Cell> {
 
-    public DbCell(Connection CONNECTION) {
-        this.conn = CONNECTION;
-    }
+    public DAOCell(Connection CONNECTION) {
+        super(CONNECTION, "Cell");
+        }
 
     public Integer save(Cell cell) {
         String sql = "INSERT INTO Cell (CellType, Number) VALUES (?, ?)";
@@ -26,21 +26,6 @@ public class DbCell {
         } catch (SQLException e) {
             return -1;
         }
-    }
-
-    public Integer getLastId() {
-        String sql = "SELECT Id FROM Cell ORDER BY Id DESC LIMIT 1";
-
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            if (rs.next()) {
-                return rs.getInt("Id");
-            }
-        } catch (SQLException e) {
-            return -1;
-        }
-        return -1;
-
     }
 
     public boolean edit(Cell cell) {
@@ -63,36 +48,8 @@ public class DbCell {
         }
     }
 
-    public boolean linkToBoard(Integer boardId, Integer cellId) {
-        if (cellId == null || boardId == null) return false;
-        String sql = "INSERT INTO Board_Cell (BoardId, CellId) VALUES (?, ?)";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, boardId);
-            ps.setInt(2, cellId);
-
-            int saved = ps.executeUpdate();
-            return saved == 1;
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    public boolean removeLinkToBoard(Integer boardId) {
-        if (boardId == null) return false;
-        if (!this.exists(boardId, "Board_Cell", "BoardId")) return true;
-
-        String sql = "DELETE FROM Board_Cell WHERE BoardId = ?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, boardId);
-
-            int deleted = ps.executeUpdate();
-            return deleted > 0;
-
-        } catch (SQLException e) {
-            return false;
-        }
+    public Cell get(Integer objectId) {
+        return null;
     }
 
     public String getType(Integer cellId) {
@@ -160,21 +117,6 @@ public class DbCell {
             }
         } catch (SQLException e) {
             return -1;
-        }
-    }
-
-    private boolean exists(Integer id, String table, String columnName) {
-        if (id == null) return false;
-        String sql = "SELECT " + columnName + " FROM " + table + " WHERE " + columnName + " = ? LIMIT 1";
-
-        try(PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1,id);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        } catch (SQLException e) {
-            return false;
         }
     }
 }

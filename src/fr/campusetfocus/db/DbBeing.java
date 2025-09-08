@@ -1,177 +1,117 @@
 package fr.campusetfocus.db;
 
 import fr.campusetfocus.being.Being;
-import fr.campusetfocus.being.enemy.*;
-import fr.campusetfocus.being.gamecharacter.*;
+import fr.campusetfocus.being.GameCharacter;
+import fr.campusetfocus.db.dao.*;
+import fr.campusetfocus.game.cell.*;
+import fr.campusetfocus.gameobject.Equipment;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbBeing {
+    public final DAOBeing being;
+    private final DAOEquipment equipment;
+    private final DAOBeing_Equipment being_equipment;
     private final Connection conn;
 
-    public DbBeing(Connection CONNECTION) {
-        this.conn = CONNECTION;
+    public DbBeing() {
+        try {
+            this.conn = getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if (conn == null) throw new RuntimeException("Connection failed");
+
+        this.being = new DAOBeing(conn);
+        this.equipment = new DAOEquipment(conn);
+        this.being_equipment = new DAOBeing_Equipment(conn);
     }
 
-    public Integer save(Being being) {
-
-        String sql = "INSERT INTO Being (GameType, Name, Life, Attack, Defense) VALUES (?, ?, ?, ?, ?)";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, being.getClass().getSimpleName().toUpperCase());
-            ps.setString(2, being.getName());
-            ps.setInt(3, being.getLife());
-            ps.setInt(4, being.getAttack());
-            ps.setInt(5, being.getDefense());
-
-            int saved = ps.executeUpdate();
-            if (saved != 1) return -1;
-
-            return this.getLastId();
-
-        } catch (SQLException e) {
-            return -1;
-        }
+    public DbBeing(Connection conn) {
+        this.conn = conn;
+        this.being = new DAOBeing(conn);
+        this.equipment = new DAOEquipment(conn);
+        this.being_equipment = new DAOBeing_Equipment(conn);
     }
 
-    public Integer getLastId() {
-        String sql = "SELECT Id FROM Being ORDER BY Id DESC LIMIT 1";
-
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            if (rs.next()) {
-                return rs.getInt("Id");
-            }
-        } catch (SQLException e) {
-            return -1;
-        }
-        return -1;
+    protected Connection getConnection() throws SQLException {
+        String DB_URL = "jdbc:mysql://localhost/CampusEtFocus";
+        String USER = "root";
+        String PASS = "root";
+        return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
-    public boolean edit(Being being) {
-        if (being == null) return false;
-        if (being.getId() == null) return false;
+    public boolean save(Being being) {
+        if (being.getId() == null) return this.setNew(being);
+        else return this.edit(being);
+    }
 
-        String sql = "UPDATE Being SET GameType= ?, Name= ?, Life= ?, Attack= ?, Defense= ? WHERE Id = ?";
+    private boolean setNew(Being being) {
+        Integer characterId = this.being.save(being);
+        if (characterId == -1) return false;
+        being.setId(characterId);
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        if (being instanceof GameCharacter player)
+            return this.saveEquipment(player.getEquipments(), player.getId());
+        else return true;
+    }
 
-            ps.setString(1, being.getClass().getSimpleName().toUpperCase());
-            ps.setString(2, being.getName());
-            ps.setInt(3, being.getLife());
-            ps.setInt(4, being.getAttack());
-            ps.setInt(5, being.getDefense());
-            ps.setInt(6, being.getId());
+    private boolean edit(Being being) {
+        boolean edited = this.being.edit(being);
+        if (!edited) return false;
 
-            int edited = ps.executeUpdate();
-            return edited == 1;
+        if (being instanceof GameCharacter player)
+            return this.saveEquipment(player.getEquipments(), player.getId());
+        else return true;
+    }
 
-        } catch (SQLException e) {
-            return false;
+    private boolean saveEquipment(List<Equipment> equipments, Integer characterId) {
+        String type = this.being.getType(characterId);
+        if (type == null) return false;
+
+        if (!type.equals("CHEATER") && !type.equals("MAGUS") && !type.equals("WARRIOR")) return false;
+
+        boolean removed = this.being_equipment.remove(characterId);
+        if (!removed) return false;
+
+        if (equipments.isEmpty()) return true;
+
+        for (Equipment equipment : equipments) {
+            Integer equipmentId = this.equipment.save(equipment);
+            if (equipmentId == -1) return false;
+            equipment.setId(equipmentId);
+
+            boolean linked = this.being_equipment.save(characterId, equipmentId);
+            if (!linked) return false;
         }
+        return true;
     }
 
     public Being get(Integer beingId) {
+        Being being = this.being.get(beingId);
+        ArrayList<Equipment> equipments = this.getEquipment(beingId);
+        if (!equipments.isEmpty()) {
+            boolean set = ((GameCharacter) being).setEquipment(equipments);
+            if (!set) return null;
+        }
+        return being;
+    }
+
+    public ArrayList<Equipment> getEquipment(Integer beingId) {
         if (beingId == null) return null;
 
-        String sql = "SELECT * from Being WHERE Id = ?";
+        ArrayList<Integer> equipementsId = this.being_equipment.getEquipmentsId(beingId);
+        if (equipementsId == null) return null;
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, beingId);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) {
-                    return null;
-                }
-                String type = rs.getString("GameType").toUpperCase();
-                String name = rs.getString("Name");
-                int life = rs.getInt("Life");
-                int attack = rs.getInt("Attack");
-                int defense = rs.getInt("Defense");
-
-                Being being;
-                switch (type) {
-                    case "CHEATER" -> being = new Cheater(name, life, attack, defense);
-                    case "MAGUS" -> being = new Magus(name, life, attack, defense);
-                    case "WARRIOR" -> being = new Warrior(name, life, attack, defense);
-                    case "DRAGON" -> being = new Dragon(name, life, attack, defense);
-                    case "GOBLIN" -> being = new Goblin(name, life, attack, defense);
-                    case "WIZARD" -> being = new Wizard(name, life, attack, defense);
-                    default -> {
-                        return null;
-                    }
-                }
-                being.setId(beingId);
-                return being;
-            }
-        } catch (SQLException e) {
-            return null;
+        ArrayList<Equipment> equipments = new ArrayList<>(equipementsId.size());
+        for (Integer equipmentId : equipementsId) {
+            Equipment equipment = this.equipment.get(equipmentId);
+            if (equipment == null) return null;
+            equipments.add(equipment);
         }
+        return equipments;
     }
 
-    public boolean linkToCell(Integer enemyId, Integer cellId) {
-        if (enemyId == null || cellId == null) return false;
-        String sql = "INSERT INTO Cell_Being (BeingId, CellId) VALUES (?, ?)";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, enemyId);
-            ps.setInt(2, cellId);
-
-            int saved = ps.executeUpdate();
-            return saved == 1;
-
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    public boolean removeLinkToCell(Integer cellId) {
-        if (cellId == null) return false;
-
-        if (!this.exists(cellId, "Cell_Being", "CellId")) return true;
-        String sql = "DELETE FROM Cell_Being WHERE CellId = ?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cellId);
-
-            int deleted = ps.executeUpdate();
-            return deleted == 1;
-
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    public String getType(Integer beingId) {
-        if (beingId == null) return null;
-
-        String sql = "SELECT GameType from Being WHERE Id = ?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, beingId);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if(rs.next()) return rs.getString("GameType").toUpperCase();
-                else return null;
-            }
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
-    private boolean exists(Integer id, String table, String columnName) {
-        if (id == null) return false;
-        String sql = "SELECT " + columnName + " FROM " + table + " WHERE " + columnName + " = ? LIMIT 1";
-
-        try(PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1,id);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        } catch (SQLException e) {
-            return false;
-        }
-    }
 }
-

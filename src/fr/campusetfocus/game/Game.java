@@ -5,7 +5,8 @@ import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.being.gamecharacter.Cheater;
 import fr.campusetfocus.being.gamecharacter.Magus;
 import fr.campusetfocus.being.gamecharacter.Warrior;
-import fr.campusetfocus.db.Db;
+import fr.campusetfocus.db.DbBeing;
+import fr.campusetfocus.db.DbBoard;
 
 import fr.campusetfocus.exception.PlayerLostException;
 import fr.campusetfocus.exception.PlayerMovedException;
@@ -29,7 +30,8 @@ public class Game {
     private GameCharacter player;
     private final Dice dice;
     private int playerPosition;
-    private Db db;
+    private DbBoard dbBoard;
+    private DbBeing dbBeing;
 
     public Game() {
         menu = new Menu();
@@ -130,7 +132,7 @@ public class Game {
         int choice = menu.getChoice("Voulez-vous créer une Base de données ?",new String[]{"Oui","Non"});
         switch (choice) {
             case 1 -> {
-                db = new Db();
+                db = new DbBoard();
                 menu.displaySuccess("Base de données créée avec succès !");
             }
             case 2 -> menu.displayWarning("Création de la Base de données annulée !");
@@ -149,7 +151,7 @@ public class Game {
         switch (choice) {
             case 1 -> {
                 menu.displayTitle("Sauvegarde de la partie en cours...");
-                boolean saved = db.saveBoard(board);
+                boolean saved = db.save(board);
                 if (saved) menu.displaySuccess("Sauvegarde réussie !");
                 else menu.displayError("Echec de la sauvegarde !");
                 manageDb();
@@ -157,7 +159,7 @@ public class Game {
             case 2 -> {
                 menu.displayTitle("Chargement de la dernière partie...");
                 Integer boardId = db.board.getLastId();
-                Board newBoard = db.getBoard(boardId);
+                Board newBoard = db.get(boardId);
                 if (newBoard == null) menu.displayError("Echec du chargement !");
                 else {
                     this.board = newBoard;
