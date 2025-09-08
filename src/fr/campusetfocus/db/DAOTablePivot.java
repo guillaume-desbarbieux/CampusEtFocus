@@ -45,7 +45,7 @@ public class DAOTablePivot {
             ps.setInt(1, id);
 
             int deleted = ps.executeUpdate();
-            return deleted == 1;
+            return deleted >= 1;
 
         } catch (SQLException e) {
             return false;
