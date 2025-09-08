@@ -3,7 +3,7 @@ package fr.campusetfocus.game;
 import fr.campusetfocus.interfaces.Rollable;
 
 public class Dice implements Rollable {
-    public Dice() {
+    public Dice( ) {
     }
 
     public int roll(int min, int max) {
@@ -15,10 +15,6 @@ public class Dice implements Rollable {
     }
 
     public int roll() {
-        return roll(1, 6);
+        return roll(1,6);
     }
-
-
-
-
 }
