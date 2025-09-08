@@ -1,0 +1,355 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype polyline
+
+class Being {
+  # id: Integer
+  # name: String
+  # life: int
+  # defense: int
+  # attack: int
+  + getAttack(): int
+  + isSame(Object): boolean
+  + toString(): String
+  + changeAttack(int): void
+  + getLife(): int
+  + getName(): String
+  + getId(): Integer
+  + changeLife(int): void
+  + getDefense(): int
+  + setId(Integer): void
+  + changeDefense(int): void
+}
+class BigPotion
+class BigShield
+class Board {
+  - cells: List<Cell>
+  # id: Integer
+  - createEmptyBoard(int): Board
+  + setCell(int, Cell): void
+  + getId(): Integer
+  - createDefaultBoard(): Board
+  + getCell(int): Cell
+  - addEnemyCell(Board, Class<Enemy>, int, int, int): void
+  + setId(Integer): void
+  + getSize(): int
+  - addSurpriseCell(Board, Class<Equipment>, int, int, int): void
+  - getRandomPosition(Board, int, int): int
+}
+class Cell {
+  # id: Integer
+  # number: int
+  # type: CellType
+  + getType(): CellType
+  + empty(): void
+  + setId(Integer): void
+  + getId(): Integer
+  + getNumber(): int
+  + interact(Menu, GameCharacter, Dice): void
+}
+enum CellType << enumeration >> {
+  + EMPTY: 
+  + START: 
+  + SURPRISE: 
+  + END: 
+  + ENEMY: 
+  + valueOf(String): CellType
+  + values(): CellType[]
+}
+class Cheater
+class Db {
+  + being: DbBeing
+  + board: DbBoard
+  - cell: DbCell
+  - equipment: DbEquipment
+  - conn: Connection
+  - saveBoardCell(Board): boolean
+  - getIntById(String, String, Integer): int
+  - editBeing(Being): boolean
+  - setNewBoard(Board): boolean
+  + saveBeing(Being): boolean
+  - setNewCell(Cell): boolean
+  - saveCellEnemy(Enemy, Integer): boolean
+  - editBoard(Board): boolean
+  - getStringById(String, String, Integer): String?
+  - saveCellSurprise(Equipment, Integer): boolean
+  # getConnection(): Connection
+  + getBeing(Integer): Being
+  - setNewBeing(Being): boolean
+  + saveCell(Cell): boolean
+  - editCell(Cell): boolean
+  - saveCharacterEquipment(List<Equipment>, Integer): boolean
+  - exists(Integer, String, String): boolean
+  + saveBoard(Board): boolean
+  + getBoard(Integer): Board
+  + getCell(Integer): Cell
+}
+class DbBeing {
+  - conn: Connection
+  + get(Integer): Being
+  + linkToCell(Integer, Integer): boolean
+  - exists(Integer, String, String): boolean
+  + save(Being): Integer
+  + getLastId(): Integer
+  + edit(Being): boolean
+  + removeLinkToCell(Integer): boolean
+  + getType(Integer): String
+}
+class DbBoard {
+  - conn: Connection
+  + save(Board): Integer
+  + getLastId(): int
+  + edit(Board): boolean
+  + getCellsId(Integer): ArrayList<Integer>
+}
+class DbCell {
+  - conn: Connection
+  + getLastId(): Integer
+  + linkToBoard(Integer, Integer): boolean
+  + removeLinkToBoard(Integer): boolean
+  + save(Cell): Integer
+  + getEquipmentId(Integer): Integer
+  + edit(Cell): boolean
+  + getNumber(Integer): int
+  - exists(Integer, String, String): boolean
+  + getType(Integer): String
+  + getEnemyId(Integer): Integer
+}
+class DbEquipment {
+  - conn: Connection
+  - getEquipmentsId(Integer): ArrayList<Integer>
+  - exists(Integer, String, String): boolean
+  + get(Integer): Equipment
+  - getLastId(): Integer
+  + removeLinkToCharacter(Integer): boolean
+  + linkToCharacter(Integer, Integer): boolean
+  + linkToCell(Integer, Integer): boolean
+  + removeLinkToCell(Integer): boolean
+  + edit(Equipment): boolean
+  + save(Equipment): Integer
+  + getCharacterEquipment(Integer): ArrayList<Equipment>
+}
+class DbUtils {
+  ~ buildSelect(String, String, Integer): String
+}
+class DefensiveEquipment {
+  + removeFrom(GameCharacter): boolean
+  + getType(): String
+  + applyTo(GameCharacter): boolean
+  + toString(): String
+}
+class DefensiveFactory {
+  - DEFENSIVE_EQUIPMENTS: List<Supplier<DefensiveEquipment>>
+  + createRandom(): DefensiveEquipment
+}
+class Dice {
+  + roll(int): int
+  + roll(int, int): int
+  + roll(): int
+}
+class Dragon
+class EmptyCell {
+  + interact(Menu, GameCharacter, Dice): void
+}
+class EndCell {
+  + interact(Menu, GameCharacter, Dice): void
+}
+class Enemy
+class EnemyCell {
+  - enemy: Enemy
+  + getEnemy(): Enemy
+  + empty(): void
+  - fight(Menu, GameCharacter, Dice): void
+  - attack(Being, Being, int): int
+  + interact(Menu, GameCharacter, Dice): void
+}
+class EnemyFactory {
+  - ENEMIES: List<Supplier<Enemy>>
+  + createRandomEnemy(): Enemy
+}
+class Equipment {
+  # bonus: int
+  + removeFrom(GameCharacter): boolean
+  + getType(): String
+  + toString(): String
+  + applyTo(GameCharacter): boolean
+  + getBonus(): int
+}
+class EquipmentFactory {
+  + createRandomEquipment(): Equipment
+}
+class Fireball
+class Flash
+class Game {
+  - dice: Dice
+  - db: Db
+  - menu: Menu
+  - playerPosition: int
+  - board: Board
+  - player: GameCharacter
+  + playTurn(): void
+  + movePlayer(int): void
+  + home(): void
+  + displayInventory(): void
+  - manageDb(): void
+  - createDb(): void
+  - setPlayerPosition(int): void
+  + useLifeEquipment(): void
+  + dead(): void
+  + cheatMode(): void
+  + createPlayer(): void
+  + getMenu(): Menu
+  + manageInventory(): void
+  + endGame(): void
+  + quit(): void
+  + playingMenu(): void
+  + managePlayer(): void
+  + start(): void
+  + endTurn(): void
+}
+class GameCharacter {
+  # lifeEquipments: ArrayList<LifeEquipment>
+  # offensiveEquipments: ArrayList<OffensiveEquipment>
+  # defensiveEquipments: ArrayList<DefensiveEquipment>
+  + addOffensiveEquipment(OffensiveEquipment): boolean
+  + getLifeEquipments(): ArrayList<LifeEquipment>
+  + removeLifeEquipment(LifeEquipment): boolean
+  + getAttack(): int
+  + getDefensiveEquipments(): ArrayList<DefensiveEquipment>
+  + getEquipments(): ArrayList<Equipment>
+  + removeDefensiveEquipment(DefensiveEquipment): boolean
+  + removeOffensiveEquipment(OffensiveEquipment): boolean
+  + getDefense(): int
+  + addLifeEquipment(LifeEquipment): boolean
+  + setEquipment(ArrayList<Equipment>): boolean
+  + addDefensiveEquipment(DefensiveEquipment): boolean
+  + getOffensiveEquipments(): ArrayList<OffensiveEquipment>
+  + isSame(Object): boolean
+  + toString(): String
+}
+class GameObject {
+  # name: String
+  # description: String
+  # durability: int
+  # id: Integer
+  + getDurability(): int
+  + setId(Integer): void
+  + getId(): Integer
+  + getName(): String
+  + getDescription(): String
+  # setDurability(int): void
+  + toString(): String
+}
+class Goblin
+class LifeEquipment {
+  + applyTo(GameCharacter): boolean
+  + use(GameCharacter): int
+  + removeFrom(GameCharacter): boolean
+  + getType(): String
+  + toString(): String
+}
+class LifeFactory {
+  - LIFE_EQUIPMENTS: List<Supplier<LifeEquipment>>
+  + createRandom(): LifeEquipment
+}
+class Mace
+class Magus {
+  + addOffensiveEquipment(OffensiveEquipment): boolean
+}
+class Main {
+  + main(String[]): void
+}
+class Menu {
+  + RESET: String
+  + BLUE: String
+  - scanner: Scanner
+  + RED: String
+  + GREEN: String
+  + YELLOW: String
+  + closeScanner(): void
+  + displayTitle(String): void
+  + displayError(String): void
+  + displayBoard(int, Board): void
+  + displayBoard(Board): void
+  + displaySuccess(String): void
+  + getString(String): String
+  + getChoice(String, String[]): int
+  + getInt(String): int
+  + display(String): void
+  - openScanner(): void
+  + displayWarning(String): void
+}
+class OffensiveEquipment {
+  + applyTo(GameCharacter): boolean
+  + getType(): String
+  + removeFrom(GameCharacter): boolean
+  + toString(): String
+}
+class OffensiveFactory {
+  - OFFENSIVE_EQUIPMENTS: List<Supplier<OffensiveEquipment>>
+  + createRandom(): OffensiveEquipment
+}
+class PlayerLostException
+class PlayerMovedException {
+  - move: int
+  + getMove(): int
+}
+class PlayerPositionException
+class PlayerWonException
+class Potion
+interface Rollable << interface >> {
+  + roll(): int
+}
+class Shield
+class Spell
+class StandardPotion
+class StandardShield
+class StartCell {
+  + interact(Menu, GameCharacter, Dice): void
+}
+class SurpriseCell {
+  # surprise: Equipment
+  + interact(Menu, GameCharacter, Dice): void
+  + empty(): void
+  + getSurprise(): Equipment
+}
+class Sword
+class Warrior {
+  + addOffensiveEquipment(OffensiveEquipment): boolean
+}
+class Weapon
+class Wizard
+
+BigPotion                -[#000082,plain]-^  Potion                  
+BigShield                -[#000082,plain]-^  Shield                  
+Cheater                  -[#000082,plain]-^  GameCharacter           
+DefensiveEquipment       -[#000082,plain]-^  Equipment               
+Dice                     -[#008200,dashed]-^  Rollable                
+Dragon                   -[#000082,plain]-^  Enemy                   
+EmptyCell                -[#000082,plain]-^  Cell                    
+EndCell                  -[#000082,plain]-^  Cell                    
+Enemy                    -[#000082,plain]-^  Being                   
+EnemyCell                -[#000082,plain]-^  Cell                    
+Equipment                -[#000082,plain]-^  GameObject              
+Fireball                 -[#000082,plain]-^  Spell                   
+Flash                    -[#000082,plain]-^  Spell                   
+GameCharacter            -[#000082,plain]-^  Being                   
+Goblin                   -[#000082,plain]-^  Enemy                   
+LifeEquipment            -[#000082,plain]-^  Equipment               
+Mace                     -[#000082,plain]-^  Weapon                  
+Magus                    -[#000082,plain]-^  GameCharacter           
+OffensiveEquipment       -[#000082,plain]-^  Equipment               
+Potion                   -[#000082,plain]-^  LifeEquipment           
+Shield                   -[#000082,plain]-^  DefensiveEquipment      
+Spell                    -[#000082,plain]-^  OffensiveEquipment      
+StandardPotion           -[#000082,plain]-^  Potion                  
+StandardShield           -[#000082,plain]-^  Shield                  
+StartCell                -[#000082,plain]-^  Cell                    
+SurpriseCell             -[#000082,plain]-^  Cell                    
+Sword                    -[#000082,plain]-^  Weapon                  
+Warrior                  -[#000082,plain]-^  GameCharacter           
+Weapon                   -[#000082,plain]-^  OffensiveEquipment      
+Wizard                   -[#000082,plain]-^  Enemy                   
+@enduml

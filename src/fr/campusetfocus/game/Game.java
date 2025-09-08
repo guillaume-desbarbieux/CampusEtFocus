@@ -107,7 +107,7 @@ public class Game {
      * En fonction du choix de l'utilisateur, la méthode exécute la fonctionnalité correspondante.
      */
     public void home() {
-        menu.displayTitle("Bienvenu sur Campus & Focus");
+        menu.displayTitle("Bienvenu sur Campus & Focus, le meilleur jeu de plateau !");
         menu.displayTitle("Menu Principal");
         int choice = menu.getChoice("", new String[]{"Retourner sur le plateau", "Gestion du personnage", "Afficher le plateau", "Gestion Base de données", "Quitter", "Cheat Mode"});
         switch (choice) {
