@@ -92,9 +92,11 @@ public class DbBeing {
     public Being get(Integer beingId) {
         Being being = this.being.get(beingId);
         ArrayList<Equipment> equipments = this.getEquipment(beingId);
-        if (!equipments.isEmpty()) {
-            boolean set = ((GameCharacter) being).setEquipment(equipments);
-            if (!set) return null;
+        if (equipments != null) {
+            if (!equipments.isEmpty()) {
+                boolean set = ((GameCharacter) being).setEquipment(equipments);
+                if (!set) return null;
+            }
         }
         return being;
     }

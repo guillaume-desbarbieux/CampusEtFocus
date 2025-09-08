@@ -132,7 +132,8 @@ public class Game {
         int choice = menu.getChoice("Voulez-vous créer une Base de données ?",new String[]{"Oui","Non"});
         switch (choice) {
             case 1 -> {
-                db = new DbBoard();
+                this.dbBoard = new DbBoard();
+                this.dbBeing = new DbBeing();
                 menu.displaySuccess("Base de données créée avec succès !");
             }
             case 2 -> menu.displayWarning("Création de la Base de données annulée !");
@@ -142,7 +143,7 @@ public class Game {
     }
 
     private void manageDb() {
-        if (db == null) {
+        if (dbBoard == null) {
             createDb();
         }
         menu.displayTitle("Gestion de la Base de données");
@@ -151,15 +152,15 @@ public class Game {
         switch (choice) {
             case 1 -> {
                 menu.displayTitle("Sauvegarde de la partie en cours...");
-                boolean saved = db.save(board);
+                boolean saved = dbBoard.save(board);
                 if (saved) menu.displaySuccess("Sauvegarde réussie !");
                 else menu.displayError("Echec de la sauvegarde !");
                 manageDb();
             }
             case 2 -> {
                 menu.displayTitle("Chargement de la dernière partie...");
-                Integer boardId = db.board.getLastId();
-                Board newBoard = db.get(boardId);
+                Integer boardId = dbBoard.board.getLastId();
+                Board newBoard = dbBoard.get(boardId);
                 if (newBoard == null) menu.displayError("Echec du chargement !");
                 else {
                     this.board = newBoard;
@@ -171,7 +172,7 @@ public class Game {
                 if (player == null) menu.displayError("Aucun joueur existant !");
                 else {
                     menu.displayTitle("Sauvegarde du joueur en cours...");
-                    boolean saved = db.saveBeing(player);
+                    boolean saved = dbBeing.save(player);
                     if (saved) menu.displaySuccess("Sauvegarde réussie !");
                     else menu.displayError("Echec de la sauvegarde !");
                 }
@@ -179,8 +180,8 @@ public class Game {
             }
             case 4 -> {
                     menu.displayTitle("Chargement du dernier joueur...");
-                    Integer beingId = db.being.getLastId();
-                    Being being = db.getBeing(beingId);
+                    Integer beingId = menu.getInt("Id ?");
+                    Being being = dbBeing.get(beingId);
                     if (being == null) menu.displayError("Echec du chargement !");
                     else {
                         this.player = (GameCharacter) being;
