@@ -5,7 +5,6 @@ import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.Dice;
 import fr.campusetfocus.gameobject.Equipment;
 import fr.campusetfocus.menu.IMenu;
-import fr.campusetfocus.menu.Menu;
 
 public class SurpriseCell extends Cell {
     protected Equipment surprise;

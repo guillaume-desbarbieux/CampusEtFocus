@@ -7,7 +7,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -101,9 +100,5 @@ public class BoardView2D {
                 }
             }
         });
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 }

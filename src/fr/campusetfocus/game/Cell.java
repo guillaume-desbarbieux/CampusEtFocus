@@ -6,7 +6,6 @@ import fr.campusetfocus.exception.PlayerMovedException;
 import fr.campusetfocus.exception.PlayerWonException;
 import fr.campusetfocus.game.cell.CellType;
 import fr.campusetfocus.menu.IMenu;
-import fr.campusetfocus.menu.Menu;
 
 public abstract class Cell {
     protected Integer id;

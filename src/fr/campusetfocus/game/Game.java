@@ -17,7 +17,6 @@ import fr.campusetfocus.gameobject.equipment.DefensiveEquipment;
 import fr.campusetfocus.gameobject.equipment.LifeEquipment;
 import fr.campusetfocus.gameobject.equipment.OffensiveEquipment;
 import fr.campusetfocus.menu.IMenu;
-import fr.campusetfocus.menu.MenuGraphique;
 
 import java.util.List;
 

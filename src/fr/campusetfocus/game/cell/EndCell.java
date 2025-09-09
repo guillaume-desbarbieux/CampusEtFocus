@@ -5,7 +5,6 @@ import fr.campusetfocus.exception.PlayerWonException;
 import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.Dice;
 import fr.campusetfocus.menu.IMenu;
-import fr.campusetfocus.menu.Menu;
 
 public class EndCell extends Cell {
     public EndCell(int position) {

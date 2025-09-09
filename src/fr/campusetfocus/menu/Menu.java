@@ -23,10 +23,6 @@ public class Menu implements IMenu{
         }
     }
 
-    public void closeScanner() {
-        scanner.close();
-    }
-
     /**
      * Affiche le message dans la console.
      *

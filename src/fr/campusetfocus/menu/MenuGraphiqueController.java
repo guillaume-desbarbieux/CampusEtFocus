@@ -1,19 +1,9 @@
 package fr.campusetfocus.menu;
 
 import fr.campusetfocus.game.Board;
-import fr.campusetfocus.game.cell.CellType;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.GridPane;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class MenuGraphiqueController implements IMenu {
     private final TextArea console;
