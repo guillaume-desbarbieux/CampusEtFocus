@@ -4,7 +4,7 @@ import fr.campusetfocus.game.cell.CellType;
 
 import java.util.Scanner;
 
-public class Menu {
+public class Menu implements IMenu{
     private static Scanner scanner;
     public static final String RESET = "\u001B[0m";
     public static final String GREEN = "\u001B[32m";
@@ -32,37 +32,37 @@ public class Menu {
      *
      * @param message le message à afficher
      */
-    public void display(String message) {
+    public void display(String title, String message) {
         System.out.println(message);
     }
 
      public void displayTitle(String title) {
         String border = "═".repeat(title.length() + 6);
-        display(BLUE + "╔" + border + "╗" + RESET);
-        display(BLUE + "║   " + title + "   ║" + RESET);
-        display(BLUE + "╚" + border + "╝" + RESET);
+        display("",BLUE + "╔" + border + "╗" + RESET);
+        display("",BLUE + "║   " + title + "   ║" + RESET);
+        display("",BLUE + "╚" + border + "╝" + RESET);
     }
 
-    public void displayError(String error) {
+    public void displayError(String Title, String error) {
         String border = "!".repeat(error.length() + 4);
 
-        display(RED + "!!!" + border + "!!!" + RESET);
-        display(RED + "!!   " + error + "   !!" + RESET);
-        display(RED + "!!!" + border + "!!!" + RESET);
+        display("",RED + "!!!" + border + "!!!" + RESET);
+        display("",RED + "!!   " + error + "   !!" + RESET);
+        display("",RED + "!!!" + border + "!!!" + RESET);
     }
 
-    public void displaySuccess(String success) {
+    public void displaySuccess(String Title, String success) {
         String border = "✓".repeat(success.length() + 4);
-        display(GREEN + "✓✓✓" + border + "✓✓✓" + RESET);
-        display(GREEN + "✓   " + success + "   ✓" + RESET);
-        display(GREEN + "✓✓✓" + border + "✓✓✓" + RESET);
+        display("",GREEN + "✓✓✓" + border + "✓✓✓" + RESET);
+        display("",GREEN + "✓   " + success + "   ✓" + RESET);
+        display("",GREEN + "✓✓✓" + border + "✓✓✓" + RESET);
     }
 
-    public void displayWarning(String warning) {
+    public void displayWarning(String Title, String warning) {
         String border = "⚠".repeat(warning.length() + 4);
-        display(YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
-        display(YELLOW + "⚠   " + warning + "   ⚠" + RESET);
-        display(YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
+        display("",YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
+        display("",YELLOW + "⚠   " + warning + "   ⚠" + RESET);
+        display("",YELLOW + "⚠⚠⚠" + border + "⚠⚠⚠" + RESET);
     }
 
     public void displayBoard (Board board) {
@@ -91,8 +91,8 @@ public class Menu {
                 playerString.append("  ");
             }
         }
-        display(boardString.toString());
-        display(playerString.toString());
+        display("",boardString.toString());
+        display("",playerString.toString());
     }
 
 
@@ -106,22 +106,22 @@ public class Menu {
      */
     public int getChoice(String message, String[] choices) {
         if (choices.length == 0) {
-            displayError("Aucun choix disponible");
+            displayError("","Aucun choix disponible");
             return 0;
         }
 
         while (true) {
-            display(message);
+            display("",message);
 
             for (int i = 1; i <= choices.length; i++) {
-                display("  " + i + " ▸ " + choices[i - 1]);
+                display("","  " + i + " ▸ " + choices[i - 1]);
             }
             int choice = getInt("\n→ Choix ?");
 
             if (choice > 0 && choice <= choices.length) {
                 return choice;
             } else {
-                displayError("Veuillez faire un choix valide");
+                displayError("","Veuillez faire un choix valide");
             }
         }
     }
@@ -133,7 +133,7 @@ public class Menu {
      * @return Le string rentré par l'utilisateur dans l'interface
      */
     public String getString(String message) {
-        display(message);
+        display("",message);
         return scanner.nextLine();
     }
 
@@ -145,12 +145,12 @@ public class Menu {
      */
     public int getInt(String message) {
         while (true) {
-            display(message);
+            display("",message);
             String input = scanner.nextLine();
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                displayError("Veuillez entrer un nombre entier valide !");
+                displayError("","Veuillez entrer un nombre entier valide !");
             }
         }
     }

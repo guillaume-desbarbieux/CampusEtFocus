@@ -7,6 +7,7 @@ import fr.campusetfocus.exception.PlayerMovedException;
 import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.being.Enemy;
 import fr.campusetfocus.game.Dice;
+import fr.campusetfocus.menu.IMenu;
 import fr.campusetfocus.menu.Menu;
 
 
@@ -23,12 +24,12 @@ public class EnemyCell extends Cell {
     }
 
     @Override
-    public void interact(Menu menu, GameCharacter player, Dice dice) throws PlayerLostException, PlayerMovedException {
+    public void interact(IMenu menu, GameCharacter player, Dice dice) throws PlayerLostException, PlayerMovedException {
         if (enemy == null) {
-            menu.display("Il n'y a plus d'ennemi ici, vous poursuivez votre tour.");
+            menu.display("","Il n'y a plus d'ennemi ici, vous poursuivez votre tour.");
         } else {
-            menu.display("Vous vous retrouvez face à un " + enemy.getName() + " !");
-            menu.displayTitle("Combat !");
+            menu.display("","Vous vous retrouvez face à un " + enemy.getName() + " !");
+            menu.display("","Combat !");
             this.fight(menu, player, dice);
         }
     }
@@ -39,20 +40,20 @@ public class EnemyCell extends Cell {
  * Après chaque échange, la mort éventuelle de l'un des protagonistes est vérifiée.
  * Enfin, le joueur choisit de poursuivre le combat (appel récursif) ou de fuir.
  */
-    private void fight (Menu menu, GameCharacter player, Dice dice) throws PlayerLostException, PlayerMovedException {
+    private void fight (IMenu menu, GameCharacter player, Dice dice) throws PlayerLostException, PlayerMovedException {
         while(menu.getChoice("Que souhaitez vous faire ?", new String[]{"Combattre", "Fuir"}) == 1) {
             int criticallity = dice.roll(1, 20);
             int blow = attack(player, enemy, criticallity);
 
-            if (criticallity == 1) menu.display("Echec critique ! Votre coup est raté !");
-            if (criticallity == 20) menu.display("Réussite critique ! Votre coup est très efficace !");
-            if (blow <= 0) menu.display("Votre attaque est trop faible pour atteindre l'ennemi.");
+            if (criticallity == 1) menu.display("","Echec critique ! Votre coup est raté !");
+            if (criticallity == 20) menu.display("","Réussite critique ! Votre coup est très efficace !");
+            if (blow <= 0) menu.display("","Votre attaque est trop faible pour atteindre l'ennemi.");
             else {
-                menu.display("Vous infligez " + blow + " dégâts à l'ennemi.");
-                menu.display("Il lui reste " + enemy.getLife() + " points de vie.");
+                menu.display("","Vous infligez " + blow + " dégâts à l'ennemi.");
+                menu.display("","Il lui reste " + enemy.getLife() + " points de vie.");
             }
             if (enemy.getLife() <= 0) {
-                menu.displaySuccess("L'ennemi est mort ! Vous gagnez le combat !");
+                menu.displaySuccess("","L'ennemi est mort ! Vous gagnez le combat !");
                 this.empty();
                 return;
             }
@@ -60,12 +61,12 @@ public class EnemyCell extends Cell {
             criticallity = dice.roll(1, 20);
             blow = attack(enemy, player, criticallity);
 
-            if (criticallity == 1) menu.display("Echec critique ! Votre ennemi rate son coup !");
-            if (criticallity == 20) menu.display("Réussite critique ! Son coup est très efficace !");
-            if (blow == 0) menu.display("L'ennemi est trop faible pour vous atteindre.");
+            if (criticallity == 1) menu.display("","Echec critique ! Votre ennemi rate son coup !");
+            if (criticallity == 20) menu.display("","Réussite critique ! Son coup est très efficace !");
+            if (blow == 0) menu.display("","L'ennemi est trop faible pour vous atteindre.");
             else {
-                menu.display("L'ennemi vous inflige " + Menu.RED + blow + Menu.RESET + " dégâts.");
-                menu.display("Il vous reste " + Menu.GREEN + player.getLife() + Menu.RESET + " points de vie.");
+                menu.display("","L'ennemi vous inflige " + Menu.RED + blow + Menu.RESET + " dégâts.");
+                menu.display("","Il vous reste " + Menu.GREEN + player.getLife() + Menu.RESET + " points de vie.");
             }
             if (player.getLife() <= 0) throw new PlayerLostException("Vous avez été tué par " + enemy.getName() + " !");
         }

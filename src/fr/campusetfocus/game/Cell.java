@@ -5,6 +5,7 @@ import fr.campusetfocus.exception.PlayerLostException;
 import fr.campusetfocus.exception.PlayerMovedException;
 import fr.campusetfocus.exception.PlayerWonException;
 import fr.campusetfocus.game.cell.CellType;
+import fr.campusetfocus.menu.IMenu;
 import fr.campusetfocus.menu.Menu;
 
 public abstract class Cell {
@@ -33,7 +34,7 @@ public abstract class Cell {
         return type;
     }
 
-    public abstract void interact(Menu menu, GameCharacter player, Dice dice) throws PlayerWonException, PlayerLostException, PlayerMovedException;
+    public abstract void interact(IMenu menu, GameCharacter player, Dice dice) throws PlayerWonException, PlayerLostException, PlayerMovedException;
 
     public void empty() {
         type = CellType.EMPTY;

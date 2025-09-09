@@ -4,6 +4,7 @@ import fr.campusetfocus.being.GameCharacter;
 import fr.campusetfocus.exception.PlayerWonException;
 import fr.campusetfocus.game.Cell;
 import fr.campusetfocus.game.Dice;
+import fr.campusetfocus.menu.IMenu;
 import fr.campusetfocus.menu.Menu;
 
 public class EndCell extends Cell {
@@ -12,7 +13,7 @@ public class EndCell extends Cell {
     }
 
     @Override
-    public void interact(Menu menu, GameCharacter player, Dice dice) throws PlayerWonException {
+    public void interact(IMenu menu, GameCharacter player, Dice dice) throws PlayerWonException {
         throw new PlayerWonException("Vous êtes arrivé sur la dernière case !");
     }
 }

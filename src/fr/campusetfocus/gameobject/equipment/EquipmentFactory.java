@@ -7,6 +7,9 @@ import fr.campusetfocus.gameobject.equipment.life.LifeFactory;
 
 import java.util.Random;
 
+/**
+ * @deprecated
+ */
 public class EquipmentFactory
 {
     public static Equipment createRandomEquipment() {
