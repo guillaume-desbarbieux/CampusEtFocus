@@ -37,6 +37,6 @@ public abstract class Cell {
 
     public void empty() {
         type = CellType.EMPTY;
-    };
+    }
 
 }
